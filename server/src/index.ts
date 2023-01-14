@@ -3,7 +3,8 @@ import express from "express";
 import { json } from "body-parser";
 import cors from "cors";
 import { ApolloServer } from "@apollo/server";
-
+import { typeDefs } from "./schemas";
+import { buildSubgraphSchema } from "@apollo/subgraph";
 
 const main = async () => {
     await AppDataSource.initialize();
@@ -11,8 +12,10 @@ const main = async () => {
     const app = express();
 
     const apolloServer = new ApolloServer({
-        typeDefs,
-        resolver: 
+        schema: buildSubgraphSchema({
+            typeDefs,
+            resolvers: []
+        })
     });
     
     app.use('/graphql', 
