@@ -3,6 +3,7 @@ import express from "express";
 import { json } from "body-parser";
 import cors from "cors";
 import { ApolloServer } from "@apollo/server";
+import { expressMiddleware } from "@apollo/server/express4";
 import { typeDefs } from "./schemas";
 import { buildSubgraphSchema } from "@apollo/subgraph";
 
@@ -35,7 +36,3 @@ const main = async () => {
 }
 
 main();
-
-function expressMiddleware(apolloServer: ApolloServer<import("@apollo/server").BaseContext>): import("express-serve-static-core").RequestHandler<{}, any, any, import("qs").ParsedQs, Record<string, any>> {
-    throw new Error("Function not implemented.");
-}
