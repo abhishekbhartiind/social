@@ -2,6 +2,27 @@
 # yarn lockfile v1
 
 
+"@apollo/cache-control-types@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@apollo/cache-control-types/-/cache-control-types-1.0.2.tgz#f42ed3563acc7f1f50617d65d208483977adc68e"
+  integrity sha512-Por80co1eUm4ATsvjCOoS/tIR8PHxqVjsA6z76I6Vw0rFn4cgyVElQcmQDIZiYsy41k8e5xkrMRECkM2WR8pNw==
+
+"@apollo/federation-internals@^2.2.3":
+  version "2.2.3"
+  resolved "https://registry.yarnpkg.com/@apollo/federation-internals/-/federation-internals-2.2.3.tgz#5df721f15918aae501b886de5e8fd6f0a69e20a9"
+  integrity sha512-6XN1p5AJAlACYBo+EbwPSYnmfRXPPNxlZRLSplB/PWBy9DnF+z+uq3L85Nqmom1JYepFf7JaUuWPBzCvjxAbmg==
+  dependencies:
+    chalk "^4.1.0"
+    js-levenshtein "^1.1.6"
+
+"@apollo/subgraph@^2.2.3":
+  version "2.2.3"
+  resolved "https://registry.yarnpkg.com/@apollo/subgraph/-/subgraph-2.2.3.tgz#cef1fee9a705f52aac22a37a1d4f6c902c63c00e"
+  integrity sha512-y7SdZaDbRJXq6xQcwT5Xj/KR1RAV9cokKK0XcMIBGvXcUXdMVorFxX2pYGzxyiIM7y4qFsAF/L8+0G5dtrnkZw==
+  dependencies:
+    "@apollo/cache-control-types" "^1.0.2"
+    "@apollo/federation-internals" "^2.2.3"
+
 "@cspotcode/source-map-support@^0.8.0":
   version "0.8.1"
   resolved "https://registry.npmjs.org/@cspotcode/source-map-support/-/source-map-support-0.8.1.tgz"
@@ -376,6 +397,11 @@ is-number@^7.0.0:
   version "7.0.0"
   resolved "https://registry.npmjs.org/is-number/-/is-number-7.0.0.tgz"
   integrity sha512-41Cifkg6e8TylSpdtTpeLVMqvSBEVzTttHvERD741+pnZ8ANv0004MRL43QKPDlK9cGvNp6NZWZUBlbGXYxxng==
+
+js-levenshtein@^1.1.6:
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/js-levenshtein/-/js-levenshtein-1.1.6.tgz#c6cee58eb3550372df8deb85fad5ce66ce01d59d"
+  integrity sha512-X2BB11YZtrRqY4EnQcLX5Rh373zbK4alC1FW7D7MBhL2gtcC17cTnr6DmfHZeS0s2rTHjUTMMHfG7gO8SSdw+g==
 
 js-yaml@^4.1.0:
   version "4.1.0"

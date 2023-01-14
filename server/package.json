@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@apollo/subgraph": "^2.2.3",
     "pg": "^8.8.0",
     "typeorm": "^0.3.11"
   },
