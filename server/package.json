@@ -6,14 +6,17 @@
   "scripts": {
     "watch": "tsc -w",
     "dev": "nodemon dist/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "gen": "graphql-codegen --config codegen.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@apollo/server": "^4.3.0",
-    "@apollo/subgraph": "^2.2.3",
+    "@graphql-tools/load-files": "^6.6.1",
+    "@graphql-tools/merge": "^8.3.15",
+    "@graphql-tools/schema": "^9.0.13",
     "body-parser": "^1.20.1",
     "cors": "^2.8.5",
     "express": "^4.18.2",
@@ -23,7 +26,9 @@
     "typeorm": "^0.3.11"
   },
   "devDependencies": {
-    "@graphql-codegen/cli": "^2.16.4",
+    "@graphql-codegen/cli": "2.16.4",
+    "@graphql-codegen/typescript": "2.8.7",
+    "@graphql-codegen/typescript-resolvers": "^2.7.12",
     "@types/cors": "^2.8.13",
     "@types/express": "^4.17.15",
     "@types/node": "^18.11.18",
