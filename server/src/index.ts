@@ -15,6 +15,8 @@ import Redis from "ioredis";
 import connectRedis,{ RedisStoreOptions }  from "connect-redis";
 import { COOKIE_NAME, __prod__ } from "./constants";
 import { MyContext } from "./types/context";
+import { applyMiddleware } from "graphql-middleware";
+import { postMiddleware } from "./middlewares/post";
 
 const main = async () => {
     await AppDataSource.initialize();
@@ -49,8 +51,10 @@ const main = async () => {
         resolvers: [PostResolvers, UserResolvers]
     })
     
+    const schemaWithMiddleware = applyMiddleware(schema, postMiddleware);
+    
     const apolloServer = new ApolloServer({
-        schema,
+        schema: schemaWithMiddleware,
         plugins: [
             ApolloServerPluginLandingPageLocalDefault({
                 includeCookies: true,
