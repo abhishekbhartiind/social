@@ -1,3 +1,4 @@
+import argon2 from "argon2";
 import { dataManager } from "../AppDataSource";
 import { UserEntity as User } from "../entities/user";
 import { Resolvers } from "../generated/graphql";
@@ -16,7 +17,7 @@ export const UserResolvers: Resolvers = {
             if (!existingUser) {
                 return null;
             }
-            const validPassword = password === existingUser.password;
+            const validPassword = await argon2.verify(existingUser.password, password);
             if (!validPassword) {
                 return null;
             }
@@ -28,8 +29,13 @@ export const UserResolvers: Resolvers = {
             if (existingUser) {
                 return existingUser;
             } 
+            const hashedPassword = await argon2.hash(password);
             const newUser = dataManager.create(User, 
-                { username, password, email });
+                { 
+                    username, 
+                    password: hashedPassword, 
+                    email 
+                });
             await dataManager.save(newUser);
             return newUser;
         }, 
