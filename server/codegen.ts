@@ -8,6 +8,7 @@ const config: CodegenConfig = {
     "src/generated/graphql.ts": {
       config: {
         useIndexSignature: true,
+        contextType: "src/types/context#MyContext",
         mappers: {
           "User": "src/entities/user#UserEntity",
           "Post": "src/entities/post#PostEntity"
