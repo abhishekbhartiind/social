@@ -1,15 +1,31 @@
+input UsernamePasswordInput {
+    username: String!
+    password: String!
+    email: String!
+}
+
 type User {
     id: ID!
     username: String!
     email: String!
 }
 
+type FieldError {
+    field: String!
+    message: String!
+}
+
+type UserResponse {
+    errors: [FieldError!]
+    user: User
+}
+
 type Query {
-    me(id: ID!): User
+    me: User
 }
 
 type Mutation {
-    login(username: String!, password: String!): User
-    register(username: String!, password: String!, email: String!): User!
+    login(username: String!, password: String!): UserResponse!
+    register(options: UsernamePasswordInput!): UserResponse!
     logout: Boolean!
 }
