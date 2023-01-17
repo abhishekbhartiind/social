@@ -2,6 +2,7 @@ import { DataSource } from "typeorm";
 import path from "path";
 import { PostEntity as Post } from "./entities/post";
 import { UserEntity as User } from "./entities/user";
+import { Like } from "./entities/like";
 
 const AppDataSource = new DataSource({
     type: 'postgres',
@@ -9,7 +10,8 @@ const AppDataSource = new DataSource({
     username: 'serey',
     password: 'instapets',
     synchronize: true,
-    entities: [Post, User],
+    logging: true,
+    entities: [Post, User, Like],
     migrations: [path.join(__dirname, '/migrations/*')]
 });
 
