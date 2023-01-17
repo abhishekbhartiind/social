@@ -1,38 +1,98 @@
+import { UserEntity as User } from "../entities/user";
 import { dataManager } from "../AppDataSource";
 import { PostEntity as Post } from "../entities/post";
 import { Resolvers } from "../generated/graphql";
+import { Like } from "../entities/like";
 
 export const PostResolvers: Resolvers = {
     Query: {
         posts() {
-            return dataManager.find(Post);
+            return dataManager
+            .getRepository(Post)
+            .createQueryBuilder("post")
+            .orderBy('post."createdAt"', 'DESC')
+            .getMany();
         },
         post(_, { id }) {
             return dataManager.findOneBy(Post, { id: parseInt(id) });
         }
     },
     Mutation: {
-        async createPost(_, { title, text }) {
+        async createPost(_, { title, text }, { req }) {
             const post = dataManager.create(Post, {
                 title,
-                text
+                text,
+                creatorId: req.session.userId,
             });
             await dataManager.save(post);
             return post;
         },
-        async deletePost(_, { id }) {
-            await dataManager.delete(Post, { id: parseInt(id) });
-            return true;
-        },
-        async updatePost(_, { id, title, text }) {
+        async deletePost(_, { id }, { req }) {
             const post = await dataManager.findOneBy(Post, 
                 { id: parseInt(id) });
-        
-            await dataManager.update(Post, 
-                { id: parseInt(id) }, 
-                { title, text });
+            if (!post || post.creatorId !== req.session.userId) {
+                return false;
+            }
+            await dataManager.delete(Post, 
+                { 
+                    id: parseInt(id),
+                    creatorId: req.session.userId,
+                });
+            return true;
+        },
+        async updatePost(_, { id, title, text }, { req }) {
+            const results = await dataManager
+            .getRepository(Post)
+            .createQueryBuilder()
+            .update()
+            .set({ title, text })
+            .where('id = :id and "creatorId" = :creatorId', {
+                id,
+                creatorId: req.session.userId
+            })
+            .returning("*")
+            .execute();
             
-            return post;
+            return results.raw[0];
+        },
+        async likePost(_, { id }, { req }) {
+            const existingLike = await dataManager.findOneBy(Like, {
+                postId: parseInt(id),
+                userId: req.session.userId
+            });
+            if (!existingLike) {
+                const like = dataManager.create(Like, {
+                    like: true,
+                    postId: parseInt(id),
+                    userId: req.session.userId
+                });
+                await dataManager.save(like);
+            } else {
+                await dataManager.delete(Like,
+                    {
+                        postId: parseInt(id), 
+                        userId: req.session.userId 
+                    });
+            }
+            return true;
+        }
+    },
+    Post: {
+        creator({ creatorId }) {
+            return dataManager.findOneBy(User, { id: creatorId });
+        },
+        async isLiked({ id }, _, { req }) {
+            if (!req.session.userId) {
+                return null;
+            }
+            const like = await dataManager.findOneBy(Like, 
+                { postId: id, userId: req.session.userId});
+            return like ? true : false;
+        },
+        async likeCount({ id }) {
+            const likes = await dataManager.findBy(Like, 
+                { postId: id });
+            return likes.length;
         }
     }
 }
