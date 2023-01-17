@@ -4,6 +4,10 @@ type Post {
     text: String!
     createdAt: String!
     updatedAt: String!
+    creatorId: ID!
+    creator: User
+    isLiked: Boolean
+    likeCount: Int!
 }
 
 type Query {
@@ -15,4 +19,5 @@ type Mutation {
     createPost(title: String!, text: String!): Post!
     updatePost(id: ID!, title: String!, text: String!): Post
     deletePost(id: ID!): Boolean!
+    likePost(id: ID!): Boolean!
 }
