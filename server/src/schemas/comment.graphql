@@ -1,0 +1,11 @@
+type Comment {
+    id: ID!
+    userID: ID!
+    postID: ID!
+    creator: User!
+    body: String!
+}
+
+type Mutation {
+    commentPost(postId: ID!, parentCommentId: ID, body: String!): Boolean!
+}
