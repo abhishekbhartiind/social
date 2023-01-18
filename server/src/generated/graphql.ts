@@ -1,6 +1,7 @@
 import { GraphQLResolveInfo } from 'graphql';
 import { UserEntity } from 'src/entities/user';
 import { PostEntity } from 'src/entities/post';
+import { CommentEntity } from 'src/entities/comment';
 import { MyContext } from 'src/types/context';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -18,6 +19,15 @@ export type Scalars = {
   Float: number;
 };
 
+export type Comment = {
+  __typename?: 'Comment';
+  body: Scalars['String'];
+  creator: User;
+  id: Scalars['ID'];
+  postID: Scalars['ID'];
+  userID: Scalars['ID'];
+};
+
 export type FieldError = {
   __typename?: 'FieldError';
   field: Scalars['String'];
@@ -26,6 +36,7 @@ export type FieldError = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  commentPost: Scalars['Boolean'];
   createPost: Post;
   deletePost: Scalars['Boolean'];
   likePost: Scalars['Boolean'];
@@ -33,6 +44,13 @@ export type Mutation = {
   logout: Scalars['Boolean'];
   register: UserResponse;
   updatePost?: Maybe<Post>;
+};
+
+
+export type MutationCommentPostArgs = {
+  body: Scalars['String'];
+  parentCommentId?: InputMaybe<Scalars['ID']>;
+  postId: Scalars['ID'];
 };
 
 
@@ -71,6 +89,7 @@ export type MutationUpdatePostArgs = {
 
 export type Post = {
   __typename?: 'Post';
+  comments: Array<Comment>;
   createdAt: Scalars['String'];
   creator?: Maybe<User>;
   creatorId: Scalars['ID'];
@@ -185,6 +204,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = ResolversObject<{
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
+  Comment: ResolverTypeWrapper<CommentEntity>;
   FieldError: ResolverTypeWrapper<FieldError>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
@@ -200,6 +220,7 @@ export type ResolversTypes = ResolversObject<{
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = ResolversObject<{
   Boolean: Scalars['Boolean'];
+  Comment: CommentEntity;
   FieldError: FieldError;
   ID: Scalars['ID'];
   Int: Scalars['Int'];
@@ -212,6 +233,15 @@ export type ResolversParentTypes = ResolversObject<{
   UsernamePasswordInput: UsernamePasswordInput;
 }>;
 
+export type CommentResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['Comment'] = ResolversParentTypes['Comment']> = ResolversObject<{
+  body?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  creator?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  postID?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  userID?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type FieldErrorResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['FieldError'] = ResolversParentTypes['FieldError']> = ResolversObject<{
   field?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -219,6 +249,7 @@ export type FieldErrorResolvers<ContextType = MyContext, ParentType extends Reso
 }>;
 
 export type MutationResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
+  commentPost?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationCommentPostArgs, 'body' | 'postId'>>;
   createPost?: Resolver<ResolversTypes['Post'], ParentType, ContextType, RequireFields<MutationCreatePostArgs, 'text' | 'title'>>;
   deletePost?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationDeletePostArgs, 'id'>>;
   likePost?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationLikePostArgs, 'id'>>;
@@ -229,6 +260,7 @@ export type MutationResolvers<ContextType = MyContext, ParentType extends Resolv
 }>;
 
 export type PostResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['Post'] = ResolversParentTypes['Post']> = ResolversObject<{
+  comments?: Resolver<Array<ResolversTypes['Comment']>, ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   creator?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   creatorId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
@@ -262,6 +294,7 @@ export type UserResponseResolvers<ContextType = MyContext, ParentType extends Re
 }>;
 
 export type Resolvers<ContextType = MyContext> = ResolversObject<{
+  Comment?: CommentResolvers<ContextType>;
   FieldError?: FieldErrorResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Post?: PostResolvers<ContextType>;
