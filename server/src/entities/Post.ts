@@ -7,6 +7,7 @@ import {
     PrimaryGeneratedColumn, 
     UpdateDateColumn 
 } from "typeorm";
+import { CommentEntity as Comment } from "./comment";
 import { Like } from "./like";
 
 import { UserEntity as User } from "./user";
@@ -36,4 +37,7 @@ export class PostEntity {
 
     @OneToMany(() => Like, (like) => like.post)
     likes: Like[]
+
+    @OneToMany(() => Comment, (comment) => comment.post)
+    comments: Comment[]
 }
