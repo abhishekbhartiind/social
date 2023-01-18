@@ -8,6 +8,7 @@ type Post {
     creator: User
     isLiked: Boolean
     likeCount: Int!
+    comments: [Comment!]!
 }
 
 type Query {
