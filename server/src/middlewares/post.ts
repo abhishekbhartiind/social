@@ -6,5 +6,6 @@ export const postMiddleware = {
         updatePost: isAuth,
         deletePost: isAuth,
         likePost: isAuth,
+        commentPost: isAuth,
     }
 }
