@@ -11,7 +11,8 @@ const config: CodegenConfig = {
         contextType: "src/types/context#MyContext",
         mappers: {
           "User": "src/entities/user#UserEntity",
-          "Post": "src/entities/post#PostEntity"
+          "Post": "src/entities/post#PostEntity",
+          "Comment": "src/entities/comment#CommentEntity"
         }
       },
       plugins: ["typescript", "typescript-resolvers"]
