@@ -6,9 +6,11 @@ export const CommentResolvers: Resolvers = {
     Query: {
         replies(_, { parentCommentId }) {
             return dataManager.query(`
-                SELECT *
-                FROM comment_entity 
-                WHERE "parentId" = $1,
+                SELECT c.*, 
+                json_build_object('id', a.id, 'email', a.email, 'username', a.username) AS author
+                FROM comment_entity c
+                INNER JOIN user_entity a ON a.id = c."authorId"
+                WHERE c."parentId" = $1;
             `, [parentCommentId]);
         }
     },
@@ -53,9 +55,11 @@ export const CommentResolvers: Resolvers = {
             .createQueryBuilder()
             .update()
             .set({ content })
-            .where('id = :id, "postId" =: postId and "authorId" = :authorId', {
+            .where('id = :id and "postId" = :postId', {
                 id: commentId,
                 postId,
+            })
+            .andWhere('"authorId" = :authorId', { 
                 authorId: req.session.userId
             })
             .returning("*")
