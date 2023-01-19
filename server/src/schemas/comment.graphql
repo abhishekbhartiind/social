@@ -1,7 +1,7 @@
 type Comment {
     id: ID!
-    userID: ID!
-    postID: ID!
+    authorId: ID!
+    postId: ID!
     author: User!
     content: String!
     replies: [Comment!]!
