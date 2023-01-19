@@ -17,6 +17,7 @@ import { COOKIE_NAME, __prod__ } from "./constants";
 import { MyContext } from "./types/context";
 import { applyMiddleware } from "graphql-middleware";
 import { postMiddleware } from "./middlewares/post";
+import { CommentResolvers } from "./resolvers/comment";
 
 const main = async () => {
     await AppDataSource.initialize();
@@ -48,7 +49,7 @@ const main = async () => {
     //set up apollo server
     const schema = makeExecutableSchema({
         typeDefs,
-        resolvers: [PostResolvers, UserResolvers]
+        resolvers: [PostResolvers, UserResolvers, CommentResolvers]
     })
     
     const schemaWithMiddleware = applyMiddleware(schema, postMiddleware);
