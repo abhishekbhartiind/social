@@ -8,13 +8,13 @@ export class CommentEntity {
     id: number;
 
     @Column()
-    body: string;
+    content: string;
 
     @Column()
-    userId: number;
+    authorId: number;
 
     @ManyToOne(() => User, (user) => user.comments)
-    user: User;
+    author: User;
 
     @Column()
     postId: number;
