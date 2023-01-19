@@ -2,10 +2,17 @@ type Comment {
     id: ID!
     userID: ID!
     postID: ID!
-    creator: User!
-    body: String!
+    author: User!
+    content: String!
+    replies: [Comment!]!
+}
+
+type Query {
+    replies(parentCommentId: ID!): [Comment!]!
 }
 
 type Mutation {
-    commentPost(postId: ID!, parentCommentId: ID, body: String!): Boolean!
+    commentPost(postId: ID!, parentCommentId: ID, content: String!): Boolean!
+    editComment(commentId: ID!, postId: ID!, content: String!): Comment
+    deleteComment(commentId: ID!, postId: ID!): Boolean!
 }
