@@ -71,6 +71,7 @@ const main = async () => {
             credentials: true,
             origin: [
                 "https://studio.apollographql.com",
+                "http://localhost:3000"
             ]
         }),
         expressMiddleware(apolloServer, {
