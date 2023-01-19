@@ -3,7 +3,6 @@ import { dataManager } from "../AppDataSource";
 import { PostEntity as Post } from "../entities/post";
 import { Resolvers } from "../generated/graphql";
 import { Like } from "../entities/like";
-import { CommentEntity as Comment } from "../entities/comment";
 
 export const PostResolvers: Resolvers = {
     Query: {
@@ -77,24 +76,6 @@ export const PostResolvers: Resolvers = {
             }
             return true;
         },
-        async commentPost(_, { postId, parentCommentId, body }, { req }) {
-            const comment = dataManager.create(Comment, 
-                { 
-                    body,
-                    postId: parseInt(postId),
-                    userId: req.session.userId,
-                });
-            if (parentCommentId) {
-                const parentComment = await dataManager.findOneBy(Comment, {
-                    id: parseInt(parentCommentId)
-                });
-                if (parentComment) {
-                    comment.parent = parentComment;
-                }
-            }
-            await dataManager.save(comment);
-            return true;
-        }
     },
     Post: {
         creator({ creatorId }) {
@@ -115,11 +96,18 @@ export const PostResolvers: Resolvers = {
         },
         comments({ id }) {
             return dataManager
-            .getTreeRepository(Comment)
-            .createQueryBuilder()
-            .select()
-            .where('"postId" = :id and "parentId" IS NULL', { id })
-            .getMany();
+            .query(`
+            SELECT c.*, replies 
+            FROM comment_entity c 
+            LEFT JOIN (
+                SELECT 
+                "parentId", 
+                COALESCE(json_agg(row_to_json(replies)), '[]'::JSON) AS replies 
+                FROM comment_entity AS replies 
+                GROUP BY "parentId"
+            ) AS replies ON c.id = replies."parentId" 
+            WHERE c."postId" = $1 and c."parentId" IS NULL;
+            `, [id]);
         }
     },
 }
