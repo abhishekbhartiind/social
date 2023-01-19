@@ -22,11 +22,11 @@ export type Scalars = {
 export type Comment = {
   __typename?: 'Comment';
   author: User;
+  authorId: Scalars['ID'];
   content: Scalars['String'];
   id: Scalars['ID'];
-  postID: Scalars['ID'];
+  postId: Scalars['ID'];
   replies: Array<Comment>;
-  userID: Scalars['ID'];
 };
 
 export type FieldError = {
@@ -257,11 +257,11 @@ export type ResolversParentTypes = ResolversObject<{
 
 export type CommentResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['Comment'] = ResolversParentTypes['Comment']> = ResolversObject<{
   author?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  authorId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   content?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  postID?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  postId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   replies?: Resolver<Array<ResolversTypes['Comment']>, ParentType, ContextType>;
-  userID?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
