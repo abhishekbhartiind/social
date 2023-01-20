@@ -4,7 +4,7 @@ type Comment {
     postId: ID!
     author: User!
     content: String!
-    replies: [Comment!]!
+    repliesCount: Int!
 }
 
 type Query {
