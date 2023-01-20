@@ -1,0 +1,3 @@
+mutation CommentPost($postId: ID!, $content: String!, $parentId: ID) {
+  commentPost(postId: $postId, content: $content, parentCommentId: $parentId)
+}
