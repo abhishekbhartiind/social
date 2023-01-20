@@ -1,7 +1,7 @@
 import { ApolloCache, gql } from '@apollo/client';
 import { IconButton, IconButtonProps } from '@chakra-ui/react'
 import React from 'react'
-import { AiFillLike, AiFillDislike } from 'react-icons/ai'
+import { AiFillLike, AiOutlineLike } from 'react-icons/ai'
 import { LikePostMutation, useLikePostMutation } from '../../gql/graphql';
 
 type LikeButtonProps = IconButtonProps & {
@@ -57,7 +57,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({
         });
     };
     
-    const Icon = isLiked ? AiFillDislike : AiFillLike;
+    const Icon = isLiked ? AiFillLike : AiOutlineLike;
 
     return (
         <IconButton
