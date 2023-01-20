@@ -13,7 +13,7 @@ const AppDataSource = new DataSource({
     synchronize: true,
     logging: true,
     entities: [Post, User, Like, Comment],
-    migrations: [path.join(__dirname, '/migrations/*')]
+    migrations: [path.join(__dirname, '/migrations/**/*.ts')]
 });
 
 export const dataManager = AppDataSource.manager;
