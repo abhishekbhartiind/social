@@ -1,16 +1,20 @@
-query Posts {
-    posts {
-        createdAt
-        updatedAt
-        id
-        title
-        text
-        creatorId
-        creator {
+query Posts($limit: Int!, $cursor: String) {
+    posts(limit: $limit, cursor: $cursor) {
+        hasMore
+        posts {
+            createdAt
+            creator {
+                email
+                id
+                username
+            }
+            creatorId
             id
-            username
+            isLiked
+            likeCount
+            text
+            title
+            updatedAt
         }
-        isLiked
-        likeCount
     }
 }
