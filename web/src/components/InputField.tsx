@@ -3,7 +3,7 @@ import React from 'react'
 import { useFormContext } from 'react-hook-form';
 
 type InputFieldProps = InputProps & {
-    label: string,
+    label?: string,
     name: string,
     minLength?: number,
     textArea?: boolean,
@@ -24,7 +24,7 @@ const InputField = ({
 
     return (
         <FormControl isInvalid={!!errors[name]}>
-            <FormLabel htmlFor={name}>{label}</FormLabel>
+            {label && <FormLabel htmlFor={name}>{label}</FormLabel>}
             <InputOrTextarea
                 id={name}
                 {...rest}
