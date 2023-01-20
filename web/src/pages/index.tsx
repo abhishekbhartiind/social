@@ -1,4 +1,4 @@
-import { Button, Flex, Heading, Stack } from "@chakra-ui/react";
+import { Button, Flex, Heading, Stack, Text} from "@chakra-ui/react";
 import NextLink from "next/link";
 import Layout from "../components/Layout";
 import { PostCard } from "../components/PostCard";
@@ -27,9 +27,9 @@ const Index = () => {
     return (
         <Layout home variant="small">
             <Flex alignItems="center">
-                <Heading>Instapets</Heading>
+                <Heading fontSize={[30]}>Instapets</Heading>
                 <Button as={NextLink} href="/create-post" ml="auto">
-                    Create Post
+                    <Text>Create</Text>
                 </Button>
             </Flex>
             {loading && <div>Loading posts...</div>}
