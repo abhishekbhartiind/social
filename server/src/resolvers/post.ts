@@ -1,4 +1,3 @@
-import { UserEntity as User } from "../entities/user";
 import { dataManager } from "../AppDataSource";
 import { PostEntity as Post } from "../entities/post";
 import { Resolvers } from "../generated/graphql";
@@ -6,12 +5,28 @@ import { Like } from "../entities/like";
 
 export const PostResolvers: Resolvers = {
     Query: {
-        posts() {
-            return dataManager
-            .getRepository(Post)
-            .createQueryBuilder("post")
-            .orderBy('post."createdAt"', 'DESC')
-            .getMany();
+        async posts(_, { limit, cursor }) {
+            const realLimit = Math.min(50, limit);
+            const paginatedLimit = realLimit + 1;
+
+            const replacements: any[] = [paginatedLimit];
+
+            if (cursor) {
+                replacements.push(new Date(parseInt(cursor)));
+            }
+
+            const posts = await dataManager.query(`
+                SELECT p.* 
+                FROM post_entity p
+                ${cursor ? `where p."createdAt" < $2`: ''}
+                order by p."createdAt" DESC
+                limit $1
+            `, replacements);
+
+            return { 
+                posts: posts.slice(0, realLimit),
+                hasMore: posts.length === paginatedLimit,
+            }
         },
         post(_, { id }) {
             return dataManager.findOneBy(Post, { id: parseInt(id) });
@@ -78,15 +93,15 @@ export const PostResolvers: Resolvers = {
         },
     },
     Post: {
-        creator({ creatorId }) {
-            return dataManager.findOneBy(User, { id: creatorId });
+        creator({ creatorId }, _, { userLoader }) {
+            return userLoader.load(creatorId);
         },
         async isLiked({ id }, _, { req }) {
             if (!req.session.userId) {
                 return null;
             }
             const like = await dataManager.findOneBy(Like, 
-                { postId: id, userId: req.session.userId});
+                { postId: id, userId: req.session.userId });
             return like ? true : false;
         },
         async likeCount({ id }) {
