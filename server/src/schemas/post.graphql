@@ -11,9 +11,14 @@ type Post {
     comments: [Comment!]!
 }
 
+type PaginatedPosts {
+    posts: [Post!]!
+    hasMore: Boolean!
+}
+
 type Query {
     post(id: ID!): Post
-    posts: [Post!]!
+    posts(limit: Int!, cursor: String): PaginatedPosts!
 }
 
 type Mutation {
