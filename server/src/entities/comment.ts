@@ -19,7 +19,9 @@ export class CommentEntity {
     @Column()
     postId: number;
 
-    @ManyToOne(() => Post, (post) => post.comments)
+    @ManyToOne(() => Post, (post) => post.comments, {
+        onDelete: 'CASCADE'
+    })
     post: Post;
 
     @ManyToOne(() => CommentEntity, (comment) => comment.children, {
