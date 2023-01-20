@@ -1,8 +1,9 @@
 import { Avatar } from "@chakra-ui/avatar";
 import { Card, CardBody, CardFooter, CardHeader } from "@chakra-ui/card";
 import { Image } from "@chakra-ui/image";
-import { Badge, Flex, Heading, Text } from "@chakra-ui/layout";
+import { Badge, Box, Flex, Heading, Text } from "@chakra-ui/layout";
 import { useState } from "react";
+import { Post } from "../gql/graphql";
 import PostButtons from "./buttons/PostButtons";
 
 interface PostCardProps<T> {
@@ -10,7 +11,7 @@ interface PostCardProps<T> {
     meId?: string;
 }
 
-export const PostCard = <T extends Record<string, any>>({
+export const PostCard = <T extends Post>({
     post,
     meId
 }: PostCardProps<T>) => {
@@ -29,8 +30,9 @@ export const PostCard = <T extends Record<string, any>>({
                 src="https://images.unsplash.com/photo-1531403009284-440f080d1e12?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
                 alt="Chakra UI"
             />
-            <CardBody>
+            <CardBody p={[3, 4]} pb={0}>
                 <Text fontWeight='bold' mb={2}>{post.likeCount} likes</Text>
+                <Box mb={4}>
                 {textVisibility === 'snippet' ? 
                 <Text>
                     {post.textSnippet} &nbsp;
@@ -45,14 +47,19 @@ export const PostCard = <T extends Record<string, any>>({
                     cursor='pointer'
                     onClick={() => setTextVisibility('snippet')}>less</Badge>
                 </Text>}
+                </Box>
+                {post.commentCount > 0 && <Text mt={2}>View all {post.commentCount} comments</Text>}
             </CardBody>
-            <CardFooter p={[2, 4]}>
+            <CardFooter p={[3, 4]}>
+                <Flex width='100%' alignItems='center' justifyContent='space-evenly'>
+                <Text>{(new Date(parseInt(post.createdAt))).toDateString()}</Text>
                 <PostButtons
                     isLiked={post.isLiked}
                     id={post.id} 
                     iconSize={20} 
                     variant="row" 
                     hidden={meId && meId === post.creatorId ? false : true} />
+                </Flex>
             </CardFooter>
         </Card>
     );
