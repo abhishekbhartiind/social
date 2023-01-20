@@ -1,7 +1,7 @@
 import { Button, Flex, Heading, Stack, Text} from "@chakra-ui/react";
 import NextLink from "next/link";
 import Layout from "../components/Layout";
-import { PostCard } from "../components/PostCard";
+import PostCard from "../components/post/PostCard";
 import { useMeQuery, usePostsQuery } from "../gql/graphql";
 import withApollo from "../utils/withApollo";
 
