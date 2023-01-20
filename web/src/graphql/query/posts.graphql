@@ -18,10 +18,14 @@ query Posts($limit: Int!, $cursor: String) {
             updatedAt
             baseComments {
                 id
+                authorId
+                postId
                 content
                 repliesCount 
                 author {
                     username
+                    id
+                    email
                 }
             }
             commentCount
