@@ -2,6 +2,7 @@ import { dataManager } from "../AppDataSource";
 import { PostEntity as Post } from "../entities/post";
 import { Resolvers } from "../generated/graphql";
 import { Like } from "../entities/like";
+import { CommentEntity as Comment } from "../entities/comment";
 
 export const PostResolvers: Resolvers = {
     Query: {
@@ -112,8 +113,8 @@ export const PostResolvers: Resolvers = {
                 { postId: id });
             return likes.length;
         },
-        comments({ id }) {
-            return dataManager
+        baseComments({ id }) {
+            /* return dataManager
             .query(`
             SELECT c.*, replies 
             FROM comment_entity c 
@@ -125,7 +126,17 @@ export const PostResolvers: Resolvers = {
                 GROUP BY "parentId"
             ) AS replies ON c.id = replies."parentId" 
             WHERE c."postId" = $1 and c."parentId" IS NULL;
-            `, [id]);
+            `, [id]); */
+
+            return dataManager
+            .getRepository(Comment)
+            .createQueryBuilder()
+            .select()
+            .where('"postId" = :postId and "parentId" IS NULL', { postId: id })
+            .getMany();
+        },
+        async commentCount({ id }) {
+            return dataManager.findBy(Comment, { postId: id }).then(data => data.length);
         }
     },
 }
