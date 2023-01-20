@@ -13,6 +13,7 @@ query Posts($limit: Int!, $cursor: String) {
             isLiked
             likeCount
             text
+            textSnippet
             title
             updatedAt
         }
