@@ -1,7 +1,7 @@
 import { Button, Flex, Heading, Stack } from "@chakra-ui/react";
 import NextLink from "next/link";
 import Layout from "../components/Layout";
-import { PostFeature } from "../components/PostFeature";
+import { PostCard } from "../components/PostCard";
 import { useMeQuery, usePostsQuery } from "../gql/graphql";
 import withApollo from "../utils/withApollo";
 
@@ -25,7 +25,7 @@ const Index = () => {
         }
     }
     return (
-        <Layout home>
+        <Layout home variant="small">
             <Flex alignItems="center">
                 <Heading>Instapets</Heading>
                 <Button as={NextLink} href="/create-post" ml="auto">
@@ -36,7 +36,7 @@ const Index = () => {
             <br />
             <Stack direction='column' spacing={4} mb={4}>
                 {data?.posts.posts.map(post => (
-                    <PostFeature 
+                    <PostCard 
                         key={post.id} 
                         post={post} 
                         meId={meData?.me?.id} />
