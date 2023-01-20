@@ -93,6 +93,9 @@ export const PostResolvers: Resolvers = {
         },
     },
     Post: {
+        textSnippet({ text }) {
+            return text.substring(0, 50);
+        },
         creator({ creatorId }, _, { userLoader }) {
             return userLoader.load(creatorId);
         },
