@@ -119,6 +119,7 @@ export type Post = {
   isLiked?: Maybe<Scalars['Boolean']>;
   likeCount: Scalars['Int'];
   text: Scalars['String'];
+  textSnippet: Scalars['String'];
   title: Scalars['String'];
   updatedAt: Scalars['String'];
 };
@@ -313,6 +314,7 @@ export type PostResolvers<ContextType = MyContext, ParentType extends ResolversP
   isLiked?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   likeCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  textSnippet?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
