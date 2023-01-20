@@ -115,6 +115,7 @@ export type Post = {
   isLiked?: Maybe<Scalars['Boolean']>;
   likeCount: Scalars['Int'];
   text: Scalars['String'];
+  textSnippet: Scalars['String'];
   title: Scalars['String'];
   updatedAt: Scalars['String'];
 };
@@ -515,6 +516,7 @@ export const PostsDocument = gql`
       isLiked
       likeCount
       text
+      textSnippet
       title
       updatedAt
     }
@@ -619,4 +621,4 @@ export type PostsQueryVariables = Exact<{
 }>;
 
 
-export type PostsQuery = { __typename?: 'Query', posts: { __typename?: 'PaginatedPosts', hasMore: boolean, posts: Array<{ __typename?: 'Post', createdAt: string, creatorId: string, id: string, isLiked?: boolean | null, likeCount: number, text: string, title: string, updatedAt: string, creator?: { __typename?: 'User', email: string, id: string, username: string } | null }> } };
+export type PostsQuery = { __typename?: 'Query', posts: { __typename?: 'PaginatedPosts', hasMore: boolean, posts: Array<{ __typename?: 'Post', createdAt: string, creatorId: string, id: string, isLiked?: boolean | null, likeCount: number, text: string, textSnippet: string, title: string, updatedAt: string, creator?: { __typename?: 'User', email: string, id: string, username: string } | null }> } };
