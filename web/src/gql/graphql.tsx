@@ -149,7 +149,6 @@ export type User = {
   __typename?: 'User';
   email: Scalars['String'];
   id: Scalars['ID'];
-  posts: Array<Post>;
   username: Scalars['String'];
 };
 
@@ -166,6 +165,39 @@ export type UsernamePasswordInput = {
 };
 
 
+export const CommentPostDocument = gql`
+    mutation CommentPost($postId: ID!, $content: String!, $parentId: ID) {
+  commentPost(postId: $postId, content: $content, parentCommentId: $parentId)
+}
+    `;
+export type CommentPostMutationFn = Apollo.MutationFunction<CommentPostMutation, CommentPostMutationVariables>;
+
+/**
+ * __useCommentPostMutation__
+ *
+ * To run a mutation, you first call `useCommentPostMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCommentPostMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [commentPostMutation, { data, loading, error }] = useCommentPostMutation({
+ *   variables: {
+ *      postId: // value for 'postId'
+ *      content: // value for 'content'
+ *      parentId: // value for 'parentId'
+ *   },
+ * });
+ */
+export function useCommentPostMutation(baseOptions?: Apollo.MutationHookOptions<CommentPostMutation, CommentPostMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CommentPostMutation, CommentPostMutationVariables>(CommentPostDocument, options);
+      }
+export type CommentPostMutationHookResult = ReturnType<typeof useCommentPostMutation>;
+export type CommentPostMutationResult = Apollo.MutationResult<CommentPostMutation>;
+export type CommentPostMutationOptions = Apollo.BaseMutationOptions<CommentPostMutation, CommentPostMutationVariables>;
 export const CreatePostDocument = gql`
     mutation CreatePost($title: String!, $text: String!) {
   createPost(title: $title, text: $text) {
@@ -522,10 +554,14 @@ export const PostsDocument = gql`
       updatedAt
       baseComments {
         id
+        authorId
+        postId
         content
         repliesCount
         author {
           username
+          id
+          email
         }
       }
       commentCount
@@ -562,6 +598,15 @@ export function usePostsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Post
 export type PostsQueryHookResult = ReturnType<typeof usePostsQuery>;
 export type PostsLazyQueryHookResult = ReturnType<typeof usePostsLazyQuery>;
 export type PostsQueryResult = Apollo.QueryResult<PostsQuery, PostsQueryVariables>;
+export type CommentPostMutationVariables = Exact<{
+  postId: Scalars['ID'];
+  content: Scalars['String'];
+  parentId?: InputMaybe<Scalars['ID']>;
+}>;
+
+
+export type CommentPostMutation = { __typename?: 'Mutation', commentPost: boolean };
+
 export type CreatePostMutationVariables = Exact<{
   title: Scalars['String'];
   text: Scalars['String'];
@@ -631,4 +676,4 @@ export type PostsQueryVariables = Exact<{
 }>;
 
 
-export type PostsQuery = { __typename?: 'Query', posts: { __typename?: 'PaginatedPosts', hasMore: boolean, posts: Array<{ __typename?: 'Post', createdAt: string, creatorId: string, id: string, isLiked?: boolean | null, likeCount: number, text: string, textSnippet: string, title: string, updatedAt: string, commentCount: number, creator: { __typename?: 'User', email: string, id: string, username: string }, baseComments: Array<{ __typename?: 'Comment', id: string, content: string, repliesCount: number, author: { __typename?: 'User', username: string } }> }> } };
+export type PostsQuery = { __typename?: 'Query', posts: { __typename?: 'PaginatedPosts', hasMore: boolean, posts: Array<{ __typename?: 'Post', createdAt: string, creatorId: string, id: string, isLiked?: boolean | null, likeCount: number, text: string, textSnippet: string, title: string, updatedAt: string, commentCount: number, creator: { __typename?: 'User', email: string, id: string, username: string }, baseComments: Array<{ __typename?: 'Comment', id: string, authorId: string, postId: string, content: string, repliesCount: number, author: { __typename?: 'User', username: string, id: string, email: string } }> }> } };
