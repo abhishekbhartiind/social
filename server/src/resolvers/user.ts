@@ -3,7 +3,6 @@ import { COOKIE_NAME } from "../constants";
 import { dataManager } from "../AppDataSource";
 import { UserEntity as User } from "../entities/user";
 import { Resolvers } from "../generated/graphql";
-import { PostEntity as Post } from "../entities/post";
 
 export const UserResolvers: Resolvers = {
     Query: {
@@ -77,9 +76,4 @@ export const UserResolvers: Resolvers = {
             })
         }
     },
-    User: {
-        posts({id}) {
-            return dataManager.findBy(Post, { id });
-        }
-    }
 };
