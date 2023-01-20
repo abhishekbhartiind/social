@@ -4,8 +4,8 @@ import React from 'react'
 import { AiFillLike, AiOutlineLike } from 'react-icons/ai'
 import { LikePostMutation, useLikePostMutation } from '../../gql/graphql';
 
-type LikeButtonProps = IconButtonProps & {
-    isLiked?: boolean,
+type LikeButtonProps<T> = IconButtonProps & {
+    isLiked?: T,
     id: string;
     iconSize: number;
 }
@@ -45,9 +45,9 @@ const updateCacheAfterLike = (
     });
 }
 
-const LikeButton: React.FC<LikeButtonProps> = ({ 
+const LikeButton = <T extends any>({ 
     isLiked, id, iconSize, ...rest 
-}) => {
+}: LikeButtonProps<T>) => {
     const [likePost] = useLikePostMutation();
 
     const handleLikePost = async (id: string) => {
