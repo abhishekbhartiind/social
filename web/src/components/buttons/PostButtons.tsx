@@ -4,21 +4,21 @@ import DeleteButton from "./DeleteButton";
 import EditButton from "./EditButton";
 import LikeButton from "./LikeButton";
 
-interface PostButtonsProps {
-    isLiked?: boolean;
+interface PostButtonsProps<T> {
+    isLiked?: T;
     id: string;
     iconSize: number;
     variant?: 'row' | 'column';
     hidden?: boolean;
 }
 
-const PostButtons: React.FC<PostButtonsProps> = ({
+const PostButtons = <T extends any>({
     isLiked,
     id,
     iconSize,
     variant='row',
     hidden
-}) => {
+}: PostButtonsProps<T>) => {
     return (
         <Flex ml="auto" direction={variant}>
             <LikeButton
