@@ -1,0 +1,16 @@
+query Posts {
+    posts {
+        createdAt
+        updatedAt
+        id
+        title
+        text
+        creatorId
+        creator {
+            id
+            username
+        }
+        isLiked
+        likeCount
+    }
+}
