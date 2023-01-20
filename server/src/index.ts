@@ -18,10 +18,11 @@ import { MyContext } from "./types/context";
 import { applyMiddleware } from "graphql-middleware";
 import { postMiddleware } from "./middlewares/post";
 import { CommentResolvers } from "./resolvers/comment";
+import createUserLoader from "./utils/loaders/createUserLoader";
 
 const main = async () => {
     await AppDataSource.initialize();
-
+    //await AppDataSource.runMigrations()
     const app = express();
 
     //set up sessions and cookies
@@ -79,6 +80,7 @@ const main = async () => {
                 req,
                 res,
                 redis,
+                userLoader: createUserLoader(),
             })
         })
     );
