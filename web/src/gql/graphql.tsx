@@ -22,7 +22,7 @@ export type Comment = {
   content: Scalars['String'];
   id: Scalars['ID'];
   postId: Scalars['ID'];
-  replies: Array<Comment>;
+  repliesCount: Scalars['Int'];
 };
 
 export type FieldError = {
@@ -107,9 +107,10 @@ export type PaginatedPosts = {
 
 export type Post = {
   __typename?: 'Post';
-  comments: Array<Comment>;
+  baseComments: Array<Comment>;
+  commentCount: Scalars['Int'];
   createdAt: Scalars['String'];
-  creator?: Maybe<User>;
+  creator: User;
   creatorId: Scalars['ID'];
   id: Scalars['ID'];
   isLiked?: Maybe<Scalars['Boolean']>;
@@ -519,6 +520,15 @@ export const PostsDocument = gql`
       textSnippet
       title
       updatedAt
+      baseComments {
+        id
+        content
+        repliesCount
+        author {
+          username
+        }
+      }
+      commentCount
     }
   }
 }
@@ -558,7 +568,7 @@ export type CreatePostMutationVariables = Exact<{
 }>;
 
 
-export type CreatePostMutation = { __typename?: 'Mutation', createPost: { __typename?: 'Post', id: string, text: string, title: string, createdAt: string, updatedAt: string, creator?: { __typename?: 'User', username: string, id: string } | null } };
+export type CreatePostMutation = { __typename?: 'Mutation', createPost: { __typename?: 'Post', id: string, text: string, title: string, createdAt: string, updatedAt: string, creator: { __typename?: 'User', username: string, id: string } } };
 
 export type DeletePostMutationVariables = Exact<{
   postId: Scalars['ID'];
@@ -621,4 +631,4 @@ export type PostsQueryVariables = Exact<{
 }>;
 
 
-export type PostsQuery = { __typename?: 'Query', posts: { __typename?: 'PaginatedPosts', hasMore: boolean, posts: Array<{ __typename?: 'Post', createdAt: string, creatorId: string, id: string, isLiked?: boolean | null, likeCount: number, text: string, textSnippet: string, title: string, updatedAt: string, creator?: { __typename?: 'User', email: string, id: string, username: string } | null }> } };
+export type PostsQuery = { __typename?: 'Query', posts: { __typename?: 'PaginatedPosts', hasMore: boolean, posts: Array<{ __typename?: 'Post', createdAt: string, creatorId: string, id: string, isLiked?: boolean | null, likeCount: number, text: string, textSnippet: string, title: string, updatedAt: string, commentCount: number, creator: { __typename?: 'User', email: string, id: string, username: string }, baseComments: Array<{ __typename?: 'Comment', id: string, content: string, repliesCount: number, author: { __typename?: 'User', username: string } }> }> } };
