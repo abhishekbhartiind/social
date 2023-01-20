@@ -26,7 +26,7 @@ export type Comment = {
   content: Scalars['String'];
   id: Scalars['ID'];
   postId: Scalars['ID'];
-  replies: Array<Comment>;
+  repliesCount: Scalars['Int'];
 };
 
 export type FieldError = {
@@ -111,9 +111,10 @@ export type PaginatedPosts = {
 
 export type Post = {
   __typename?: 'Post';
-  comments: Array<Comment>;
+  baseComments: Array<Comment>;
+  commentCount: Scalars['Int'];
   createdAt: Scalars['String'];
-  creator?: Maybe<User>;
+  creator: User;
   creatorId: Scalars['ID'];
   id: Scalars['ID'];
   isLiked?: Maybe<Scalars['Boolean']>;
@@ -276,7 +277,7 @@ export type CommentResolvers<ContextType = MyContext, ParentType extends Resolve
   content?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   postId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  replies?: Resolver<Array<ResolversTypes['Comment']>, ParentType, ContextType>;
+  repliesCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -306,9 +307,10 @@ export type PaginatedPostsResolvers<ContextType = MyContext, ParentType extends 
 }>;
 
 export type PostResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['Post'] = ResolversParentTypes['Post']> = ResolversObject<{
-  comments?: Resolver<Array<ResolversTypes['Comment']>, ParentType, ContextType>;
+  baseComments?: Resolver<Array<ResolversTypes['Comment']>, ParentType, ContextType>;
+  commentCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  creator?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  creator?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   creatorId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   isLiked?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
