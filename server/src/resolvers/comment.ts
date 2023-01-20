@@ -67,5 +67,19 @@ export const CommentResolvers: Resolvers = {
             
             return results.raw[0];
         }
+    },
+    Comment: {
+        author({ authorId }, _, { userLoader }) {
+            return userLoader.load(authorId);
+        },
+        async repliesCount({ id }) {
+            return dataManager
+            .getRepository(Comment)
+            .createQueryBuilder()
+            .select()
+            .where('"parentId" = :id', { id })
+            .getMany()
+            .then(data => data.length);
+        }
     }
 }
