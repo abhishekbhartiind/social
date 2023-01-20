@@ -6,10 +6,11 @@ type Post {
     createdAt: String!
     updatedAt: String!
     creatorId: ID!
-    creator: User
+    creator: User!
     isLiked: Boolean
     likeCount: Int!
-    comments: [Comment!]!
+    baseComments: [Comment!]!
+    commentCount: Int!
 }
 
 type PaginatedPosts {
