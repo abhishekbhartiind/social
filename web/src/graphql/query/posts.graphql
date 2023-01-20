@@ -16,6 +16,15 @@ query Posts($limit: Int!, $cursor: String) {
             textSnippet
             title
             updatedAt
+            baseComments {
+                id
+                content
+                repliesCount 
+                author {
+                    username
+                }
+            }
+            commentCount
         }
     }
 }
