@@ -28,6 +28,7 @@ export const Login: React.FC<{}> = ({}) => {
                         }
                     }
                 );
+                cache.evict({ fieldName: "posts" });
             }
         });
         const loginResponse = response.data?.login;
