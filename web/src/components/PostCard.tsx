@@ -1,10 +1,9 @@
 import { Avatar } from "@chakra-ui/avatar";
 import { Card, CardBody, CardFooter, CardHeader } from "@chakra-ui/card";
 import { Image } from "@chakra-ui/image";
-import { Flex, Heading, Text, Badge } from "@chakra-ui/layout";
-import { Button } from "@chakra-ui/button";
-import PostButtons from "./buttons/PostButtons";
+import { Badge, Flex, Heading, Text } from "@chakra-ui/layout";
 import { useState } from "react";
+import PostButtons from "./buttons/PostButtons";
 
 interface PostCardProps<T> {
     post: T;
@@ -19,7 +18,7 @@ export const PostCard = <T extends Record<string, any>>({
     
     return (
         <Card maxW="md" boxShadow='lg'>
-            <CardHeader>
+            <CardHeader p={[2, 4]}>
                 <Flex flex="1" gap="4" alignItems="center" flexWrap="wrap">
                     <Avatar name="Segun Adebayo" src="https://bit.ly/sage-adebayo" />
                     <Heading size="sm" textTransform='uppercase'>{post.creator.username}</Heading>
@@ -47,7 +46,7 @@ export const PostCard = <T extends Record<string, any>>({
                     onClick={() => setTextVisibility('snippet')}>less</Badge>
                 </Text>}
             </CardBody>
-            <CardFooter>
+            <CardFooter p={[2, 4]}>
                 <PostButtons
                     isLiked={post.isLiked}
                     id={post.id} 
