@@ -1,3 +1,11 @@
 mutation CommentPost($postId: ID!, $content: String!, $parentId: ID) {
-  commentPost(postId: $postId, content: $content, parentCommentId: $parentId)
+  commentPost(postId: $postId, content: $content, parentCommentId: $parentId) {
+    authorId
+    postId
+    id
+    author {
+      username
+    }
+    content
+  }
 }
