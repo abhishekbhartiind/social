@@ -14,6 +14,7 @@ const Wrapper: React.FC<WrapperProps> = ({
 }) => {
     return (
         <Box 
+        position='relative'
         px={3}
         mt={[4, 8]} 
         mx='auto'
