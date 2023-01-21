@@ -24,17 +24,21 @@ export type BaseComment = Comment & {
   author: User;
   authorId: Scalars['ID'];
   content: Scalars['String'];
+  createdAt: Scalars['String'];
   id: Scalars['ID'];
   postId: Scalars['ID'];
   repliesCount: Scalars['Int'];
+  updatedAt: Scalars['String'];
 };
 
 export type Comment = {
   author: User;
   authorId: Scalars['ID'];
   content: Scalars['String'];
+  createdAt: Scalars['String'];
   id: Scalars['ID'];
   postId: Scalars['ID'];
+  updatedAt: Scalars['String'];
 };
 
 export type FieldError = {
@@ -167,8 +171,10 @@ export type Reply = Comment & {
   author: User;
   authorId: Scalars['ID'];
   content: Scalars['String'];
+  createdAt: Scalars['String'];
   id: Scalars['ID'];
   postId: Scalars['ID'];
+  updatedAt: Scalars['String'];
 };
 
 export type User = {
@@ -300,9 +306,11 @@ export type BaseCommentResolvers<ContextType = MyContext, ParentType extends Res
   author?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   authorId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   content?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   postId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   repliesCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -311,8 +319,10 @@ export type CommentResolvers<ContextType = MyContext, ParentType extends Resolve
   author?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   authorId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   content?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   postId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
 }>;
 
 export type FieldErrorResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['FieldError'] = ResolversParentTypes['FieldError']> = ResolversObject<{
@@ -367,8 +377,10 @@ export type ReplyResolvers<ContextType = MyContext, ParentType extends Resolvers
   author?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   authorId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   content?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   postId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
