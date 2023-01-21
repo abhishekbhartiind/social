@@ -122,7 +122,7 @@ export type PaginatedArgs = {
 
 export type PaginatedBaseComments = PaginatedList & {
   __typename?: 'PaginatedBaseComments';
-  baseComments: Array<BaseComment>;
+  data: Array<BaseComment>;
   hasMore: Scalars['Boolean'];
 };
 
@@ -132,14 +132,14 @@ export type PaginatedList = {
 
 export type PaginatedPosts = PaginatedList & {
   __typename?: 'PaginatedPosts';
+  data: Array<Post>;
   hasMore: Scalars['Boolean'];
-  posts: Array<Post>;
 };
 
 export type PaginatedReplies = PaginatedList & {
   __typename?: 'PaginatedReplies';
+  data: Array<Reply>;
   hasMore: Scalars['Boolean'];
-  replies: Array<Reply>;
 };
 
 export type Post = {
@@ -296,10 +296,10 @@ export type ResolversTypes = ResolversObject<{
   Int: ResolverTypeWrapper<Scalars['Int']>;
   Mutation: ResolverTypeWrapper<{}>;
   PaginatedArgs: PaginatedArgs;
-  PaginatedBaseComments: ResolverTypeWrapper<Omit<PaginatedBaseComments, 'baseComments'> & { baseComments: Array<ResolversTypes['BaseComment']> }>;
+  PaginatedBaseComments: ResolverTypeWrapper<Omit<PaginatedBaseComments, 'data'> & { data: Array<ResolversTypes['BaseComment']> }>;
   PaginatedList: ResolversTypes['PaginatedBaseComments'] | ResolversTypes['PaginatedPosts'] | ResolversTypes['PaginatedReplies'];
-  PaginatedPosts: ResolverTypeWrapper<Omit<PaginatedPosts, 'posts'> & { posts: Array<ResolversTypes['Post']> }>;
-  PaginatedReplies: ResolverTypeWrapper<Omit<PaginatedReplies, 'replies'> & { replies: Array<ResolversTypes['Reply']> }>;
+  PaginatedPosts: ResolverTypeWrapper<Omit<PaginatedPosts, 'data'> & { data: Array<ResolversTypes['Post']> }>;
+  PaginatedReplies: ResolverTypeWrapper<Omit<PaginatedReplies, 'data'> & { data: Array<ResolversTypes['Reply']> }>;
   Post: ResolverTypeWrapper<PostEntity>;
   Query: ResolverTypeWrapper<{}>;
   Reply: ResolverTypeWrapper<Omit<Reply, 'author'> & { author: ResolversTypes['User'] }>;
@@ -319,10 +319,10 @@ export type ResolversParentTypes = ResolversObject<{
   Int: Scalars['Int'];
   Mutation: {};
   PaginatedArgs: PaginatedArgs;
-  PaginatedBaseComments: Omit<PaginatedBaseComments, 'baseComments'> & { baseComments: Array<ResolversParentTypes['BaseComment']> };
+  PaginatedBaseComments: Omit<PaginatedBaseComments, 'data'> & { data: Array<ResolversParentTypes['BaseComment']> };
   PaginatedList: ResolversParentTypes['PaginatedBaseComments'] | ResolversParentTypes['PaginatedPosts'] | ResolversParentTypes['PaginatedReplies'];
-  PaginatedPosts: Omit<PaginatedPosts, 'posts'> & { posts: Array<ResolversParentTypes['Post']> };
-  PaginatedReplies: Omit<PaginatedReplies, 'replies'> & { replies: Array<ResolversParentTypes['Reply']> };
+  PaginatedPosts: Omit<PaginatedPosts, 'data'> & { data: Array<ResolversParentTypes['Post']> };
+  PaginatedReplies: Omit<PaginatedReplies, 'data'> & { data: Array<ResolversParentTypes['Reply']> };
   Post: PostEntity;
   Query: {};
   Reply: Omit<Reply, 'author'> & { author: ResolversParentTypes['User'] };
@@ -375,7 +375,7 @@ export type MutationResolvers<ContextType = MyContext, ParentType extends Resolv
 }>;
 
 export type PaginatedBaseCommentsResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['PaginatedBaseComments'] = ResolversParentTypes['PaginatedBaseComments']> = ResolversObject<{
-  baseComments?: Resolver<Array<ResolversTypes['BaseComment']>, ParentType, ContextType>;
+  data?: Resolver<Array<ResolversTypes['BaseComment']>, ParentType, ContextType>;
   hasMore?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
@@ -386,14 +386,14 @@ export type PaginatedListResolvers<ContextType = MyContext, ParentType extends R
 }>;
 
 export type PaginatedPostsResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['PaginatedPosts'] = ResolversParentTypes['PaginatedPosts']> = ResolversObject<{
+  data?: Resolver<Array<ResolversTypes['Post']>, ParentType, ContextType>;
   hasMore?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  posts?: Resolver<Array<ResolversTypes['Post']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type PaginatedRepliesResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['PaginatedReplies'] = ResolversParentTypes['PaginatedReplies']> = ResolversObject<{
+  data?: Resolver<Array<ResolversTypes['Reply']>, ParentType, ContextType>;
   hasMore?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  replies?: Resolver<Array<ResolversTypes['Reply']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
