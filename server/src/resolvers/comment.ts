@@ -27,7 +27,7 @@ export const CommentResolvers: Resolvers = {
             );
 
             return { 
-                baseComments: comments.slice(0, realLimit),
+                data: comments.slice(0, realLimit),
                 hasMore: comments.length === paginatedLimit,
             }
         },
@@ -54,7 +54,7 @@ export const CommentResolvers: Resolvers = {
             );
 
             return { 
-                replies: comments.slice(0, realLimit),
+                data: comments.slice(0, realLimit),
                 hasMore: comments.length === paginatedLimit,
             }
         }

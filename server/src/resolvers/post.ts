@@ -30,7 +30,7 @@ export const PostResolvers: Resolvers = {
             `, replacements);
 
             return { 
-                posts: posts.slice(0, realLimit),
+                data: posts.slice(0, realLimit),
                 hasMore: posts.length === paginatedLimit,
             }
         },
