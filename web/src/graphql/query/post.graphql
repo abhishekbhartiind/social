@@ -8,5 +8,11 @@ query Post($postId: ID!) {
         isLiked
         likeCount
         creatorId
+        creator {
+            username
+            email
+            id
+        }
+        commentCount
     }
 }
