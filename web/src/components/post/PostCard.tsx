@@ -1,11 +1,10 @@
 import { Avatar } from "@chakra-ui/avatar";
 import { Card, CardBody, CardHeader } from "@chakra-ui/card";
 import { Image } from "@chakra-ui/image";
-import { Box, Flex, Heading, Text } from "@chakra-ui/layout";
+import { Flex, Heading, Text } from "@chakra-ui/layout";
 import { formatDistanceToNow } from "date-fns";
 import { MouseEventHandler, useState } from "react";
 import { Post } from "../../gql/graphql";
-import { AddComment } from "../AddComment";
 import PostButtons from "../buttons/PostButtons";
 import PostDescription from "./PostDescription";
 
@@ -19,9 +18,8 @@ const PostCard = <T extends Post>({
     meId
 }: PostCardProps<T>) => {
     const [commentForm, setCommentForm] = useState<'hide' | 'show'>('hide');
-    
-    const handleComment: MouseEventHandler<HTMLButtonElement> = 
-    (_) => {
+
+    const handleToggleComment: MouseEventHandler<HTMLElement> = (_) => {
         setCommentForm(commentForm === 'hide' ? 'show' : 'hide');
     }
 
@@ -44,8 +42,7 @@ const PostCard = <T extends Post>({
                     id={post.id} 
                     iconSize={20} 
                     variant="row" 
-                    hidden={meId && meId === post.creatorId ? false : true}
-                    onComment={handleComment} />
+                    hidden={meId && meId === post.creatorId ? false : true} />
                 <Text fontWeight='bold' mb={2}>{post.likeCount} likes</Text>
                 <PostDescription
                     username={post.creator.username}
@@ -56,11 +53,6 @@ const PostCard = <T extends Post>({
                 <Text>{formatDistanceToNow(new Date(parseInt(post.createdAt)), {
                     addSuffix: true,
                 })}</Text>
-                {commentForm === 'show' && (
-                    <Box mt={2}>
-                        <AddComment />
-                    </Box>
-                )}
             </CardBody>
         </Card>
     );
