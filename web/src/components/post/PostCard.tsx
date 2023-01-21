@@ -3,10 +3,10 @@ import { Card, CardBody, CardHeader } from "@chakra-ui/card";
 import { Image } from "@chakra-ui/image";
 import { Flex, Heading, LinkBox, LinkOverlay, Text } from "@chakra-ui/layout";
 import { formatDistanceToNow } from "date-fns";
+import NextLink from 'next/link';
 import { Post } from "../../gql/graphql";
 import PostButtons from "../buttons/PostButtons";
 import PostDescription from "./PostDescription";
-import NextLink from 'next/link';
 
 interface PostCardProps<T> {
     post: T;
@@ -38,15 +38,19 @@ const PostCard = <T extends Post>({
                         iconSize={20} 
                         variant="row" 
                         hidden={meId && meId === post.creatorId ? false : true} />
-                    <Text fontWeight='bold' mb={2}>{post.likeCount} likes</Text>
-                    <LinkOverlay as={NextLink} href={`/post/${post.id}`}>
+                    <Flex alignItems='center' gap={2}>
+                        <Text fontWeight='bold' mb={2}>{post.likeCount} likes</Text>
+                        <Text fontWeight='bold' mb={2}>{post.commentCount} comments</Text>
+                    </Flex>
+                    <LinkOverlay
+                    as={NextLink}
+                    href={`/post/${post.id}`}>
                         <PostDescription
                             username={post.creator.username}
                             textSnippet={post.textSnippet}
                             fullText={post.text}
                         />
                     </LinkOverlay>
-                    {post.commentCount > 0 && <Text mt={2}>View all {post.commentCount} comments</Text>}
                     <Text>{formatDistanceToNow(new Date(parseInt(post.createdAt)), {
                         addSuffix: true,
                     })}</Text>
