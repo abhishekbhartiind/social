@@ -29,9 +29,19 @@ type Reply implements Comment {
     updatedAt: String!
 }
 
+type PaginatedBaseComments implements PaginatedList {
+    baseComments: [BaseComment!]!
+    hasMore: Boolean!
+}
+
+type PaginatedReply implements PaginatedList {
+    replies: [Reply!]!
+    hasMore: Boolean!
+}
+
 type Query {
-    baseComments(postId: ID!): [BaseComment!]!
-    replies(parentCommentId: ID!): [Reply!]!
+    baseComments(postId: ID!, options: PaginatedArgs!): PaginatedBaseComments!
+    replies(parentCommentId: ID!, option: PaginatedArgs!): PaginatedReplies!
 }
 
 type Mutation {

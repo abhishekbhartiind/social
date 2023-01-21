@@ -12,14 +12,23 @@ type Post {
     commentCount: Int!
 }
 
-type PaginatedPosts {
+interface PaginatedList {
+    hasMore: Boolean!
+}
+
+type PaginatedPosts implements PaginatedList {
     posts: [Post!]!
     hasMore: Boolean!
 }
 
+input PaginatedArgs {
+    limit: Int!
+    cursor: String
+}
+
 type Query {
     post(id: ID!): Post
-    posts(limit: Int!, cursor: String): PaginatedPosts!
+    posts(options: PaginatedArgs!): PaginatedPosts!
 }
 
 type Mutation {
