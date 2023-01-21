@@ -4,6 +4,8 @@ interface Comment {
     postId: ID!
     author: User!
     content: String!
+    createdAt: String!
+    updatedAt: String!
 }
 
 type BaseComment implements Comment {
@@ -13,6 +15,8 @@ type BaseComment implements Comment {
     author: User!
     content: String!
     repliesCount: Int!
+    createdAt: String!
+    updatedAt: String!
 }
 
 type Reply implements Comment {
@@ -21,6 +25,8 @@ type Reply implements Comment {
     postId: ID!
     author: User!
     content: String!
+    createdAt: String!
+    updatedAt: String!
 }
 
 type Query {
