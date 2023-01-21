@@ -1,10 +1,12 @@
-import { Flex, Box, Text, Avatar, Heading } from "@chakra-ui/react";
+import { Avatar, Box, Button, Flex, Heading, Text } from "@chakra-ui/react";
+import { formatDistanceToNow } from "date-fns";
 import React, { useState } from "react";
 import { BaseComment, Reply } from "../../gql/graphql";
 import { Replies } from "./Replies";
 
 interface CommentProps {
   comment: BaseComment | Reply;
+  onReply: () => void;
 }
 
 function isBaseComment(comment: BaseComment | Reply): comment is BaseComment {
@@ -12,17 +14,22 @@ function isBaseComment(comment: BaseComment | Reply): comment is BaseComment {
 }
 
 export const Comment: React.FC<CommentProps> = ({ 
-    comment
+    comment, onReply
 }) => {
     const [repliesVisibility, setRepliesVisibility] = useState<'hide' | 'show'>('hide');
-    
+
     return (
         <Flex alignItems='start' gap={2}>
             <Avatar size='sm' name="Segun Adebayo" src="https://bit.ly/sage-adebayo" />
             <Box key={comment.id}>
                 <Flex alignItems='center' gap={2}>
                     <Heading size='sm'>{comment.author.username}</Heading>
-                    <Text fontSize='xs' pt={0.5}>24hr</Text>
+                    <Text fontSize='xs' pt={0.5}>
+                        {formatDistanceToNow(
+                            new Date(parseInt(comment.createdAt)), {
+                                addSuffix: true
+                            })}
+                    </Text>
                 </Flex>
                 <Text>
                     {comment.content}
@@ -33,10 +40,17 @@ export const Comment: React.FC<CommentProps> = ({
                 fontSize='sm'
                 color='gray.500'>
                     <Text>0 likes</Text>
-                    <Text>Reply</Text>
+                    <Button
+                    variant='unstyled'
+                    fontSize='sm'
+                    fontWeight='normal'
+                    height='fit-content'
+                    onClick={onReply}>
+                        Reply
+                    </Button>
                 </Flex>
                 {isBaseComment(comment) && repliesVisibility === 'show' && (
-                    <Replies parentCommentId={comment.id} />
+                    <Replies parentCommentId={comment.id} onReply={onReply}/>
                 )}
                 {isBaseComment(comment) && comment.repliesCount > 0 && (
                     <Text 
