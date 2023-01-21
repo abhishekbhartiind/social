@@ -6,7 +6,7 @@ import { PaginatedPosts } from "../gql/graphql";
 const client = (ctx: NextPageContext) => new ApolloClient({
     uri: "http://localhost:4040/graphql",
     headers: {
-        cookie: (typeof window === 'undefined' ? ctx.req?.headers.cookie : undefined) || '',
+        cookie: (typeof window === 'undefined' ? ctx?.req?.headers.cookie : undefined) || '',
     },
     cache: new InMemoryCache({
         typePolicies: {
