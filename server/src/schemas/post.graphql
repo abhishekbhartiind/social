@@ -17,7 +17,7 @@ interface PaginatedList {
 }
 
 type PaginatedPosts implements PaginatedList {
-    posts: [Post!]!
+    data: [Post!]!
     hasMore: Boolean!
 }
 

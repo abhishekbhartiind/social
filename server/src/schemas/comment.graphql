@@ -30,12 +30,12 @@ type Reply implements Comment {
 }
 
 type PaginatedBaseComments implements PaginatedList {
-    baseComments: [BaseComment!]!
+    data: [BaseComment!]!
     hasMore: Boolean!
 }
 
 type PaginatedReplies implements PaginatedList {
-    replies: [Reply!]!
+    data: [Reply!]!
     hasMore: Boolean!
 }
 
