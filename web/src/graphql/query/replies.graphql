@@ -1,7 +1,7 @@
 query Replies($parentCommentId: ID!, $options: PaginatedArgs!) {
     replies(parentCommentId: $parentCommentId, options: $options) {
         hasMore
-        replies {
+        data {
             authorId
             author {
                 email

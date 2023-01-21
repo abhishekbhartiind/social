@@ -1,7 +1,7 @@
 query Posts($options: PaginatedArgs!) {
     posts(options: $options) {
         hasMore
-        posts {
+        data {
             commentCount
             createdAt
             creator {
