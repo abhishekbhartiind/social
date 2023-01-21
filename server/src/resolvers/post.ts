@@ -113,28 +113,6 @@ export const PostResolvers: Resolvers = {
                 { postId: id });
             return likes.length;
         },
-        baseComments({ id }) {
-            /* return dataManager
-            .query(`
-            SELECT c.*, replies 
-            FROM comment_entity c 
-            LEFT JOIN (
-                SELECT 
-                "parentId", 
-                COALESCE(json_agg(row_to_json(replies)), '[]'::JSON) AS replies 
-                FROM comment_entity AS replies 
-                GROUP BY "parentId"
-            ) AS replies ON c.id = replies."parentId" 
-            WHERE c."postId" = $1 and c."parentId" IS NULL;
-            `, [id]); */
-
-            return dataManager
-            .getRepository(Comment)
-            .createQueryBuilder()
-            .select()
-            .where('"postId" = :postId and "parentId" IS NULL', { postId: id })
-            .getMany();
-        },
         async commentCount({ id }) {
             return dataManager.findBy(Comment, { postId: id }).then(data => data.length);
         }
