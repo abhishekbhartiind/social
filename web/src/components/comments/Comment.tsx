@@ -13,7 +13,7 @@ export const Comment: React.FC<CommentProps> = ({
 }) => {
     return (
         <Flex alignItems='start' gap={2}>
-            <Avatar size='sm' name="Segun Adebayo" src="https://bit.ly/sage-adebayo" />
+            <Avatar size='sm' name={comment.author.username} src="" />
             <Box key={comment.id}>
                 <Flex alignItems='center' gap={2}>
                     <Heading size='sm'>{comment.author.username}</Heading>
