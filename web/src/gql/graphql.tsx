@@ -118,7 +118,7 @@ export type PaginatedArgs = {
 
 export type PaginatedBaseComments = PaginatedList & {
   __typename?: 'PaginatedBaseComments';
-  baseComments: Array<BaseComment>;
+  data: Array<BaseComment>;
   hasMore: Scalars['Boolean'];
 };
 
@@ -128,14 +128,14 @@ export type PaginatedList = {
 
 export type PaginatedPosts = PaginatedList & {
   __typename?: 'PaginatedPosts';
+  data: Array<Post>;
   hasMore: Scalars['Boolean'];
-  posts: Array<Post>;
 };
 
 export type PaginatedReplies = PaginatedList & {
   __typename?: 'PaginatedReplies';
+  data: Array<Reply>;
   hasMore: Scalars['Boolean'];
-  replies: Array<Reply>;
 };
 
 export type Post = {
@@ -517,7 +517,7 @@ export const BaseCommentsDocument = gql`
     query BaseComments($postId: ID!, $options: PaginatedArgs!) {
   baseComments(postId: $postId, options: $options) {
     hasMore
-    baseComments {
+    data {
       author {
         email
         id
@@ -651,7 +651,7 @@ export const PostsDocument = gql`
     query Posts($options: PaginatedArgs!) {
   posts(options: $options) {
     hasMore
-    posts {
+    data {
       commentCount
       createdAt
       creator {
@@ -703,7 +703,7 @@ export const RepliesDocument = gql`
     query Replies($parentCommentId: ID!, $options: PaginatedArgs!) {
   replies(parentCommentId: $parentCommentId, options: $options) {
     hasMore
-    replies {
+    data {
       authorId
       author {
         email
@@ -814,7 +814,7 @@ export type BaseCommentsQueryVariables = Exact<{
 }>;
 
 
-export type BaseCommentsQuery = { __typename?: 'Query', baseComments: { __typename?: 'PaginatedBaseComments', hasMore: boolean, baseComments: Array<{ __typename?: 'BaseComment', authorId: string, createdAt: string, updatedAt: string, content: string, repliesCount: number, id: string, postId: string, author: { __typename?: 'User', email: string, id: string, username: string } }> } };
+export type BaseCommentsQuery = { __typename?: 'Query', baseComments: { __typename?: 'PaginatedBaseComments', hasMore: boolean, data: Array<{ __typename?: 'BaseComment', authorId: string, createdAt: string, updatedAt: string, content: string, repliesCount: number, id: string, postId: string, author: { __typename?: 'User', email: string, id: string, username: string } }> } };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -833,7 +833,7 @@ export type PostsQueryVariables = Exact<{
 }>;
 
 
-export type PostsQuery = { __typename?: 'Query', posts: { __typename?: 'PaginatedPosts', hasMore: boolean, posts: Array<{ __typename?: 'Post', commentCount: number, createdAt: string, creatorId: string, id: string, isLiked?: boolean | null, likeCount: number, text: string, textSnippet: string, title: string, updatedAt: string, creator: { __typename?: 'User', email: string, id: string, username: string } }> } };
+export type PostsQuery = { __typename?: 'Query', posts: { __typename?: 'PaginatedPosts', hasMore: boolean, data: Array<{ __typename?: 'Post', commentCount: number, createdAt: string, creatorId: string, id: string, isLiked?: boolean | null, likeCount: number, text: string, textSnippet: string, title: string, updatedAt: string, creator: { __typename?: 'User', email: string, id: string, username: string } }> } };
 
 export type RepliesQueryVariables = Exact<{
   parentCommentId: Scalars['ID'];
@@ -841,4 +841,4 @@ export type RepliesQueryVariables = Exact<{
 }>;
 
 
-export type RepliesQuery = { __typename?: 'Query', replies: { __typename?: 'PaginatedReplies', hasMore: boolean, replies: Array<{ __typename?: 'Reply', authorId: string, content: string, createdAt: string, id: string, postId: string, updatedAt: string, author: { __typename?: 'User', email: string, username: string, id: string } }> } };
+export type RepliesQuery = { __typename?: 'Query', replies: { __typename?: 'PaginatedReplies', hasMore: boolean, data: Array<{ __typename?: 'Reply', authorId: string, content: string, createdAt: string, id: string, postId: string, updatedAt: string, author: { __typename?: 'User', email: string, username: string, id: string } }> } };
