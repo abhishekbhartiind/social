@@ -1,0 +1,13 @@
+query Replies($parentCommentId: ID!) {
+    replies(parentCommentId: $parentCommentId) {
+        content
+        postId
+        authorId
+        author {
+            username
+            email 
+            id
+        }
+        id
+    }
+}
