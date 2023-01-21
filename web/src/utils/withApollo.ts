@@ -1,7 +1,26 @@
 import { ApolloClient, InMemoryCache } from "@apollo/client";
 import { withApollo } from "next-apollo";
 import { NextPageContext } from "next";
-import { PaginatedPosts } from "../gql/graphql";
+
+type PaginatedResults = {
+    hasMore: boolean,
+    data: Array<Record<string, any>>
+};
+
+const mergeResults = (
+    existing: PaginatedResults | undefined, 
+    incoming: PaginatedResults | undefined
+): PaginatedResults  => {
+    console.log(existing, incoming)
+    return {
+        ...incoming,
+        hasMore: !!incoming?.hasMore,
+        data: [
+            ...(existing?.data || []), 
+            ...(incoming?.data || [])
+        ],
+    };
+}
 
 const client = (ctx: NextPageContext) => new ApolloClient({
     uri: "http://localhost:4040/graphql",
@@ -14,19 +33,16 @@ const client = (ctx: NextPageContext) => new ApolloClient({
                 fields: {
                     posts: {
                         keyArgs: false,
-                        merge(
-                            existing: PaginatedPosts | undefined, 
-                            incoming: PaginatedPosts | undefined
-                        ): PaginatedPosts {
-                            return {
-                                ...incoming,
-                                hasMore: !!incoming?.hasMore,
-                                posts: [
-                                    ...(existing?.posts || []), 
-                                    ...(incoming?.posts || [])
-                                ],
-                            };
-                        }
+                        merge: mergeResults
+                    },
+                    baseComments: {
+                        keyArgs: ["postId"],
+                        merge: mergeResults,
+                    },
+                    // only merge if parentCommentId doesn't change; if it changes, then new cache store 
+                    replies: {
+                        keyArgs: ["parentCommentId"],
+                        merge: mergeResults
                     }
                 }
             }
