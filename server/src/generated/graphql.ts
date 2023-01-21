@@ -37,7 +37,7 @@ export type FieldError = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  commentPost: Scalars['Boolean'];
+  commentPost: Comment;
   createPost: Post;
   deleteComment: Scalars['Boolean'];
   deletePost: Scalars['Boolean'];
@@ -287,7 +287,7 @@ export type FieldErrorResolvers<ContextType = MyContext, ParentType extends Reso
 }>;
 
 export type MutationResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
-  commentPost?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationCommentPostArgs, 'content' | 'postId'>>;
+  commentPost?: Resolver<ResolversTypes['Comment'], ParentType, ContextType, RequireFields<MutationCommentPostArgs, 'content' | 'postId'>>;
   createPost?: Resolver<ResolversTypes['Post'], ParentType, ContextType, RequireFields<MutationCreatePostArgs, 'text' | 'title'>>;
   deleteComment?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationDeleteCommentArgs, 'commentId' | 'postId'>>;
   deletePost?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationDeletePostArgs, 'id'>>;
