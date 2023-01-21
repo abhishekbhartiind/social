@@ -15,14 +15,22 @@ export type Scalars = {
   Float: number;
 };
 
-export type Comment = {
-  __typename?: 'Comment';
+export type BaseComment = Comment & {
+  __typename?: 'BaseComment';
   author: User;
   authorId: Scalars['ID'];
   content: Scalars['String'];
   id: Scalars['ID'];
   postId: Scalars['ID'];
   repliesCount: Scalars['Int'];
+};
+
+export type Comment = {
+  author: User;
+  authorId: Scalars['ID'];
+  content: Scalars['String'];
+  id: Scalars['ID'];
+  postId: Scalars['ID'];
 };
 
 export type FieldError = {
@@ -107,7 +115,6 @@ export type PaginatedPosts = {
 
 export type Post = {
   __typename?: 'Post';
-  baseComments: Array<Comment>;
   commentCount: Scalars['Int'];
   createdAt: Scalars['String'];
   creator: User;
@@ -123,10 +130,16 @@ export type Post = {
 
 export type Query = {
   __typename?: 'Query';
+  baseComments: Array<BaseComment>;
   me?: Maybe<User>;
   post?: Maybe<Post>;
   posts: PaginatedPosts;
-  replies: Array<Comment>;
+  replies: Array<Reply>;
+};
+
+
+export type QueryBaseCommentsArgs = {
+  postId: Scalars['ID'];
 };
 
 
@@ -143,6 +156,15 @@ export type QueryPostsArgs = {
 
 export type QueryRepliesArgs = {
   parentCommentId: Scalars['ID'];
+};
+
+export type Reply = Comment & {
+  __typename?: 'Reply';
+  author: User;
+  authorId: Scalars['ID'];
+  content: Scalars['String'];
+  id: Scalars['ID'];
+  postId: Scalars['ID'];
 };
 
 export type User = {
@@ -463,6 +485,50 @@ export function useUpdatePostMutation(baseOptions?: Apollo.MutationHookOptions<U
 export type UpdatePostMutationHookResult = ReturnType<typeof useUpdatePostMutation>;
 export type UpdatePostMutationResult = Apollo.MutationResult<UpdatePostMutation>;
 export type UpdatePostMutationOptions = Apollo.BaseMutationOptions<UpdatePostMutation, UpdatePostMutationVariables>;
+export const BaseCommentsDocument = gql`
+    query BaseComments($postId: ID!) {
+  baseComments(postId: $postId) {
+    author {
+      username
+      email
+      id
+    }
+    authorId
+    content
+    id
+    postId
+    repliesCount
+  }
+}
+    `;
+
+/**
+ * __useBaseCommentsQuery__
+ *
+ * To run a query within a React component, call `useBaseCommentsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useBaseCommentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useBaseCommentsQuery({
+ *   variables: {
+ *      postId: // value for 'postId'
+ *   },
+ * });
+ */
+export function useBaseCommentsQuery(baseOptions: Apollo.QueryHookOptions<BaseCommentsQuery, BaseCommentsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<BaseCommentsQuery, BaseCommentsQueryVariables>(BaseCommentsDocument, options);
+      }
+export function useBaseCommentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<BaseCommentsQuery, BaseCommentsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<BaseCommentsQuery, BaseCommentsQueryVariables>(BaseCommentsDocument, options);
+        }
+export type BaseCommentsQueryHookResult = ReturnType<typeof useBaseCommentsQuery>;
+export type BaseCommentsLazyQueryHookResult = ReturnType<typeof useBaseCommentsLazyQuery>;
+export type BaseCommentsQueryResult = Apollo.QueryResult<BaseCommentsQuery, BaseCommentsQueryVariables>;
 export const MeDocument = gql`
     query Me {
   me {
@@ -510,6 +576,12 @@ export const PostDocument = gql`
     isLiked
     likeCount
     creatorId
+    creator {
+      username
+      email
+      id
+    }
+    commentCount
   }
 }
     `;
@@ -560,18 +632,6 @@ export const PostsDocument = gql`
       textSnippet
       title
       updatedAt
-      baseComments {
-        id
-        authorId
-        postId
-        content
-        repliesCount
-        author {
-          username
-          id
-          email
-        }
-      }
       commentCount
     }
   }
@@ -606,6 +666,49 @@ export function usePostsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Post
 export type PostsQueryHookResult = ReturnType<typeof usePostsQuery>;
 export type PostsLazyQueryHookResult = ReturnType<typeof usePostsLazyQuery>;
 export type PostsQueryResult = Apollo.QueryResult<PostsQuery, PostsQueryVariables>;
+export const RepliesDocument = gql`
+    query Replies($parentCommentId: ID!) {
+  replies(parentCommentId: $parentCommentId) {
+    content
+    postId
+    authorId
+    author {
+      username
+      email
+      id
+    }
+    id
+  }
+}
+    `;
+
+/**
+ * __useRepliesQuery__
+ *
+ * To run a query within a React component, call `useRepliesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRepliesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useRepliesQuery({
+ *   variables: {
+ *      parentCommentId: // value for 'parentCommentId'
+ *   },
+ * });
+ */
+export function useRepliesQuery(baseOptions: Apollo.QueryHookOptions<RepliesQuery, RepliesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<RepliesQuery, RepliesQueryVariables>(RepliesDocument, options);
+      }
+export function useRepliesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<RepliesQuery, RepliesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<RepliesQuery, RepliesQueryVariables>(RepliesDocument, options);
+        }
+export type RepliesQueryHookResult = ReturnType<typeof useRepliesQuery>;
+export type RepliesLazyQueryHookResult = ReturnType<typeof useRepliesLazyQuery>;
+export type RepliesQueryResult = Apollo.QueryResult<RepliesQuery, RepliesQueryVariables>;
 export type CommentPostMutationVariables = Exact<{
   postId: Scalars['ID'];
   content: Scalars['String'];
@@ -613,7 +716,7 @@ export type CommentPostMutationVariables = Exact<{
 }>;
 
 
-export type CommentPostMutation = { __typename?: 'Mutation', commentPost: { __typename?: 'Comment', authorId: string, postId: string, id: string, content: string, author: { __typename?: 'User', username: string } } };
+export type CommentPostMutation = { __typename?: 'Mutation', commentPost: { __typename?: 'BaseComment', authorId: string, postId: string, id: string, content: string, author: { __typename?: 'User', username: string } } | { __typename?: 'Reply', authorId: string, postId: string, id: string, content: string, author: { __typename?: 'User', username: string } } };
 
 export type CreatePostMutationVariables = Exact<{
   title: Scalars['String'];
@@ -666,6 +769,13 @@ export type UpdatePostMutationVariables = Exact<{
 
 export type UpdatePostMutation = { __typename?: 'Mutation', updatePost?: { __typename?: 'Post', id: string, text: string, title: string, createdAt: string, updatedAt: string, creatorId: string } | null };
 
+export type BaseCommentsQueryVariables = Exact<{
+  postId: Scalars['ID'];
+}>;
+
+
+export type BaseCommentsQuery = { __typename?: 'Query', baseComments: Array<{ __typename?: 'BaseComment', authorId: string, content: string, id: string, postId: string, repliesCount: number, author: { __typename?: 'User', username: string, email: string, id: string } }> };
+
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -676,7 +786,7 @@ export type PostQueryVariables = Exact<{
 }>;
 
 
-export type PostQuery = { __typename?: 'Query', post?: { __typename?: 'Post', id: string, text: string, title: string, createdAt: string, updatedAt: string, isLiked?: boolean | null, likeCount: number, creatorId: string } | null };
+export type PostQuery = { __typename?: 'Query', post?: { __typename?: 'Post', id: string, text: string, title: string, createdAt: string, updatedAt: string, isLiked?: boolean | null, likeCount: number, creatorId: string, commentCount: number, creator: { __typename?: 'User', username: string, email: string, id: string } } | null };
 
 export type PostsQueryVariables = Exact<{
   limit: Scalars['Int'];
@@ -684,4 +794,11 @@ export type PostsQueryVariables = Exact<{
 }>;
 
 
-export type PostsQuery = { __typename?: 'Query', posts: { __typename?: 'PaginatedPosts', hasMore: boolean, posts: Array<{ __typename?: 'Post', createdAt: string, creatorId: string, id: string, isLiked?: boolean | null, likeCount: number, text: string, textSnippet: string, title: string, updatedAt: string, commentCount: number, creator: { __typename?: 'User', email: string, id: string, username: string }, baseComments: Array<{ __typename?: 'Comment', id: string, authorId: string, postId: string, content: string, repliesCount: number, author: { __typename?: 'User', username: string, id: string, email: string } }> }> } };
+export type PostsQuery = { __typename?: 'Query', posts: { __typename?: 'PaginatedPosts', hasMore: boolean, posts: Array<{ __typename?: 'Post', createdAt: string, creatorId: string, id: string, isLiked?: boolean | null, likeCount: number, text: string, textSnippet: string, title: string, updatedAt: string, commentCount: number, creator: { __typename?: 'User', email: string, id: string, username: string } }> } };
+
+export type RepliesQueryVariables = Exact<{
+  parentCommentId: Scalars['ID'];
+}>;
+
+
+export type RepliesQuery = { __typename?: 'Query', replies: Array<{ __typename?: 'Reply', content: string, postId: string, authorId: string, id: string, author: { __typename?: 'User', username: string, email: string, id: string } }> };
