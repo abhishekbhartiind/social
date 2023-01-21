@@ -20,10 +20,14 @@ const Index = () => {
 
     const handleLoadMore = () => {
         if (data) {
+            const length = data.posts.data.length;
             fetchMore({
                 variables: {
-                    cursor: data.posts.data[data.posts.data.length - 1].createdAt,
-                }
+                    options: {
+                        limit: 10,
+                        cursor: data.posts.data[length - 1].createdAt,
+                    }
+                },
             });
         }
     }

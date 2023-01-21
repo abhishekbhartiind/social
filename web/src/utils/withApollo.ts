@@ -32,7 +32,7 @@ const client = (ctx: NextPageContext) => new ApolloClient({
             Query: {
                 fields: {
                     posts: {
-                        keyArgs: false,
+                        keyArgs: ['limit'],
                         merge: mergeResults
                     },
                     baseComments: {
