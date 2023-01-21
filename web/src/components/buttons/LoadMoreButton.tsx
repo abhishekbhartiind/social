@@ -12,11 +12,13 @@ export const LoadMoreButton: React.FC<LoadMoreButtonProps> = ({
     return (
         <Flex>
             <Button 
+            boxShadow='md'
+            colorScheme='green'
             isLoading={loading} 
-            m="auto" 
+            width='full' 
             my={8} 
             onClick={onLoadMore}>
-                load more
+                Load more posts
             </Button>
         </Flex>
     );
