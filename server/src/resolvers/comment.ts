@@ -4,12 +4,17 @@ import { CommentEntity as Comment } from "../entities/comment";
 
 export const CommentResolvers: Resolvers = {
     Query: {
+        baseComments(_, { postId }) {
+            return dataManager.query(`
+                SELECT c.*
+                FROM comment_entity c
+                WHERE c."postId" = $1 and c."parentId" IS NULL;
+            `, [postId]);
+        },
         replies(_, { parentCommentId }) {
             return dataManager.query(`
-                SELECT c.*, 
-                json_build_object('id', a.id, 'email', a.email, 'username', a.username) AS author
+                SELECT c.*
                 FROM comment_entity c
-                INNER JOIN user_entity a ON a.id = c."authorId"
                 WHERE c."parentId" = $1;
             `, [parentCommentId]);
         }
@@ -69,8 +74,17 @@ export const CommentResolvers: Resolvers = {
         }
     },
     Comment: {
+        __resolveType(comment) {
+            if (comment.parent) {
+                return 'Reply';
+            } else {
+                return 'BaseComment'
+            }
+        },
+    },
+    BaseComment: {
         author({ authorId }, _, { userLoader }) {
-            return userLoader.load(authorId);
+            return userLoader.load(parseInt(authorId));
         },
         async repliesCount({ id }) {
             return dataManager
@@ -80,6 +94,11 @@ export const CommentResolvers: Resolvers = {
             .where('"parentId" = :id', { id })
             .getMany()
             .then(data => data.length);
+        }
+    },
+    Reply: {
+        author({ authorId }, _, { userLoader }) {
+            return userLoader.load(parseInt(authorId));
         }
     }
 }
