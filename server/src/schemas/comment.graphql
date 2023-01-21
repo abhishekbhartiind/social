@@ -12,7 +12,7 @@ type Query {
 }
 
 type Mutation {
-    commentPost(postId: ID!, parentCommentId: ID, content: String!): Boolean!
+    commentPost(postId: ID!, parentCommentId: ID, content: String!): Comment!
     editComment(commentId: ID!, postId: ID!, content: String!): Comment
     deleteComment(commentId: ID!, postId: ID!): Boolean!
 }
