@@ -1,4 +1,12 @@
-type Comment {
+interface Comment {
+    id: ID!
+    authorId: ID!
+    postId: ID!
+    author: User!
+    content: String!
+}
+
+type BaseComment implements Comment {
     id: ID!
     authorId: ID!
     postId: ID!
@@ -7,8 +15,17 @@ type Comment {
     repliesCount: Int!
 }
 
+type Reply implements Comment {
+    id: ID!
+    authorId: ID!
+    postId: ID!
+    author: User!
+    content: String!
+}
+
 type Query {
-    replies(parentCommentId: ID!): [Comment!]!
+    baseComments(postId: ID!): [BaseComment!]!
+    replies(parentCommentId: ID!): [Reply!]!
 }
 
 type Mutation {
