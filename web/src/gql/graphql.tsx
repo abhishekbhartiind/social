@@ -33,7 +33,7 @@ export type FieldError = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  commentPost: Scalars['Boolean'];
+  commentPost: Comment;
   createPost: Post;
   deleteComment: Scalars['Boolean'];
   deletePost: Scalars['Boolean'];
@@ -167,7 +167,15 @@ export type UsernamePasswordInput = {
 
 export const CommentPostDocument = gql`
     mutation CommentPost($postId: ID!, $content: String!, $parentId: ID) {
-  commentPost(postId: $postId, content: $content, parentCommentId: $parentId)
+  commentPost(postId: $postId, content: $content, parentCommentId: $parentId) {
+    authorId
+    postId
+    id
+    author {
+      username
+    }
+    content
+  }
 }
     `;
 export type CommentPostMutationFn = Apollo.MutationFunction<CommentPostMutation, CommentPostMutationVariables>;
@@ -605,7 +613,7 @@ export type CommentPostMutationVariables = Exact<{
 }>;
 
 
-export type CommentPostMutation = { __typename?: 'Mutation', commentPost: boolean };
+export type CommentPostMutation = { __typename?: 'Mutation', commentPost: { __typename?: 'Comment', authorId: string, postId: string, id: string, content: string, author: { __typename?: 'User', username: string } } };
 
 export type CreatePostMutationVariables = Exact<{
   title: Scalars['String'];
