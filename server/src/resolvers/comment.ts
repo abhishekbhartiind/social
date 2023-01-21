@@ -8,14 +8,16 @@ export const CommentResolvers: Resolvers = {
             return dataManager.query(`
                 SELECT c.*
                 FROM comment_entity c
-                WHERE c."postId" = $1 and c."parentId" IS NULL;
-            `, [postId]);
+                WHERE c."postId" = $1 and c."parentId" IS NULL
+                ORDER BY c."createdAt" DESC;
+                `, [postId]);
         },
         replies(_, { parentCommentId }) {
             return dataManager.query(`
                 SELECT c.*
                 FROM comment_entity c
-                WHERE c."parentId" = $1;
+                WHERE c."parentId" = $1
+                ORDER BY c."createdAt" DESC;
             `, [parentCommentId]);
         }
     },
