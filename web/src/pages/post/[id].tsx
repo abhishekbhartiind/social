@@ -1,8 +1,9 @@
-import { Avatar, Flex, Heading, Image, Text } from "@chakra-ui/react";
+import { Avatar, Box, Flex, Heading, Image, Stack, Text } from "@chakra-ui/react";
 import { formatDistanceToNow } from "date-fns";
 import { useRouter } from "next/router";
 import React from "react";
-import PostButtons from "../../components/buttons/PostButtons";
+import LikeButton from "../../components/buttons/LikeButton";
+import { EditDeleteMenu } from "../../components/EditDeleteMenu";
 import Layout from "../../components/Layout";
 import { CommentSection } from "../../components/post/CommentSection";
 import { useMeQuery, usePostQuery } from "../../gql/graphql";
@@ -44,19 +45,25 @@ const Post: React.FC<{}> = ({}) => {
         <Layout home={false}>
             <Flex 
                 flex="1" 
-                gap="4" 
+                gap={4}
                 alignItems="center" 
                 flexWrap="wrap"
                 mb={2}>
-                <Avatar name="Segun Adebayo" src="https://bit.ly/sage-adebayo" />
-                <Heading size="sm" textTransform="uppercase">
-                    {data.post.creator.username}
-                </Heading>
-                <Text ml='auto'>
-                {formatDistanceToNow(new Date(parseInt(data.post.createdAt)), {
-                    addSuffix: true,
-                })}
-                </Text>
+                <Avatar name={data.post.creator.username} src="" />
+                <Stack spacing={1}>
+                    <Heading size="sm" textTransform="uppercase">
+                        {data.post.creator.username}
+                    </Heading>
+                    <Text fontSize='sm'>
+                    {formatDistanceToNow(new Date(parseInt(data.post.createdAt)), {
+                        addSuffix: true,
+                    })}
+                    </Text>
+                </Stack>
+                {meData?.me?.id === data.post.creatorId && 
+                (<Box ml='auto' >
+                    <EditDeleteMenu id={data.post.id} />
+                </Box>)}
             </Flex>
             <Text my={4}>
                 {data.post.text}
@@ -67,16 +74,17 @@ const Post: React.FC<{}> = ({}) => {
                 alt="Chakra UI"
                 mb={2}
             />
-            <Flex alignItems='center' gap={2}>
-                <Text fontWeight='bold' mb={2}>{data.post.likeCount} likes</Text>
-                <Text fontWeight='bold' mb={2}>{data.post.commentCount} comments</Text>
+            <Flex alignItems='center' mb={2}>
+                <LikeButton 
+                    aria-label='Like post'
+                    isLiked={data.post.isLiked}
+                    iconSize={28}
+                    id={data.post.id} />
+                <Text fontSize='sm' fontWeight='bold' ml='auto'>
+                    {data.post.likeCount} likes 
+                    &nbsp; {data.post.commentCount} comments
+                </Text>
             </Flex>
-            <PostButtons
-                isLiked={data.post.isLiked}
-                id={data.post.id} 
-                iconSize={28} 
-                variant="row" 
-                hidden={meData?.me && meData.me.id === data.post.creatorId ? false : true} />
             <CommentSection
                 postId={data.post.id} />
         </Layout>
