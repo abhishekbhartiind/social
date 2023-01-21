@@ -20,17 +20,21 @@ export type BaseComment = Comment & {
   author: User;
   authorId: Scalars['ID'];
   content: Scalars['String'];
+  createdAt: Scalars['String'];
   id: Scalars['ID'];
   postId: Scalars['ID'];
   repliesCount: Scalars['Int'];
+  updatedAt: Scalars['String'];
 };
 
 export type Comment = {
   author: User;
   authorId: Scalars['ID'];
   content: Scalars['String'];
+  createdAt: Scalars['String'];
   id: Scalars['ID'];
   postId: Scalars['ID'];
+  updatedAt: Scalars['String'];
 };
 
 export type FieldError = {
@@ -163,8 +167,10 @@ export type Reply = Comment & {
   author: User;
   authorId: Scalars['ID'];
   content: Scalars['String'];
+  createdAt: Scalars['String'];
   id: Scalars['ID'];
   postId: Scalars['ID'];
+  updatedAt: Scalars['String'];
 };
 
 export type User = {
@@ -498,6 +504,8 @@ export const BaseCommentsDocument = gql`
     id
     postId
     repliesCount
+    createdAt
+    updatedAt
   }
 }
     `;
@@ -678,6 +686,8 @@ export const RepliesDocument = gql`
       id
     }
     id
+    createdAt
+    updatedAt
   }
 }
     `;
@@ -774,7 +784,7 @@ export type BaseCommentsQueryVariables = Exact<{
 }>;
 
 
-export type BaseCommentsQuery = { __typename?: 'Query', baseComments: Array<{ __typename?: 'BaseComment', authorId: string, content: string, id: string, postId: string, repliesCount: number, author: { __typename?: 'User', username: string, email: string, id: string } }> };
+export type BaseCommentsQuery = { __typename?: 'Query', baseComments: Array<{ __typename?: 'BaseComment', authorId: string, content: string, id: string, postId: string, repliesCount: number, createdAt: string, updatedAt: string, author: { __typename?: 'User', username: string, email: string, id: string } }> };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -801,4 +811,4 @@ export type RepliesQueryVariables = Exact<{
 }>;
 
 
-export type RepliesQuery = { __typename?: 'Query', replies: Array<{ __typename?: 'Reply', content: string, postId: string, authorId: string, id: string, author: { __typename?: 'User', username: string, email: string, id: string } }> };
+export type RepliesQuery = { __typename?: 'Query', replies: Array<{ __typename?: 'Reply', content: string, postId: string, authorId: string, id: string, createdAt: string, updatedAt: string, author: { __typename?: 'User', username: string, email: string, id: string } }> };
