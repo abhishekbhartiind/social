@@ -2,62 +2,67 @@ import { Avatar } from "@chakra-ui/avatar";
 import { Card, CardBody, CardHeader } from "@chakra-ui/card";
 import { Image } from "@chakra-ui/image";
 import { Flex, Heading, LinkBox, LinkOverlay, Text } from "@chakra-ui/layout";
+import { Box, Stack } from "@chakra-ui/react";
 import { formatDistanceToNow } from "date-fns";
-import NextLink from 'next/link';
+import NextLink from "next/link";
 import { Post } from "../../gql/graphql";
-import PostButtons from "../buttons/PostButtons";
+import LikeButton from "../buttons/LikeButton";
+import { EditDeleteMenu } from "../EditDeleteMenu";
 import PostDescription from "./PostDescription";
 
 interface PostCardProps<T> {
-    post: T;
-    meId?: string;
+  post: T;
+  meId?: string;
 }
 
-const PostCard = <T extends Post>({
-    post,
-    meId
-}: PostCardProps<T>) => {
-    return (
+const PostCard = <T extends Post>({ post, meId }: PostCardProps<T>) => (
+    <Card maxW="md" boxShadow="xl">
+        <CardHeader p={4}>
+            <Flex flex="1" gap={4} alignItems="center" flexWrap="wrap" mb={2}>
+                <Avatar name={post.creator.username} src="" />
+                <Stack spacing={1}>
+                <Heading size="sm" textTransform="uppercase">
+                    {post.creator.username}
+                </Heading>
+                <Text fontSize="sm">
+                    {formatDistanceToNow(new Date(parseInt(post.createdAt)), {
+                    addSuffix: true,
+                    })}
+                </Text>
+                </Stack>
+                {meId === post.creatorId && (
+                <Box ml="auto">
+                    <EditDeleteMenu id={post.id} />
+                </Box>
+                )}
+            </Flex>
+        </CardHeader>
         <LinkBox as='div'>
-            <Card maxW="md" boxShadow='lg'>
-                <CardHeader p={[2, 4]}>
-                    <Flex flex="1" gap="4" alignItems="center" flexWrap="wrap">
-                        <Avatar name="Segun Adebayo" src="https://bit.ly/sage-adebayo" />
-                        <Heading size="sm" textTransform='uppercase'>{post.creator.username}</Heading>
-                    </Flex>
-                </CardHeader>
-                <Image
-                    objectFit="cover"
-                    src="https://images.unsplash.com/photo-1531403009284-440f080d1e12?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
-                    alt="Chakra UI"
+            <Image
+            objectFit="cover"
+            src="https://images.unsplash.com/photo-1531403009284-440f080d1e12?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
+            alt="Chakra UI"
+            />
+            <CardBody px={4}>
+            <LikeButton
+                aria-label="Like post"
+                isLiked={post.isLiked}
+                iconSize={28}
+                id={post.id}
+            />
+            <Text fontSize="sm" fontWeight="bold" mb={2}>
+                {post.likeCount} likes &nbsp; {post.commentCount} comments
+            </Text>
+            <LinkOverlay as={NextLink} href={`/post/${post.id}`}>
+                <PostDescription
+                username={post.creator.username}
+                textSnippet={post.textSnippet}
+                fullText={post.text}
                 />
-                <CardBody px={[3, 4]}>
-                    <PostButtons
-                        isLiked={post.isLiked}
-                        id={post.id} 
-                        iconSize={20} 
-                        variant="row" 
-                        hidden={meId && meId === post.creatorId ? false : true} />
-                    <Flex alignItems='center' gap={2}>
-                        <Text fontWeight='bold' mb={2}>{post.likeCount} likes</Text>
-                        <Text fontWeight='bold' mb={2}>{post.commentCount} comments</Text>
-                    </Flex>
-                    <LinkOverlay
-                    as={NextLink}
-                    href={`/post/${post.id}`}>
-                        <PostDescription
-                            username={post.creator.username}
-                            textSnippet={post.textSnippet}
-                            fullText={post.text}
-                        />
-                    </LinkOverlay>
-                    <Text>{formatDistanceToNow(new Date(parseInt(post.createdAt)), {
-                        addSuffix: true,
-                    })}</Text>
-                </CardBody>
-            </Card>
+            </LinkOverlay>
+            </CardBody>
         </LinkBox>
-    );
-};
+    </Card>
+);
 
 export default PostCard;
