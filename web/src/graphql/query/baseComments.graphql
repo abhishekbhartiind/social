@@ -1,16 +1,19 @@
-query BaseComments($postId: ID!) {
-    baseComments(postId: $postId) {
-        author {
-            username
-            email
+query BaseComments($postId: ID!, $options: PaginatedArgs!) {
+    baseComments(postId: $postId, options: $options) {
+        hasMore
+        baseComments {
+            author {
+                email
+                id
+                username
+            }
+            authorId
+            createdAt
+            updatedAt
+            content
+            repliesCount
             id
+            postId
         }
-        authorId
-        content
-        id
-        postId
-        repliesCount
-        createdAt
-        updatedAt
     }
 }

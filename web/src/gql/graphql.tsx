@@ -111,10 +111,31 @@ export type MutationUpdatePostArgs = {
   title: Scalars['String'];
 };
 
-export type PaginatedPosts = {
+export type PaginatedArgs = {
+  cursor?: InputMaybe<Scalars['String']>;
+  limit: Scalars['Int'];
+};
+
+export type PaginatedBaseComments = PaginatedList & {
+  __typename?: 'PaginatedBaseComments';
+  baseComments: Array<BaseComment>;
+  hasMore: Scalars['Boolean'];
+};
+
+export type PaginatedList = {
+  hasMore: Scalars['Boolean'];
+};
+
+export type PaginatedPosts = PaginatedList & {
   __typename?: 'PaginatedPosts';
   hasMore: Scalars['Boolean'];
   posts: Array<Post>;
+};
+
+export type PaginatedReplies = PaginatedList & {
+  __typename?: 'PaginatedReplies';
+  hasMore: Scalars['Boolean'];
+  replies: Array<Reply>;
 };
 
 export type Post = {
@@ -134,15 +155,16 @@ export type Post = {
 
 export type Query = {
   __typename?: 'Query';
-  baseComments: Array<BaseComment>;
+  baseComments: PaginatedBaseComments;
   me?: Maybe<User>;
   post?: Maybe<Post>;
   posts: PaginatedPosts;
-  replies: Array<Reply>;
+  replies: PaginatedReplies;
 };
 
 
 export type QueryBaseCommentsArgs = {
+  options: PaginatedArgs;
   postId: Scalars['ID'];
 };
 
@@ -153,12 +175,12 @@ export type QueryPostArgs = {
 
 
 export type QueryPostsArgs = {
-  cursor?: InputMaybe<Scalars['String']>;
-  limit: Scalars['Int'];
+  options: PaginatedArgs;
 };
 
 
 export type QueryRepliesArgs = {
+  options: PaginatedArgs;
   parentCommentId: Scalars['ID'];
 };
 
@@ -492,20 +514,23 @@ export type UpdatePostMutationHookResult = ReturnType<typeof useUpdatePostMutati
 export type UpdatePostMutationResult = Apollo.MutationResult<UpdatePostMutation>;
 export type UpdatePostMutationOptions = Apollo.BaseMutationOptions<UpdatePostMutation, UpdatePostMutationVariables>;
 export const BaseCommentsDocument = gql`
-    query BaseComments($postId: ID!) {
-  baseComments(postId: $postId) {
-    author {
-      username
-      email
+    query BaseComments($postId: ID!, $options: PaginatedArgs!) {
+  baseComments(postId: $postId, options: $options) {
+    hasMore
+    baseComments {
+      author {
+        email
+        id
+        username
+      }
+      authorId
+      createdAt
+      updatedAt
+      content
+      repliesCount
       id
+      postId
     }
-    authorId
-    content
-    id
-    postId
-    repliesCount
-    createdAt
-    updatedAt
   }
 }
     `;
@@ -523,6 +548,7 @@ export const BaseCommentsDocument = gql`
  * const { data, loading, error } = useBaseCommentsQuery({
  *   variables: {
  *      postId: // value for 'postId'
+ *      options: // value for 'options'
  *   },
  * });
  */
@@ -622,10 +648,11 @@ export type PostQueryHookResult = ReturnType<typeof usePostQuery>;
 export type PostLazyQueryHookResult = ReturnType<typeof usePostLazyQuery>;
 export type PostQueryResult = Apollo.QueryResult<PostQuery, PostQueryVariables>;
 export const PostsDocument = gql`
-    query Posts($limit: Int!, $cursor: String) {
-  posts(limit: $limit, cursor: $cursor) {
+    query Posts($options: PaginatedArgs!) {
+  posts(options: $options) {
     hasMore
     posts {
+      commentCount
       createdAt
       creator {
         email
@@ -640,7 +667,6 @@ export const PostsDocument = gql`
       textSnippet
       title
       updatedAt
-      commentCount
     }
   }
 }
@@ -658,8 +684,7 @@ export const PostsDocument = gql`
  * @example
  * const { data, loading, error } = usePostsQuery({
  *   variables: {
- *      limit: // value for 'limit'
- *      cursor: // value for 'cursor'
+ *      options: // value for 'options'
  *   },
  * });
  */
@@ -675,19 +700,22 @@ export type PostsQueryHookResult = ReturnType<typeof usePostsQuery>;
 export type PostsLazyQueryHookResult = ReturnType<typeof usePostsLazyQuery>;
 export type PostsQueryResult = Apollo.QueryResult<PostsQuery, PostsQueryVariables>;
 export const RepliesDocument = gql`
-    query Replies($parentCommentId: ID!) {
-  replies(parentCommentId: $parentCommentId) {
-    content
-    postId
-    authorId
-    author {
-      username
-      email
+    query Replies($parentCommentId: ID!, $options: PaginatedArgs!) {
+  replies(parentCommentId: $parentCommentId, options: $options) {
+    hasMore
+    replies {
+      authorId
+      author {
+        email
+        username
+        id
+      }
+      content
+      createdAt
       id
+      postId
+      updatedAt
     }
-    id
-    createdAt
-    updatedAt
   }
 }
     `;
@@ -705,6 +733,7 @@ export const RepliesDocument = gql`
  * const { data, loading, error } = useRepliesQuery({
  *   variables: {
  *      parentCommentId: // value for 'parentCommentId'
+ *      options: // value for 'options'
  *   },
  * });
  */
@@ -781,10 +810,11 @@ export type UpdatePostMutation = { __typename?: 'Mutation', updatePost?: { __typ
 
 export type BaseCommentsQueryVariables = Exact<{
   postId: Scalars['ID'];
+  options: PaginatedArgs;
 }>;
 
 
-export type BaseCommentsQuery = { __typename?: 'Query', baseComments: Array<{ __typename?: 'BaseComment', authorId: string, content: string, id: string, postId: string, repliesCount: number, createdAt: string, updatedAt: string, author: { __typename?: 'User', username: string, email: string, id: string } }> };
+export type BaseCommentsQuery = { __typename?: 'Query', baseComments: { __typename?: 'PaginatedBaseComments', hasMore: boolean, baseComments: Array<{ __typename?: 'BaseComment', authorId: string, createdAt: string, updatedAt: string, content: string, repliesCount: number, id: string, postId: string, author: { __typename?: 'User', email: string, id: string, username: string } }> } };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -799,16 +829,16 @@ export type PostQueryVariables = Exact<{
 export type PostQuery = { __typename?: 'Query', post?: { __typename?: 'Post', id: string, text: string, title: string, createdAt: string, updatedAt: string, isLiked?: boolean | null, likeCount: number, creatorId: string, commentCount: number, creator: { __typename?: 'User', username: string, email: string, id: string } } | null };
 
 export type PostsQueryVariables = Exact<{
-  limit: Scalars['Int'];
-  cursor?: InputMaybe<Scalars['String']>;
+  options: PaginatedArgs;
 }>;
 
 
-export type PostsQuery = { __typename?: 'Query', posts: { __typename?: 'PaginatedPosts', hasMore: boolean, posts: Array<{ __typename?: 'Post', createdAt: string, creatorId: string, id: string, isLiked?: boolean | null, likeCount: number, text: string, textSnippet: string, title: string, updatedAt: string, commentCount: number, creator: { __typename?: 'User', email: string, id: string, username: string } }> } };
+export type PostsQuery = { __typename?: 'Query', posts: { __typename?: 'PaginatedPosts', hasMore: boolean, posts: Array<{ __typename?: 'Post', commentCount: number, createdAt: string, creatorId: string, id: string, isLiked?: boolean | null, likeCount: number, text: string, textSnippet: string, title: string, updatedAt: string, creator: { __typename?: 'User', email: string, id: string, username: string } }> } };
 
 export type RepliesQueryVariables = Exact<{
   parentCommentId: Scalars['ID'];
+  options: PaginatedArgs;
 }>;
 
 
-export type RepliesQuery = { __typename?: 'Query', replies: Array<{ __typename?: 'Reply', content: string, postId: string, authorId: string, id: string, createdAt: string, updatedAt: string, author: { __typename?: 'User', username: string, email: string, id: string } }> };
+export type RepliesQuery = { __typename?: 'Query', replies: { __typename?: 'PaginatedReplies', hasMore: boolean, replies: Array<{ __typename?: 'Reply', authorId: string, content: string, createdAt: string, id: string, postId: string, updatedAt: string, author: { __typename?: 'User', email: string, username: string, id: string } }> } };

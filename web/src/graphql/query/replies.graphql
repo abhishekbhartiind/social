@@ -1,15 +1,18 @@
-query Replies($parentCommentId: ID!) {
-    replies(parentCommentId: $parentCommentId) {
-        content
-        postId
-        authorId
-        author {
-            username
-            email 
+query Replies($parentCommentId: ID!, $options: PaginatedArgs!) {
+    replies(parentCommentId: $parentCommentId, options: $options) {
+        hasMore
+        replies {
+            authorId
+            author {
+                email
+                username
+                id
+            }
+            content
+            createdAt
             id
+            postId
+            updatedAt
         }
-        id
-        createdAt
-        updatedAt
     }
 }
