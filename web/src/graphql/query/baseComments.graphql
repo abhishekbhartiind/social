@@ -10,5 +10,7 @@ query BaseComments($postId: ID!) {
         id
         postId
         repliesCount
+        createdAt
+        updatedAt
     }
 }

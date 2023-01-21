@@ -9,5 +9,7 @@ query Replies($parentCommentId: ID!) {
             id
         }
         id
+        createdAt
+        updatedAt
     }
 }
