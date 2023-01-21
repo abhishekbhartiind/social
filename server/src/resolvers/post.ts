@@ -5,8 +5,13 @@ import { Like } from "../entities/like";
 import { CommentEntity as Comment } from "../entities/comment";
 
 export const PostResolvers: Resolvers = {
+    PaginatedList: {
+        __resolveType(list) {
+            return list.__typename!;
+        }
+    },
     Query: {
-        async posts(_, { limit, cursor }) {
+        async posts(_, { options: { limit, cursor } }) {
             const realLimit = Math.min(50, limit);
             const paginatedLimit = realLimit + 1;
 
