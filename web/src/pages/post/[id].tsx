@@ -1,11 +1,11 @@
-import { Avatar, Flex, Heading, Text, Image, Divider, Stack } from "@chakra-ui/react";
+import { Avatar, Flex, Heading, Image, Text } from "@chakra-ui/react";
 import { formatDistanceToNow } from "date-fns";
 import { useRouter } from "next/router";
 import React from "react";
 import PostButtons from "../../components/buttons/PostButtons";
-import { Comment } from "../../components/comments/Comment";
 import Layout from "../../components/Layout";
-import { useBaseCommentsQuery, useMeQuery, usePostQuery } from "../../gql/graphql";
+import { CommentSection } from "../../components/post/CommentSection";
+import { useMeQuery, usePostQuery } from "../../gql/graphql";
 import withApollo from "../../utils/withApollo";
 
 const Post: React.FC<{}> = ({}) => {
@@ -19,13 +19,6 @@ const Post: React.FC<{}> = ({}) => {
             postId,
         },
     });
-
-    const { data: commentData } = useBaseCommentsQuery({
-        skip: postId === "",
-        variables: {
-            postId,
-        },
-    })
 
     if (loading) {
         return (
@@ -84,14 +77,8 @@ const Post: React.FC<{}> = ({}) => {
                 iconSize={28} 
                 variant="row" 
                 hidden={meData?.me && meData.me.id === data.post.creatorId ? false : true} />
-            <Divider my={2}/>
-            <Stack mb={4}>
-            {commentData?.baseComments.map(comment => (
-                <Comment
-                    key={comment.id} 
-                    comment={comment} />
-            ))}
-            </Stack>
+            <CommentSection
+                postId={data.post.id} />
         </Layout>
     );
 };
