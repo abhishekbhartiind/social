@@ -34,14 +34,14 @@ type PaginatedBaseComments implements PaginatedList {
     hasMore: Boolean!
 }
 
-type PaginatedReply implements PaginatedList {
+type PaginatedReplies implements PaginatedList {
     replies: [Reply!]!
     hasMore: Boolean!
 }
 
 type Query {
     baseComments(postId: ID!, options: PaginatedArgs!): PaginatedBaseComments!
-    replies(parentCommentId: ID!, option: PaginatedArgs!): PaginatedReplies!
+    replies(parentCommentId: ID!, options: PaginatedArgs!): PaginatedReplies!
 }
 
 type Mutation {
