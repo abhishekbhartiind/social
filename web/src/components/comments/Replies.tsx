@@ -5,10 +5,11 @@ import { Comment } from './Comment';
 
 interface RepliesProps {
     parentCommentId: string;
+    onReply: () => void;
 }
 
 export const Replies: React.FC<RepliesProps> = ({ 
-    parentCommentId
+    parentCommentId, onReply
 }) => {
     const { data } = useRepliesQuery({
         variables: {
@@ -19,7 +20,7 @@ export const Replies: React.FC<RepliesProps> = ({
     return (
         <Stack mt={2}>
             {data?.replies.map(reply => (
-                <Comment comment={reply} />
+                <Comment key={reply.id} comment={reply} onReply={onReply}/>
             ))}
         </Stack>
     );
