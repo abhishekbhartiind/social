@@ -9,7 +9,6 @@ type Post {
     creator: User!
     isLiked: Boolean
     likeCount: Int!
-    baseComments: [Comment!]!
     commentCount: Int!
 }
 
