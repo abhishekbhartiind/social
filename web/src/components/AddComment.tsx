@@ -3,17 +3,20 @@ import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 import InputField from './InputField';
 import { Avatar, Flex, IconButton } from '@chakra-ui/react';
 import { AiOutlineSend } from 'react-icons/ai';
-import { Comment, CommentPostMutation, useCommentPostMutation } from '../gql/graphql';
+import { CommentPostMutation, useCommentPostMutation } from '../gql/graphql';
 import { ApolloCache, gql } from '@apollo/client';
 
 interface AddCommentProps {
     postId: string;
-    onAddComment: (comment: Comment) => void;
+    parentCommentId?: string;
+    parentCommentAuthor?: string;
+    onSuccess: () => void;
 }
 
 const updateCacheAfterComment = (
     postId: string, 
-    cache: ApolloCache<CommentPostMutation>
+    cache: ApolloCache<CommentPostMutation>,
+    parentCommentId?: string
 ) => {
     cache.updateFragment<{ commentCount: number }>({
         id: "Post:" + postId,
@@ -31,24 +34,44 @@ const updateCacheAfterComment = (
             }
         } 
         return data;
-    })
+    });
+    const evictOptions: Record<string, string> = { 
+        fieldName: parentCommentId ? 'replies' : 'baseComments' };
+    cache.evict(evictOptions);
+    cache.gc();
 }
 
-export const AddComment: React.FC<AddCommentProps> = ({ postId, onAddComment }) => {
-    const methods = useForm<{ content: string }>();
+export const AddComment: React.FC<AddCommentProps> = ({ 
+    postId, parentCommentAuthor, parentCommentId, onSuccess
+}) => {
+    const methods = useForm<{ content: string }>({
+        values: {
+            content: parentCommentAuthor ? '@' + parentCommentAuthor : '',
+        }
+    });
     const [commentPost] = useCommentPostMutation();
 
     const onSubmit: SubmitHandler<{ content: string }> = async (
         values 
     ) => {
-        const newComment = await commentPost({
+        if (!postId) {
+            return;
+        }
+        let parentId: string | undefined = parentCommentId;
+        if (parentCommentId && 
+            !(new RegExp(`^@${parentCommentAuthor}`, 'i')).test(values.content)) {
+            parentId = undefined;
+        }
+        await commentPost({
             variables: {
                 postId,
                 ...values,
+                parentId
             },
             update: (cache) => updateCacheAfterComment(postId, cache),
         });
-        onAddComment(newComment.data?.commentPost as Comment);
+        methods.resetField('content');
+        onSuccess();
     }
 
     return (
