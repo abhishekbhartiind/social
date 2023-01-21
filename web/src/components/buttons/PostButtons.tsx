@@ -1,6 +1,4 @@
 import { Flex } from "@chakra-ui/react";
-import React, { MouseEventHandler } from "react";
-import CommentButton from "./CommentButton";
 import DeleteButton from "./DeleteButton";
 import EditButton from "./EditButton";
 import LikeButton from "./LikeButton";
@@ -11,7 +9,6 @@ interface PostButtonsProps<T> {
     iconSize: number;
     variant?: 'row' | 'column';
     hidden?: boolean;
-    onComment: MouseEventHandler<HTMLButtonElement>
 }
 
 const PostButtons = <T extends any>({
@@ -20,7 +17,6 @@ const PostButtons = <T extends any>({
     iconSize,
     variant='row',
     hidden,
-    onComment
 }: PostButtonsProps<T>) => {
     return (
         <Flex ml="auto" direction={variant}>
@@ -29,11 +25,6 @@ const PostButtons = <T extends any>({
                 id={id}
                 iconSize={iconSize} 
                 isLiked={isLiked}
-            />
-            <CommentButton
-                aria-label="Comment Post"
-                iconSize={iconSize} 
-                onClick={onComment}
             />
             {!hidden && (
                 <>
