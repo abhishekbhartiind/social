@@ -19,14 +19,22 @@ export type Scalars = {
   Float: number;
 };
 
-export type Comment = {
-  __typename?: 'Comment';
+export type BaseComment = Comment & {
+  __typename?: 'BaseComment';
   author: User;
   authorId: Scalars['ID'];
   content: Scalars['String'];
   id: Scalars['ID'];
   postId: Scalars['ID'];
   repliesCount: Scalars['Int'];
+};
+
+export type Comment = {
+  author: User;
+  authorId: Scalars['ID'];
+  content: Scalars['String'];
+  id: Scalars['ID'];
+  postId: Scalars['ID'];
 };
 
 export type FieldError = {
@@ -111,7 +119,6 @@ export type PaginatedPosts = {
 
 export type Post = {
   __typename?: 'Post';
-  baseComments: Array<Comment>;
   commentCount: Scalars['Int'];
   createdAt: Scalars['String'];
   creator: User;
@@ -127,10 +134,16 @@ export type Post = {
 
 export type Query = {
   __typename?: 'Query';
+  baseComments: Array<BaseComment>;
   me?: Maybe<User>;
   post?: Maybe<Post>;
   posts: PaginatedPosts;
-  replies: Array<Comment>;
+  replies: Array<Reply>;
+};
+
+
+export type QueryBaseCommentsArgs = {
+  postId: Scalars['ID'];
 };
 
 
@@ -147,6 +160,15 @@ export type QueryPostsArgs = {
 
 export type QueryRepliesArgs = {
   parentCommentId: Scalars['ID'];
+};
+
+export type Reply = Comment & {
+  __typename?: 'Reply';
+  author: User;
+  authorId: Scalars['ID'];
+  content: Scalars['String'];
+  id: Scalars['ID'];
+  postId: Scalars['ID'];
 };
 
 export type User = {
@@ -238,6 +260,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = ResolversObject<{
+  BaseComment: ResolverTypeWrapper<Omit<BaseComment, 'author'> & { author: ResolversTypes['User'] }>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Comment: ResolverTypeWrapper<CommentEntity>;
   FieldError: ResolverTypeWrapper<FieldError>;
@@ -247,6 +270,7 @@ export type ResolversTypes = ResolversObject<{
   PaginatedPosts: ResolverTypeWrapper<Omit<PaginatedPosts, 'posts'> & { posts: Array<ResolversTypes['Post']> }>;
   Post: ResolverTypeWrapper<PostEntity>;
   Query: ResolverTypeWrapper<{}>;
+  Reply: ResolverTypeWrapper<Omit<Reply, 'author'> & { author: ResolversTypes['User'] }>;
   String: ResolverTypeWrapper<Scalars['String']>;
   User: ResolverTypeWrapper<UserEntity>;
   UserResponse: ResolverTypeWrapper<Omit<UserResponse, 'user'> & { user?: Maybe<ResolversTypes['User']> }>;
@@ -255,6 +279,7 @@ export type ResolversTypes = ResolversObject<{
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = ResolversObject<{
+  BaseComment: Omit<BaseComment, 'author'> & { author: ResolversParentTypes['User'] };
   Boolean: Scalars['Boolean'];
   Comment: CommentEntity;
   FieldError: FieldError;
@@ -264,13 +289,14 @@ export type ResolversParentTypes = ResolversObject<{
   PaginatedPosts: Omit<PaginatedPosts, 'posts'> & { posts: Array<ResolversParentTypes['Post']> };
   Post: PostEntity;
   Query: {};
+  Reply: Omit<Reply, 'author'> & { author: ResolversParentTypes['User'] };
   String: Scalars['String'];
   User: UserEntity;
   UserResponse: Omit<UserResponse, 'user'> & { user?: Maybe<ResolversParentTypes['User']> };
   UsernamePasswordInput: UsernamePasswordInput;
 }>;
 
-export type CommentResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['Comment'] = ResolversParentTypes['Comment']> = ResolversObject<{
+export type BaseCommentResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['BaseComment'] = ResolversParentTypes['BaseComment']> = ResolversObject<{
   author?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   authorId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   content?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -278,6 +304,15 @@ export type CommentResolvers<ContextType = MyContext, ParentType extends Resolve
   postId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   repliesCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type CommentResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['Comment'] = ResolversParentTypes['Comment']> = ResolversObject<{
+  __resolveType: TypeResolveFn<'BaseComment' | 'Reply', ParentType, ContextType>;
+  author?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  authorId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  content?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  postId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
 }>;
 
 export type FieldErrorResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['FieldError'] = ResolversParentTypes['FieldError']> = ResolversObject<{
@@ -306,7 +341,6 @@ export type PaginatedPostsResolvers<ContextType = MyContext, ParentType extends 
 }>;
 
 export type PostResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['Post'] = ResolversParentTypes['Post']> = ResolversObject<{
-  baseComments?: Resolver<Array<ResolversTypes['Comment']>, ParentType, ContextType>;
   commentCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   creator?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
@@ -322,10 +356,20 @@ export type PostResolvers<ContextType = MyContext, ParentType extends ResolversP
 }>;
 
 export type QueryResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
+  baseComments?: Resolver<Array<ResolversTypes['BaseComment']>, ParentType, ContextType, RequireFields<QueryBaseCommentsArgs, 'postId'>>;
   me?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   post?: Resolver<Maybe<ResolversTypes['Post']>, ParentType, ContextType, RequireFields<QueryPostArgs, 'id'>>;
   posts?: Resolver<ResolversTypes['PaginatedPosts'], ParentType, ContextType, RequireFields<QueryPostsArgs, 'limit'>>;
-  replies?: Resolver<Array<ResolversTypes['Comment']>, ParentType, ContextType, RequireFields<QueryRepliesArgs, 'parentCommentId'>>;
+  replies?: Resolver<Array<ResolversTypes['Reply']>, ParentType, ContextType, RequireFields<QueryRepliesArgs, 'parentCommentId'>>;
+}>;
+
+export type ReplyResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['Reply'] = ResolversParentTypes['Reply']> = ResolversObject<{
+  author?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  authorId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  content?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  postId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type UserResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = ResolversObject<{
@@ -342,12 +386,14 @@ export type UserResponseResolvers<ContextType = MyContext, ParentType extends Re
 }>;
 
 export type Resolvers<ContextType = MyContext> = ResolversObject<{
+  BaseComment?: BaseCommentResolvers<ContextType>;
   Comment?: CommentResolvers<ContextType>;
   FieldError?: FieldErrorResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   PaginatedPosts?: PaginatedPostsResolvers<ContextType>;
   Post?: PostResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  Reply?: ReplyResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
   UserResponse?: UserResponseResolvers<ContextType>;
 }>;
