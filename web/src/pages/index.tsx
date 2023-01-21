@@ -1,5 +1,6 @@
 import { Button, Flex, Heading, Stack, Text} from "@chakra-ui/react";
 import NextLink from "next/link";
+import { LoadMoreButton } from "../components/buttons/LoadMoreButton";
 import Layout from "../components/Layout";
 import PostCard from "../components/post/PostCard";
 import { useMeQuery, usePostsQuery } from "../gql/graphql";
@@ -9,8 +10,10 @@ const Index = () => {
     const { data: meData } = useMeQuery();
     const { data, loading, fetchMore } = usePostsQuery({
         variables: {
-            limit: 10,
-            cursor: null,
+            options: {
+                limit: 10,
+                cursor: null,
+            }
         },
         notifyOnNetworkStatusChange: true,
     });
@@ -19,11 +22,12 @@ const Index = () => {
         if (data) {
             fetchMore({
                 variables: {
-                    cursor: data.posts.posts[data.posts.posts.length - 1].createdAt,
+                    cursor: data.posts.data[data.posts.data.length - 1].createdAt,
                 }
             });
         }
     }
+
     return (
         <Layout home variant="small">
             <Flex alignItems="center">
@@ -35,7 +39,7 @@ const Index = () => {
             {loading && <div>Loading posts...</div>}
             <br />
             <Stack direction='column' spacing={4} mb={4}>
-                {data?.posts.posts.map(post => (
+                {data?.posts.data.map(post => (
                     <PostCard 
                         key={post.id} 
                         post={post} 
@@ -43,15 +47,9 @@ const Index = () => {
                 ))}
             </Stack>
             {data && data.posts.hasMore && (
-                <Flex>
-                    <Button 
-                        isLoading={loading} 
-                        m="auto" 
-                        my={8} 
-                        onClick={handleLoadMore}>
-                            load more
-                    </Button>
-                </Flex>
+                <LoadMoreButton
+                    loading={loading}
+                    onLoadMore={handleLoadMore} />
             )}
         </Layout>
     );
