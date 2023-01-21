@@ -49,15 +49,17 @@ export const CommentSection: React.FC<CommentSectionProps> = ({
     }
 
     return (
-        <Box>
-            <Stack mt={4} px={1}>
-                {commentData?.baseComments.data.map((comment) => {
-                    const Component = comment.repliesCount > 0 ? CommentWithReplies : Comment;
+        <Box my={2}>
+            {commentData?.baseComments?.data && 
+            <Stack px={1}>
+                {commentData.baseComments.data.map((comment) => {
+                    const Component = comment.repliesCount > 0 ? 
+                    CommentWithReplies : Comment;
                     return <Component 
                             comment={comment} 
                             onReply={() => handleReplyClick(comment.author.username, comment.id)} />
                 })}
-            </Stack>
+            </Stack>}
             {commentData && commentData.baseComments.hasMore && (
                 <Flex alignItems='center'>
                     <Divider borderColor='black' maxW='8' />
@@ -65,6 +67,8 @@ export const CommentSection: React.FC<CommentSectionProps> = ({
                     variant='unstyled'
                     ml={2}
                     type='button'
+                    color='gray'
+                    fontSize='sm'
                     isLoading={loading}
                     onClick={handleLoadMore}>
                         View more comments
@@ -73,7 +77,7 @@ export const CommentSection: React.FC<CommentSectionProps> = ({
             )}
             <Box
                 position="sticky"
-                bgColor="white"
+                bgColor='white'
                 bottom={0}
                 right={0}
                 left={0}
