@@ -4,21 +4,59 @@ import { CommentEntity as Comment } from "../entities/comment";
 
 export const CommentResolvers: Resolvers = {
     Query: {
-        baseComments(_, { postId }) {
-            return dataManager.query(`
-                SELECT c.*
-                FROM comment_entity c
-                WHERE c."postId" = $1 and c."parentId" IS NULL
-                ORDER BY c."createdAt" DESC;
-                `, [postId]);
+        async baseComments(_, { postId, options: { limit, cursor } }) {
+            const realLimit = Math.min(10, limit);
+            const paginatedLimit = realLimit + 1;
+
+            const replacements: any[] = [postId, paginatedLimit];
+
+            if (cursor) {
+                replacements.push(new Date(parseInt(cursor)));
+            }
+
+            const cursorCondition = cursor ? 'and c."createdAt" < $3' : '';
+
+            const comments = await dataManager.query(`
+                    SELECT c.*
+                    FROM comment_entity c
+                    WHERE c."postId" = $1 and c."parentId" IS NULL ${cursorCondition}
+                    order by c."createdAt" DESC
+                    limit $2
+                `,
+                replacements
+            );
+
+            return { 
+                baseComments: comments.slice(0, realLimit),
+                hasMore: comments.length === paginatedLimit,
+            }
         },
-        replies(_, { parentCommentId }) {
-            return dataManager.query(`
-                SELECT c.*
-                FROM comment_entity c
-                WHERE c."parentId" = $1
-                ORDER BY c."createdAt" DESC;
-            `, [parentCommentId]);
+        async replies(_, { parentCommentId, options: { limit, cursor } }) {
+            const realLimit = Math.min(10, limit);
+            const paginatedLimit = realLimit + 1;
+
+            const replacements: any[] = [parentCommentId, paginatedLimit];
+
+            if (cursor) {
+                replacements.push(new Date(parseInt(cursor)));
+            }
+
+            const cursorCondition = cursor ? 'and c."createdAt" < $3' : '';
+
+            const comments = await dataManager.query(`
+                    SELECT c.*
+                    FROM comment_entity c
+                    WHERE c."parentId" = $1 ${cursorCondition}
+                    ORDER BY c."createdAt" DESC
+                    LIMIT $2
+                `,
+                replacements
+            );
+
+            return { 
+                replies: comments.slice(0, realLimit),
+                hasMore: comments.length === paginatedLimit,
+            }
         }
     },
     Mutation: {
