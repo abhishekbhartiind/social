@@ -30,7 +30,7 @@ export const CommentResolvers: Resolvers = {
                 }
             }
             await dataManager.save(comment);
-            return true;
+            return comment;
         },
         async deleteComment(_, { commentId, postId }, { req }) {
             const comment = await dataManager.findOneBy(Comment, 
