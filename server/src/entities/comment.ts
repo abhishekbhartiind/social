@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { PostEntity as Post } from "./post";
 import { UserEntity as User } from "./user";
 
@@ -31,4 +31,10 @@ export class CommentEntity {
 
     @OneToMany(() => CommentEntity, (comment) => comment.parent)
     children: CommentEntity[];
+
+    @CreateDateColumn()
+    createdAt: Date
+
+    @UpdateDateColumn()
+    updatedAt: Date
 }
