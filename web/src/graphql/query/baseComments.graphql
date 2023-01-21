@@ -1,0 +1,14 @@
+query BaseComments($postId: ID!) {
+    baseComments(postId: $postId) {
+        author {
+            username
+            email
+            id
+        }
+        authorId
+        content
+        id
+        postId
+        repliesCount
+    }
+}
