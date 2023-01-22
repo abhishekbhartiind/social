@@ -1,4 +1,4 @@
-import { Avatar, Box, Flex, Heading, Image, Stack, Text } from "@chakra-ui/react";
+import { Avatar, Box, Divider, Flex, Heading, Image, Skeleton, SkeletonCircle, SkeletonText, Text } from "@chakra-ui/react";
 import { formatDistanceToNow } from "date-fns";
 import { useRouter } from "next/router";
 import React from "react";
@@ -45,12 +45,20 @@ const Post: React.FC<{}> = ({}) => {
         <Layout home={false}>
             <Flex 
                 flex="1" 
-                gap={4}
+                gap={2}
                 alignItems="center" 
                 flexWrap="wrap"
                 mb={2}>
-                <Avatar name={data.post.creator.username} src="" />
-                <Stack spacing={1}>
+                <SkeletonCircle 
+                isLoaded={!loading}
+                size='14'>
+                    <Avatar name={data.post.creator.username} src="" />
+                </SkeletonCircle>
+                <SkeletonText 
+                isLoaded={!loading}
+                noOfLines={2} 
+                width='24'
+                skeletonHeight='4'>
                     <Heading size="sm" textTransform="uppercase">
                         {data.post.creator.username}
                     </Heading>
@@ -59,32 +67,45 @@ const Post: React.FC<{}> = ({}) => {
                         addSuffix: true,
                     })}
                     </Text>
-                </Stack>
+                </SkeletonText>
                 {meData?.me?.id === data.post.creatorId && 
                 (<Box ml='auto' >
-                    <EditDeleteMenu id={data.post.id} />
+                    <Skeleton isLoaded={!loading}>
+                        <EditDeleteMenu id={data.post.id} />
+                    </Skeleton>
                 </Box>)}
             </Flex>
-            <Text my={4}>
-                {data.post.text}
-            </Text>
-            <Image
-                objectFit="cover"
-                src="https://images.unsplash.com/photo-1531403009284-440f080d1e12?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
-                alt="Chakra UI"
-                mb={2}
-            />
-            <Flex alignItems='center' mb={2}>
-                <LikeButton 
-                    aria-label='Like post'
-                    isLiked={data.post.isLiked}
-                    iconSize={28}
-                    id={data.post.id} />
-                <Text fontSize='sm' fontWeight='bold' ml='auto'>
-                    {data.post.likeCount} likes 
-                    &nbsp; {data.post.commentCount} comments
+            <SkeletonText
+            isLoaded={!loading}
+            noOfLines={4}
+            skeletonHeight='4'
+            mb={4}>
+                <Text my={4}>
+                    {data.post.text}
                 </Text>
-            </Flex>
+            </SkeletonText>
+            <Skeleton isLoaded={!loading}>
+                <Image
+                    objectFit="cover"
+                    src="https://images.unsplash.com/photo-1531403009284-440f080d1e12?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
+                    alt="Chakra UI"
+                    mb={2}
+                />
+            </Skeleton>
+            <Skeleton isLoaded={!loading}>
+                <Flex alignItems='center' mb={2}>
+                    <LikeButton 
+                        aria-label='Like post'
+                        isLiked={data.post.isLiked}
+                        iconSize={28}
+                        id={data.post.id} />
+                    <Text fontSize='sm' fontWeight='bold' ml='auto'>
+                        {data.post.likeCount} likes 
+                        &nbsp; {data.post.commentCount} comments
+                    </Text>
+                </Flex>
+            </Skeleton>
+            <Divider mb={4} color='gray'/>
             <CommentSection
                 postId={data.post.id} />
         </Layout>

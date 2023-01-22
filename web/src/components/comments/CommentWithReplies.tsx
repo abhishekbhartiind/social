@@ -1,4 +1,4 @@
-import { Box, Button, Divider, Flex, Stack } from '@chakra-ui/react';
+import { Box, Button, Divider, Flex, Skeleton, Stack } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { BaseComment, useRepliesQuery } from '../../gql/graphql';
 import { Comment } from './Comment';
@@ -9,13 +9,13 @@ interface CommentWithRepliesProps {
 }
 
 export const CommentWithReplies: React.FC<CommentWithRepliesProps> = ({ 
-    comment, onReply 
+    comment, onReply
 }) => {
     const [repliesVisibility, setRepliesVisibility] = useState<'hide' | 'show'>(
         'hide'
     );
 
-    const { data, fetchMore } = useRepliesQuery({
+    const { data, loading, fetchMore } = useRepliesQuery({
         skip: repliesVisibility === 'hide',
         variables: {
             parentCommentId: comment.id,
@@ -52,29 +52,39 @@ export const CommentWithReplies: React.FC<CommentWithRepliesProps> = ({
 
     return (
         <Box>
-            <Comment comment={comment} onReply={onReply} />
+            <Comment comment={comment} onReply={onReply} loading={loading} />
             {repliesVisibility === 'show' && (
                 <Stack ml={8} mt={2}>
                 {data?.replies.data.map(reply => (
-                    <Comment key={reply.id} comment={reply} onReply={onReply}/>
+                    <Comment 
+                    key={reply.id} 
+                    comment={reply} 
+                    onReply={onReply} 
+                    loading={loading}/>
                 ))}
                 </Stack>
             )}
-            <Flex alignItems='center' color='gray.500'>
-                <Divider borderColor='gray' maxW='16' />
-                <Button
-                    variant='unstyled'
-                    ml={2}
-                    type='button'
-                    fontSize='sm'
-                    onClick={handleViewReply}
-                >
-                    {repliesVisibility === 'hide' || data?.replies.hasMore 
-                    ? `View ${comment.repliesCount - (data?.replies.data.length || 0)} more 
-                    ${comment.repliesCount - (data?.replies.data.length || 0) === 1 ? 'reply' : 'replies'}`
-                    : 'Hide replies'}
-                </Button>
-            </Flex>
+            <Skeleton 
+            isLoaded={!loading}
+            mt={1}
+            mb={2}
+            height='4'>
+                <Flex alignItems='center' color='gray.500'>
+                    <Divider borderColor='gray' maxW='16' />
+                    <Button
+                        variant='unstyled'
+                        ml={2}
+                        type='button'
+                        fontSize='sm'
+                        onClick={handleViewReply}
+                    >
+                        {repliesVisibility === 'hide' || data?.replies.hasMore 
+                        ? `View ${comment.repliesCount - (data?.replies.data.length || 0)} more 
+                        ${comment.repliesCount - (data?.replies.data.length || 0) === 1 ? 'reply' : 'replies'}`
+                        : 'Hide replies'}
+                    </Button>
+                </Flex>
+            </Skeleton>
         </Box>
     );
 };

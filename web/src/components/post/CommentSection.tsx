@@ -1,4 +1,4 @@
-import { Box, Button, Divider, Flex, Stack } from "@chakra-ui/react";
+import { Box, Button, Divider, Flex, Skeleton, Stack } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { useBaseCommentsQuery } from "../../gql/graphql";
 import { AddComment } from "../AddComment";
@@ -49,31 +49,42 @@ export const CommentSection: React.FC<CommentSectionProps> = ({
     }
 
     return (
-        <Box my={2}>
+        <Box>
             {commentData?.baseComments?.data && 
             <Stack px={1}>
                 {commentData.baseComments.data.map((comment) => {
-                    const Component = comment.repliesCount > 0 ? 
-                    CommentWithReplies : Comment;
-                    return <Component 
-                            comment={comment} 
-                            onReply={() => handleReplyClick(comment.author.username, comment.id)} />
+                    return comment.repliesCount > 0 ? 
+                    <CommentWithReplies 
+                        key={comment.id}
+                        comment={comment} 
+                        onReply={() => 
+                            handleReplyClick(comment.author.username, comment.id)} />
+                    : <Comment 
+                        key={comment.id}
+                        loading={loading}
+                        comment={comment} 
+                        onReply={() => 
+                            handleReplyClick(comment.author.username, comment.id)} />
                 })}
             </Stack>}
             {commentData && commentData.baseComments.hasMore && (
-                <Flex alignItems='center'>
-                    <Divider borderColor='black' maxW='8' />
-                    <Button
-                    variant='unstyled'
-                    ml={2}
-                    type='button'
-                    color='gray'
-                    fontSize='sm'
-                    isLoading={loading}
-                    onClick={handleLoadMore}>
-                        View more comments
-                    </Button>
-                </Flex>
+                <Skeleton 
+                isLoaded={!loading}
+                height='8'>
+                    <Flex alignItems='center'>
+                        <Divider borderColor='black' maxW='8' />
+                        <Button
+                        variant='unstyled'
+                        ml={2}
+                        type='button'
+                        color='gray'
+                        fontSize='sm'
+                        isLoading={loading}
+                        onClick={handleLoadMore}>
+                            View more comments
+                        </Button>
+                    </Flex>
+                </Skeleton>
             )}
             <Box
                 position="sticky"

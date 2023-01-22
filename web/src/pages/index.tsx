@@ -1,4 +1,4 @@
-import { Button, Flex, Heading, Stack, Text} from "@chakra-ui/react";
+import { Button, Flex, Heading, Stack, Text } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { LoadMoreButton } from "../components/buttons/LoadMoreButton";
 import Layout from "../components/Layout";
@@ -45,9 +45,10 @@ const Index = () => {
             <Stack direction='column' spacing={4} mb={4}>
                 {data?.posts.data.map(post => (
                     <PostCard 
-                        key={post.id} 
-                        post={post} 
-                        meId={meData?.me?.id} />
+                    key={post.id} 
+                    post={post} 
+                    meId={meData?.me?.id} 
+                    loading={loading}/>
                 ))}
             </Stack>
             {data && data.posts.hasMore && (
