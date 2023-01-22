@@ -33,12 +33,12 @@ const Register: React.FC<{}> = ({}) => {
         const registerResponse = response.data?.register;
         if (registerResponse?.errors) {
             registerResponse.errors.forEach((error) => {
-            const { field, message } = error;
-            methods.setError(
-                field as fieldTypes,
-                { type: "custom", message },
-                { shouldFocus: true }
-            );
+                const { field, message } = error;
+                methods.setError(
+                    field as fieldTypes,
+                    { type: "custom", message },
+                    { shouldFocus: true }
+                );
             });
         } else if (registerResponse?.user) {
             router.push("/"); //client-side navigation to home page

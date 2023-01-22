@@ -21,24 +21,12 @@ const Post: React.FC<{}> = ({}) => {
         },
     });
 
-    if (loading) {
-        return (
-            <Layout>
-                <div>loading...</div>
-            </Layout>
-        );
-    }
-
     if (error) {
-        return <div>{error.message}</div>;
+        return <Layout><div>{error.message}</div></Layout>;
     }
 
     if (!data?.post) {
-        return (
-            <Layout>
-                <div>cannot find post</div>
-            </Layout>
-        );
+        return <Layout><div>Cannot find post</div></Layout>;
     }
 
     return (
@@ -49,31 +37,31 @@ const Post: React.FC<{}> = ({}) => {
                 alignItems="center" 
                 flexWrap="wrap"
                 mb={2}>
-                <SkeletonCircle 
-                isLoaded={!loading}
-                size='14'>
-                    <Avatar name={data.post.creator.username} src="" />
-                </SkeletonCircle>
-                <SkeletonText 
-                isLoaded={!loading}
-                noOfLines={2} 
-                width='24'
-                skeletonHeight='4'>
-                    <Heading size="sm" textTransform="uppercase">
-                        {data.post.creator.username}
-                    </Heading>
-                    <Text fontSize='sm'>
-                    {formatDistanceToNow(new Date(parseInt(data.post.createdAt)), {
-                        addSuffix: true,
-                    })}
-                    </Text>
-                </SkeletonText>
-                {meData?.me?.id === data.post.creatorId && 
-                (<Box ml='auto' >
-                    <Skeleton isLoaded={!loading}>
-                        <EditDeleteMenu id={data.post.id} />
-                    </Skeleton>
-                </Box>)}
+                    <SkeletonCircle 
+                    isLoaded={!loading}
+                    size='14'>
+                        <Avatar name={data.post.creator.username} src="" />
+                    </SkeletonCircle>
+                        <SkeletonText 
+                        isLoaded={!loading}
+                        noOfLines={2} 
+                        width='24'
+                        skeletonHeight='4'>
+                            <Heading size="sm" textTransform="uppercase">
+                                {data.post.creator.username}
+                            </Heading>
+                            <Text fontSize='sm'>
+                            {formatDistanceToNow(new Date(parseInt(data.post.createdAt)), {
+                                addSuffix: true,
+                            })}
+                            </Text>
+                        </SkeletonText>
+                    {meData?.me?.id === data.post.creatorId && 
+                    (<Box ml='auto' >
+                        <Skeleton isLoaded={!loading}>
+                            <EditDeleteMenu id={data.post.id} />
+                        </Skeleton>
+                    </Box>)}
             </Flex>
             <SkeletonText
             isLoaded={!loading}

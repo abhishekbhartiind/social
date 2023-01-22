@@ -46,19 +46,15 @@ const EditPost: React.FC<{}> = ({}) => {
     }
 
     if (loading) {
-        return <Layout>
-            <div>loading...</div>
-        </Layout>
+        return <Layout><div>loading...</div></Layout>;
     }
 
     if (error) {
-        return <div>{error.message}</div>
+        return <Layout><div>{error.message}</div></Layout>;
     }
 
     if (!data?.post) {
-        return <Layout>
-            <div>cannot find post</div>
-        </Layout>
+        return <Layout><div>Cannot find post</div></Layout>;
     }
 
     return (

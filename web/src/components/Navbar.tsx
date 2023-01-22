@@ -47,7 +47,13 @@ export const Navbar: React.FC<NavbarProps> = ({home=false}) => {
     }, [loading, data]);
 
     return (
-        <Flex position='sticky' top={0} zIndex={1} bg='tan' alignItems='center' p={4}>
+        <Flex 
+        position='sticky' 
+        top={0}
+        zIndex={1} 
+        bg='tan' 
+        alignItems='center' 
+        p={4}>
             {!home && <Box>
                 <Link as={NextLink} href='/'>
                     <Heading>Instapets</Heading>

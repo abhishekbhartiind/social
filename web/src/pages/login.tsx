@@ -36,17 +36,17 @@ export const Login: React.FC<{}> = ({}) => {
         loginResponse.errors.forEach((error) => {
             const { field, message } = error;
             methods.setError(
-            field as fieldTypes,
-            { type: "custom", message },
-            { shouldFocus: true }
+                field as fieldTypes,
+                { type: "custom", message },
+                { shouldFocus: true }
             );
         });
         } else if (loginResponse?.user) {
-        if (typeof router.query.next === "string") {
-            router.push(router.query.next); //when previous page is not homepage like create-post page
-        } else {
-            router.push("/"); //client-side navigation to home page
-        }
+            if (typeof router.query.next === "string") {
+                router.push(router.query.next); //when previous page is not homepage like create-post page
+            } else {
+                router.push("/"); //client-side navigation to home page
+            }
         }
     };
 
