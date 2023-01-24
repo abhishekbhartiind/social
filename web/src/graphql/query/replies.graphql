@@ -13,6 +13,8 @@ query Replies($parentCommentId: ID!, $options: PaginatedArgs!) {
             id
             postId
             updatedAt
+            isLiked
+            likeCount
         }
     }
 }
