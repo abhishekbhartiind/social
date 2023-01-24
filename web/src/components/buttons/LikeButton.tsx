@@ -1,25 +1,25 @@
 import { ApolloCache, gql } from '@apollo/client';
 import { IconButton, IconButtonProps } from '@chakra-ui/react';
 import { AiFillLike, AiOutlineLike } from 'react-icons/ai';
-import { LikePostMutation, useLikePostMutation } from '../../gql/graphql';
 
 type LikeButtonProps<T> = IconButtonProps & {
-    isLiked?: T,
-    id: string;
+    isLiked?: T;
     iconSize: number;
+    onLike: () => void;
 }
 
-const updateCacheAfterLike = (
+export const updateCacheAfterLike = <T extends Record<string, any>>(
     id: string,
-    cache: ApolloCache<LikePostMutation>
+    cache: ApolloCache<T>,
+    type: 'BaseComment' | 'Reply' | 'Post'
 ) => {
     cache.updateFragment<{ 
         isLiked: boolean | null,
         likeCount: number, 
     }>({
-        id: "Post:" + id,
+        id: `${type}:` + id,
         fragment: gql`
-            fragment _ on Post {
+            fragment _ on ${type} {
                 isLiked
                 likeCount
             }
@@ -44,17 +44,9 @@ const updateCacheAfterLike = (
     });
 }
 
-const LikeButton = <T extends any>({ 
-    isLiked, id, iconSize, ...rest 
+export const LikeButton = <T extends any>({ 
+    isLiked, iconSize, onLike, ...rest
 }: LikeButtonProps<T>) => {
-    const [likePost] = useLikePostMutation();
-
-    const handleLikePost = async (id: string) => {
-        await likePost({
-            variables: { postId: id },
-            update: (cache) => updateCacheAfterLike(id, cache)
-        });
-    };
     
     const Icon = isLiked ? AiFillLike : AiOutlineLike;
 
@@ -63,11 +55,8 @@ const LikeButton = <T extends any>({
             {...rest}
             variant='unstyled'
             color='red'
-            width='fit-content'
             icon={<Icon size={iconSize}/>}
-            onClick={() => handleLikePost(id)}
+            onClick={onLike}
         />
     )
 }
-
-export default LikeButton;
