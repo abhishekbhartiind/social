@@ -2,7 +2,7 @@ import { Avatar, Box, Divider, Flex, Heading, Image, Skeleton, SkeletonCircle, S
 import { formatDistanceToNow } from "date-fns";
 import { useRouter } from "next/router";
 import React from "react";
-import LikeButton from "../../components/buttons/LikeButton";
+import { LikePostButton } from "../../components/buttons/LikePostButton";
 import { EditDeleteMenu } from "../../components/EditDeleteMenu";
 import Layout from "../../components/Layout";
 import { CommentSection } from "../../components/post/CommentSection";
@@ -82,8 +82,7 @@ const Post: React.FC<{}> = ({}) => {
             </Skeleton>
             <Skeleton isLoaded={!loading}>
                 <Flex alignItems='center' mb={2}>
-                    <LikeButton 
-                        aria-label='Like post'
+                    <LikePostButton 
                         isLiked={data.post.isLiked}
                         iconSize={28}
                         id={data.post.id} />
