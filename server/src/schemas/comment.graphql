@@ -6,6 +6,8 @@ interface Comment {
     content: String!
     createdAt: String!
     updatedAt: String!
+    likeCount: Int!
+    isLiked: Boolean
 }
 
 type BaseComment implements Comment {
@@ -17,6 +19,8 @@ type BaseComment implements Comment {
     repliesCount: Int!
     createdAt: String!
     updatedAt: String!
+    likeCount: Int!
+    isLiked: Boolean
 }
 
 type Reply implements Comment {
@@ -27,6 +31,8 @@ type Reply implements Comment {
     content: String!
     createdAt: String!
     updatedAt: String!
+    likeCount: Int!
+    isLiked: Boolean
 }
 
 type PaginatedBaseComments implements PaginatedList {
@@ -48,4 +54,5 @@ type Mutation {
     commentPost(postId: ID!, parentCommentId: ID, content: String!): Comment!
     editComment(commentId: ID!, postId: ID!, content: String!): Comment
     deleteComment(commentId: ID!, postId: ID!): Boolean!
+    likeComment(commentId: ID!): Boolean!
 }
