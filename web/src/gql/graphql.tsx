@@ -22,6 +22,8 @@ export type BaseComment = Comment & {
   content: Scalars['String'];
   createdAt: Scalars['String'];
   id: Scalars['ID'];
+  isLiked?: Maybe<Scalars['Boolean']>;
+  likeCount: Scalars['Int'];
   postId: Scalars['ID'];
   repliesCount: Scalars['Int'];
   updatedAt: Scalars['String'];
@@ -33,6 +35,8 @@ export type Comment = {
   content: Scalars['String'];
   createdAt: Scalars['String'];
   id: Scalars['ID'];
+  isLiked?: Maybe<Scalars['Boolean']>;
+  likeCount: Scalars['Int'];
   postId: Scalars['ID'];
   updatedAt: Scalars['String'];
 };
@@ -50,6 +54,7 @@ export type Mutation = {
   deleteComment: Scalars['Boolean'];
   deletePost: Scalars['Boolean'];
   editComment?: Maybe<Comment>;
+  likeComment: Scalars['Boolean'];
   likePost: Scalars['Boolean'];
   login: UserResponse;
   logout: Scalars['Boolean'];
@@ -86,6 +91,11 @@ export type MutationEditCommentArgs = {
   commentId: Scalars['ID'];
   content: Scalars['String'];
   postId: Scalars['ID'];
+};
+
+
+export type MutationLikeCommentArgs = {
+  commentId: Scalars['ID'];
 };
 
 
@@ -191,6 +201,8 @@ export type Reply = Comment & {
   content: Scalars['String'];
   createdAt: Scalars['String'];
   id: Scalars['ID'];
+  isLiked?: Maybe<Scalars['Boolean']>;
+  likeCount: Scalars['Int'];
   postId: Scalars['ID'];
   updatedAt: Scalars['String'];
 };
@@ -329,6 +341,37 @@ export function useDeletePostMutation(baseOptions?: Apollo.MutationHookOptions<D
 export type DeletePostMutationHookResult = ReturnType<typeof useDeletePostMutation>;
 export type DeletePostMutationResult = Apollo.MutationResult<DeletePostMutation>;
 export type DeletePostMutationOptions = Apollo.BaseMutationOptions<DeletePostMutation, DeletePostMutationVariables>;
+export const LikeCommentDocument = gql`
+    mutation LikeComment($commentId: ID!) {
+  likeComment(commentId: $commentId)
+}
+    `;
+export type LikeCommentMutationFn = Apollo.MutationFunction<LikeCommentMutation, LikeCommentMutationVariables>;
+
+/**
+ * __useLikeCommentMutation__
+ *
+ * To run a mutation, you first call `useLikeCommentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLikeCommentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [likeCommentMutation, { data, loading, error }] = useLikeCommentMutation({
+ *   variables: {
+ *      commentId: // value for 'commentId'
+ *   },
+ * });
+ */
+export function useLikeCommentMutation(baseOptions?: Apollo.MutationHookOptions<LikeCommentMutation, LikeCommentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<LikeCommentMutation, LikeCommentMutationVariables>(LikeCommentDocument, options);
+      }
+export type LikeCommentMutationHookResult = ReturnType<typeof useLikeCommentMutation>;
+export type LikeCommentMutationResult = Apollo.MutationResult<LikeCommentMutation>;
+export type LikeCommentMutationOptions = Apollo.BaseMutationOptions<LikeCommentMutation, LikeCommentMutationVariables>;
 export const LikePostDocument = gql`
     mutation LikePost($postId: ID!) {
   likePost(id: $postId)
@@ -530,6 +573,8 @@ export const BaseCommentsDocument = gql`
       repliesCount
       id
       postId
+      isLiked
+      likeCount
     }
   }
 }
@@ -715,6 +760,8 @@ export const RepliesDocument = gql`
       id
       postId
       updatedAt
+      isLiked
+      likeCount
     }
   }
 }
@@ -772,6 +819,13 @@ export type DeletePostMutationVariables = Exact<{
 
 export type DeletePostMutation = { __typename?: 'Mutation', deletePost: boolean };
 
+export type LikeCommentMutationVariables = Exact<{
+  commentId: Scalars['ID'];
+}>;
+
+
+export type LikeCommentMutation = { __typename?: 'Mutation', likeComment: boolean };
+
 export type LikePostMutationVariables = Exact<{
   postId: Scalars['ID'];
 }>;
@@ -814,7 +868,7 @@ export type BaseCommentsQueryVariables = Exact<{
 }>;
 
 
-export type BaseCommentsQuery = { __typename?: 'Query', baseComments: { __typename?: 'PaginatedBaseComments', hasMore: boolean, data: Array<{ __typename?: 'BaseComment', authorId: string, createdAt: string, updatedAt: string, content: string, repliesCount: number, id: string, postId: string, author: { __typename?: 'User', email: string, id: string, username: string } }> } };
+export type BaseCommentsQuery = { __typename?: 'Query', baseComments: { __typename?: 'PaginatedBaseComments', hasMore: boolean, data: Array<{ __typename?: 'BaseComment', authorId: string, createdAt: string, updatedAt: string, content: string, repliesCount: number, id: string, postId: string, isLiked?: boolean | null, likeCount: number, author: { __typename?: 'User', email: string, id: string, username: string } }> } };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -841,4 +895,4 @@ export type RepliesQueryVariables = Exact<{
 }>;
 
 
-export type RepliesQuery = { __typename?: 'Query', replies: { __typename?: 'PaginatedReplies', hasMore: boolean, data: Array<{ __typename?: 'Reply', authorId: string, content: string, createdAt: string, id: string, postId: string, updatedAt: string, author: { __typename?: 'User', email: string, username: string, id: string } }> } };
+export type RepliesQuery = { __typename?: 'Query', replies: { __typename?: 'PaginatedReplies', hasMore: boolean, data: Array<{ __typename?: 'Reply', authorId: string, content: string, createdAt: string, id: string, postId: string, updatedAt: string, isLiked?: boolean | null, likeCount: number, author: { __typename?: 'User', email: string, username: string, id: string } }> } };
