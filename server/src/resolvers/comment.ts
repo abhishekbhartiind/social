@@ -1,6 +1,7 @@
 import { dataManager } from "../AppDataSource";
 import { Resolvers } from "../generated/graphql";
 import { CommentEntity as Comment } from "../entities/comment";
+import { CommentLike } from "../entities/comment-like";
 
 export const CommentResolvers: Resolvers = {
     Query: {
@@ -111,7 +112,28 @@ export const CommentResolvers: Resolvers = {
             .execute();
             
             return results.raw[0];
-        }
+        },
+        async likeComment(_, { commentId }, { req }) {
+            const existingLike = await dataManager.findOneBy(CommentLike, {
+                commentId: parseInt(commentId),
+                userId: req.session.userId
+            });
+            if (!existingLike) {
+                const like = dataManager.create(CommentLike, {
+                    like: true,
+                    commentId: parseInt(commentId),
+                    userId: req.session.userId
+                });
+                await dataManager.save(like);
+            } else {
+                await dataManager.delete(CommentLike,
+                    {
+                        commentId: parseInt(commentId), 
+                        userId: req.session.userId 
+                    });
+            }
+            return true;
+        },
     },
     Comment: {
         __resolveType(comment) {
@@ -134,11 +156,37 @@ export const CommentResolvers: Resolvers = {
             .where('"parentId" = :id', { id })
             .getMany()
             .then(data => data.length);
-        }
+        },
+        async isLiked({ id }, _, { req }) {
+            if (!req.session.userId) {
+                return null;
+            }
+            const like = await dataManager.findOneBy(CommentLike, 
+                { commentId: parseInt(id), userId: req.session.userId });
+            return like ? true : false;
+        },
+        async likeCount({ id }) {
+            const likes = await dataManager.findBy(CommentLike, 
+                { commentId: parseInt(id) });
+            return likes.length;
+        },
     },
     Reply: {
         author({ authorId }, _, { userLoader }) {
             return userLoader.load(parseInt(authorId));
-        }
+        },
+        async isLiked({ id }, _, { req }) {
+            if (!req.session.userId) {
+                return null;
+            }
+            const like = await dataManager.findOneBy(CommentLike, 
+                { commentId: parseInt(id), userId: req.session.userId });
+            return like ? true : false;
+        },
+        async likeCount({ id }) {
+            const likes = await dataManager.findBy(CommentLike, 
+                { commentId: parseInt(id) });
+            return likes.length;
+        },
     }
 }
