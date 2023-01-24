@@ -26,6 +26,8 @@ export type BaseComment = Comment & {
   content: Scalars['String'];
   createdAt: Scalars['String'];
   id: Scalars['ID'];
+  isLiked?: Maybe<Scalars['Boolean']>;
+  likeCount: Scalars['Int'];
   postId: Scalars['ID'];
   repliesCount: Scalars['Int'];
   updatedAt: Scalars['String'];
@@ -37,6 +39,8 @@ export type Comment = {
   content: Scalars['String'];
   createdAt: Scalars['String'];
   id: Scalars['ID'];
+  isLiked?: Maybe<Scalars['Boolean']>;
+  likeCount: Scalars['Int'];
   postId: Scalars['ID'];
   updatedAt: Scalars['String'];
 };
@@ -54,6 +58,7 @@ export type Mutation = {
   deleteComment: Scalars['Boolean'];
   deletePost: Scalars['Boolean'];
   editComment?: Maybe<Comment>;
+  likeComment: Scalars['Boolean'];
   likePost: Scalars['Boolean'];
   login: UserResponse;
   logout: Scalars['Boolean'];
@@ -90,6 +95,11 @@ export type MutationEditCommentArgs = {
   commentId: Scalars['ID'];
   content: Scalars['String'];
   postId: Scalars['ID'];
+};
+
+
+export type MutationLikeCommentArgs = {
+  commentId: Scalars['ID'];
 };
 
 
@@ -195,6 +205,8 @@ export type Reply = Comment & {
   content: Scalars['String'];
   createdAt: Scalars['String'];
   id: Scalars['ID'];
+  isLiked?: Maybe<Scalars['Boolean']>;
+  likeCount: Scalars['Int'];
   postId: Scalars['ID'];
   updatedAt: Scalars['String'];
 };
@@ -338,6 +350,8 @@ export type BaseCommentResolvers<ContextType = MyContext, ParentType extends Res
   content?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  isLiked?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  likeCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   postId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   repliesCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -351,6 +365,8 @@ export type CommentResolvers<ContextType = MyContext, ParentType extends Resolve
   content?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  isLiked?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  likeCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   postId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
 }>;
@@ -367,6 +383,7 @@ export type MutationResolvers<ContextType = MyContext, ParentType extends Resolv
   deleteComment?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationDeleteCommentArgs, 'commentId' | 'postId'>>;
   deletePost?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationDeletePostArgs, 'id'>>;
   editComment?: Resolver<Maybe<ResolversTypes['Comment']>, ParentType, ContextType, RequireFields<MutationEditCommentArgs, 'commentId' | 'content' | 'postId'>>;
+  likeComment?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationLikeCommentArgs, 'commentId'>>;
   likePost?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationLikePostArgs, 'id'>>;
   login?: Resolver<ResolversTypes['UserResponse'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'password' | 'username'>>;
   logout?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -426,6 +443,8 @@ export type ReplyResolvers<ContextType = MyContext, ParentType extends Resolvers
   content?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  isLiked?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  likeCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   postId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
