@@ -6,7 +6,7 @@ import { Box, Skeleton, SkeletonCircle, SkeletonText } from "@chakra-ui/react";
 import { formatDistanceToNow } from "date-fns";
 import NextLink from "next/link";
 import { Post } from "../../gql/graphql";
-import LikeButton from "../buttons/LikeButton";
+import { LikePostButton } from "../buttons/LikePostButton";
 import { EditDeleteMenu } from "../EditDeleteMenu";
 import PostDescription from "./PostDescription";
 
@@ -66,7 +66,7 @@ const PostCard = <T extends Post>({
         </LinkBox>
         <CardBody px={4}>
             <Skeleton isLoaded={!loading} mb={4} height="6" fadeDuration={2}>
-                <LikeButton
+                <LikePostButton
                 aria-label="Like post"
                 isLiked={post.isLiked}
                 iconSize={28}
