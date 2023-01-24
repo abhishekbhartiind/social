@@ -2,6 +2,7 @@ import { Avatar, Box, Button, Flex, Heading, Skeleton, SkeletonCircle, SkeletonT
 import { formatDistanceToNow } from "date-fns";
 import React from "react";
 import { BaseComment, Reply } from "../../gql/graphql";
+import { LikeCommentButton } from "../buttons/LikeCommentButton";
 
 interface CommentProps {
   comment: BaseComment | Reply;
@@ -9,11 +10,15 @@ interface CommentProps {
   loading: boolean;
 }
 
+function isBaseComment(comment: BaseComment | Reply): comment is BaseComment {
+    return (comment as BaseComment).repliesCount !== undefined;
+}
+
 export const Comment: React.FC<CommentProps> = ({ 
     comment, onReply, loading
 }) => {
     return (
-        <Flex alignItems='start' gap={2}>
+        <Flex alignItems='start' gap={2} py={2}>
             <SkeletonCircle isLoaded={!loading} mt={2}>
                 <Avatar size='sm' name={comment.author.username} src="" />
             </SkeletonCircle>
@@ -45,7 +50,14 @@ export const Comment: React.FC<CommentProps> = ({
                     gap={2} 
                     fontSize='sm'
                     color='gray.500'>
-                        <Text>0 likes</Text>
+                        <LikeCommentButton 
+                            type={isBaseComment(comment) ? "BaseComment" : "Reply"}
+                            isLiked={comment.isLiked}
+                            iconSize={20}
+                            id={comment.id} />
+                        <Text>
+                            {comment.likeCount} {comment.likeCount <= 1 ? 'like' : 'likes'}
+                        </Text>
                         <Button
                         variant='unstyled'
                         fontSize='sm'
