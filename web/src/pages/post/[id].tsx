@@ -42,20 +42,21 @@ const Post: React.FC<{}> = ({}) => {
                     size='14'>
                         <Avatar name={data.post.creator.username} src="" />
                     </SkeletonCircle>
-                        <SkeletonText 
+                    <SkeletonText 
                         isLoaded={!loading}
                         noOfLines={2} 
                         width='24'
-                        skeletonHeight='4'>
-                            <Heading size="sm" textTransform="uppercase">
-                                {data.post.creator.username}
-                            </Heading>
-                            <Text fontSize='sm'>
+                        skeletonHeight='4'
+                        flex={1}>
+                        <Heading size="sm" textTransform="uppercase">
+                            {data.post.creator.username}
+                        </Heading>
+                        <Text fontSize='sm'>
                             {formatDistanceToNow(new Date(parseInt(data.post.createdAt)), {
                                 addSuffix: true,
                             })}
-                            </Text>
-                        </SkeletonText>
+                        </Text>
+                    </SkeletonText>
                     {meData?.me?.id === data.post.creatorId && 
                     (<Box ml='auto' >
                         <Skeleton isLoaded={!loading}>
