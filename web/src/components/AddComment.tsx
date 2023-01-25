@@ -1,16 +1,15 @@
-import React from 'react'
-import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
-import InputField from './InputField';
+import { ApolloCache } from '@apollo/client';
 import { Avatar, Flex, IconButton } from '@chakra-ui/react';
+import React from 'react';
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { AiOutlineSend } from 'react-icons/ai';
+import { useCommentContext } from '../context/CommentContext';
 import { CommentPostMutation, useCommentPostMutation } from '../gql/graphql';
-import { ApolloCache, gql } from '@apollo/client';
+import { updateCommentCountInCache, updateRepliesCountInCache } from '../utils/updateCache';
+import InputField from './InputField';
 
 interface AddCommentProps {
     postId: string;
-    parentCommentId?: string;
-    parentCommentAuthor?: string;
-    onSuccess: () => void;
 }
 
 const updateCacheAfterComment = (
@@ -18,23 +17,12 @@ const updateCacheAfterComment = (
     cache: ApolloCache<CommentPostMutation>,
     parentCommentId?: string
 ) => {
-    cache.updateFragment<{ commentCount: number }>({
-        id: "Post:" + postId,
-        fragment: gql`
-            fragment _ on Post {
-                commentCount
-            }
-        `
-    }, 
-    (data) => {
-        if (data) {
-            return {
-                ...data,
-                commentCount: data.commentCount + 1,
-            }
-        } 
-        return data;
-    });
+    updateCommentCountInCache(cache, postId, 'UP', 1);
+
+    if (parentCommentId) {
+        updateRepliesCountInCache(cache, parentCommentId, 'UP', 1);
+    }
+
     const evictOptions: Record<string, string> = { 
         fieldName: parentCommentId ? 'replies' : 'baseComments' };
     cache.evict(evictOptions);
@@ -42,13 +30,10 @@ const updateCacheAfterComment = (
 }
 
 export const AddComment: React.FC<AddCommentProps> = ({ 
-    postId, parentCommentAuthor, parentCommentId, onSuccess
+    postId
 }) => {
-    const methods = useForm<{ content: string }>({
-        values: {
-            content: parentCommentAuthor ? '@' + parentCommentAuthor : '',
-        }
-    });
+    const { parentComment, onSetParentComment } = useCommentContext();
+    const methods = useForm<{ content: string }>();
     const [commentPost] = useCommentPostMutation();
 
     const onSubmit: SubmitHandler<{ content: string }> = async (
@@ -57,28 +42,23 @@ export const AddComment: React.FC<AddCommentProps> = ({
         if (!postId) {
             return;
         }
-        let parentId: string | undefined = parentCommentId;
-        if (parentCommentId && 
-            !(new RegExp(`^@${parentCommentAuthor}`, 'i')).test(values.content)) {
-            parentId = undefined;
-        }
         await commentPost({
             variables: {
                 postId,
                 ...values,
-                parentId
+                parentId: parentComment?.id,
             },
-            update: (cache) => updateCacheAfterComment(postId, cache),
+            update: (cache) => 
+                updateCacheAfterComment(postId, cache, parentComment?.id),
         });
         methods.resetField('content');
-        onSuccess();
+        onSetParentComment(null);
     }
 
     return (
         <FormProvider {...methods}>
             <form onSubmit={methods.handleSubmit(onSubmit)}>
                 <Flex 
-                py={1}
                 alignItems='center'
                 >
                     <Avatar 
@@ -91,22 +71,36 @@ export const AddComment: React.FC<AddCommentProps> = ({
                     alignItems='center'
                     _focusWithin={{
                         ring: 2,
-                        rounded: 'md'
+                        rounded: 'full'
                     }}>
-                        <InputField
-                            _focus={{
-                                ring: 0,
-                                border: 'none'
-                            }}
-                            rounded='none'
-                            roundedLeft='md'
-                            type='text'
-                            name='content'
-                            placeholder='Enter comment' />
+                        <Flex alignItems='center' flex={1}>
+                            {parentComment && (
+                                <Flex 
+                                alignSelf='stretch'
+                                px={2}
+                                alignItems='center'
+                                roundedLeft='full'
+                                bgColor='green' 
+                                color='white'>
+                                    @{parentComment.author}
+                                </Flex>
+                            )}
+                            <InputField
+                                _focus={{
+                                    ring: 0,
+                                    border: 'none'
+                                }}
+                                rounded='none'
+                                roundedLeft={parentComment ? 'none' : 'full'}
+                                type='text'
+                                name='content'
+                                placeholder='Enter comment' />
+                        </Flex>
                         <IconButton
                             rounded='none'
-                            roundedRight='md'
-                            colorScheme='green'
+                            roundedRight='full'
+                            bgColor='green'
+                            color='white'
                             aria-label='Add Comment'
                             type='submit'>
                             <AiOutlineSend />
