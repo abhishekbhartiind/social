@@ -1,15 +1,15 @@
 import { Box, Button, Divider, Flex, Skeleton, Stack } from '@chakra-ui/react';
 import React, { useState } from 'react';
-import { BaseComment, useRepliesQuery } from '../../gql/graphql';
+import { useRepliesQuery } from '../../gql/graphql';
 import { Comment } from './Comment';
 
-interface CommentWithRepliesProps {
-  comment: BaseComment;
-  onReply: () => void;
+interface RepliesProps {
+    parentId: string;
+    parentRepliesCount: number;
 }
 
-export const CommentWithReplies: React.FC<CommentWithRepliesProps> = ({ 
-    comment, onReply
+export const Replies: React.FC<RepliesProps> = ({ 
+    parentId, parentRepliesCount
 }) => {
     const [repliesVisibility, setRepliesVisibility] = useState<'hide' | 'show'>(
         'hide'
@@ -18,12 +18,14 @@ export const CommentWithReplies: React.FC<CommentWithRepliesProps> = ({
     const { data, loading, fetchMore } = useRepliesQuery({
         skip: repliesVisibility === 'hide',
         variables: {
-            parentCommentId: comment.id,
+            parentCommentId: parentId,
             options: {
                 limit: 2
             }
         },
     })
+
+    const remainingRepliesCount = parentRepliesCount - (data?.replies.data.length || 0);
 
     const handleLoadMore = () => {
         if (data) {
@@ -52,23 +54,18 @@ export const CommentWithReplies: React.FC<CommentWithRepliesProps> = ({
 
     return (
         <Box>
-            <Comment comment={comment} onReply={onReply} loading={loading} />
             {repliesVisibility === 'show' && (
                 <Stack ml={8} mt={2}>
                 {data?.replies.data.map(reply => (
                     <Comment 
                     key={reply.id} 
                     comment={reply} 
-                    onReply={onReply} 
-                    loading={loading}/>
+                    loading={loading}
+                    parentId={parentId}/>
                 ))}
                 </Stack>
             )}
-            <Skeleton 
-            isLoaded={!loading}
-            mt={1}
-            mb={2}
-            height='4'>
+            <Skeleton isLoaded={!loading}>
                 <Flex alignItems='center' color='gray.500'>
                     <Divider borderColor='gray' maxW='16' />
                     <Button
@@ -79,8 +76,8 @@ export const CommentWithReplies: React.FC<CommentWithRepliesProps> = ({
                         onClick={handleViewReply}
                     >
                         {repliesVisibility === 'hide' || data?.replies.hasMore 
-                        ? `View ${comment.repliesCount - (data?.replies.data.length || 0)} more 
-                        ${comment.repliesCount - (data?.replies.data.length || 0) === 1 ? 'reply' : 'replies'}`
+                        ? `View ${remainingRepliesCount} more 
+                        ${remainingRepliesCount === 1 ? 'reply' : 'replies'}`
                         : 'Hide replies'}
                     </Button>
                 </Flex>
