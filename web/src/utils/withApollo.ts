@@ -11,7 +11,6 @@ const mergeResults = (
     existing: PaginatedResults | undefined, 
     incoming: PaginatedResults | undefined
 ): PaginatedResults  => {
-    console.log(existing, incoming)
     return {
         ...incoming,
         hasMore: !!incoming?.hasMore,
