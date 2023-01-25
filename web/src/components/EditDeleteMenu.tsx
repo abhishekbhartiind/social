@@ -17,7 +17,7 @@ export const EditDeleteMenu: React.FC<EditDeleteMenuProps> = ({
                 as={IconButton}
                 aria-label="Edit/Delete Options"
                 icon={<GiHamburgerMenu />}
-                variant="outline"
+                variant="ghost"
             />
             <MenuList>
                 <EditMenuItem id={id} />
