@@ -1,38 +1,76 @@
-import { FormControl, FormLabel, Input, FormErrorMessage, InputProps, Textarea } from '@chakra-ui/react';
+import { FormControl, FormLabel, Input, FormErrorMessage, InputProps, Textarea, EditableInput, Editable, EditablePreview, Flex, Tooltip } from '@chakra-ui/react';
 import React from 'react'
 import { useFormContext } from 'react-hook-form';
+import { MdError } from 'react-icons/md';
+
+type InputVariant = 'input' | 'textarea' | 'editableInput';
 
 type InputFieldProps = InputProps & {
-    label?: string,
-    name: string,
-    minLength?: number,
-    textArea?: boolean,
+    name: string;
+    minLength?: number;
+    label?: string;
+    inputVariant?: InputVariant;
+}
+
+function renderCorrectVariant(variant: InputVariant) {
+    switch(variant) {
+        case 'editableInput': return EditableInput;
+        case 'textarea': return Textarea;
+        default: return Input;
+    }
 }
 
 const InputField = ({
+    inputVariant='input',
     label,
     name,
-    textArea,
+    variant,
     ...rest
 }: InputFieldProps) => {
     const { register, formState: { errors } } = useFormContext<Record<string, string>>();
 
-    let InputOrTextarea: any = Input;
-    if (textArea) {
-        InputOrTextarea = Textarea;
-    }
-
     return (
         <FormControl isInvalid={!!errors[name]}>
-            {label && <FormLabel htmlFor={name}>{label}</FormLabel>}
-            <InputOrTextarea
-                id={name}
-                {...rest}
-                {...register(name)}
-            />
-            <FormErrorMessage>
-                {errors[name] && errors[name]?.message}
-            </FormErrorMessage>
+            <Flex position='relative'>
+                {label && inputVariant !== 'editableInput' && 
+                    <FormLabel htmlFor={name}>{label}</FormLabel>}
+                {inputVariant === 'editableInput' ?
+                <Editable
+                width='full'
+                defaultValue={label}
+                borderBottom='2px'
+                borderColor='gray.500'>
+                    <EditablePreview width='full'/>
+                    <Input
+                        as={renderCorrectVariant(inputVariant)}
+                        variant={variant}
+                        id={name}
+                        {...rest}
+                        {...register(name)} />
+                </Editable>
+                : <Input
+                    as={renderCorrectVariant(inputVariant)}
+                    id={name}
+                    {...rest}
+                    {...register(name)}
+                />}
+                {errors[name] && 
+                <FormErrorMessage 
+                position='absolute' 
+                right={1}
+                top={0}
+                zIndex={1}>
+                    <Tooltip 
+                    hasArrow
+                    placement='top'
+                    label={errors[name]?.message || 'invalid input!'} 
+                    fontSize='sm'>
+                        <span>
+                            <MdError size={20}/>
+                        </span>
+                    </Tooltip>
+                </FormErrorMessage>}
+            </Flex>
         </FormControl>
     )
 }
