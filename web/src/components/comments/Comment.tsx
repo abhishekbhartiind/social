@@ -30,9 +30,11 @@ export const Comment: React.FC<CommentProps> = ({
 
     const editable = meData?.me && meData.me.id === comment.authorId;
 
-    const handleEditComment = (content: string) => {
+    const handleEditComment = (content: string, isChanged: boolean) => {
         setIsEditing(false);
-        onEditComment(comment.postId, comment.id, content, commentType);
+        if (isChanged) {
+            onEditComment(comment.postId, comment.id, content, commentType);
+        }
     }
 
     const handleDeleteComment = () => {
@@ -67,7 +69,7 @@ export const Comment: React.FC<CommentProps> = ({
                     <Skeleton 
                     isLoaded={!loading}
                     my={1}>
-                        <Flex alignItems='center' gap={2}>
+                        <Flex alignItems='center' gap={1}>
                             <CommentContent
                                 defaultValue={comment.content}
                                 iconSize={15} 
