@@ -1,41 +1,62 @@
-import { Flex, IconButton, Input, Text } from "@chakra-ui/react";
+import { Flex, IconButton, Text } from "@chakra-ui/react";
 import React from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { AiOutlineCheck } from "react-icons/ai";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { AiOutlineCheck, AiOutlineClose } from "react-icons/ai";
+import { useToxicTextDetector } from "../../utils/useToxicTextDetector";
+import InputField from "../InputField";
 
 type CommentContentProps = {
     defaultValue: string;
     iconSize: number;
     isEditing: boolean;
-    onEdit: (content: string) => void;
+    onEdit: (content: string, isChanged: boolean) => void;
 }
 
 export const CommentContent: React.FC<CommentContentProps> = ({
     defaultValue, iconSize, isEditing, onEdit
 }) => {
-    const { register, handleSubmit } = useForm<{ content: string }>({
+    const { getWarningForToxicText } = useToxicTextDetector();
+
+    const methods = useForm<{ content: string }>({
         defaultValues: {
             content: defaultValue,
         }
     });
     
-    const onSubmit: SubmitHandler<{ content: string }> = (values) => {
-        onEdit(values.content);
+    const onSubmit: SubmitHandler<{ content: string }> = async (values) => {
+        if (!values.content) return;
+        const toxicContent = await getWarningForToxicText(values.content);
+        if (toxicContent) {
+            methods.setError('content', { type: 'custom', message: toxicContent });
+            return;
+        }
+        onEdit(values.content, values.content === defaultValue);
     }
 
     return (
         <Flex gap={2}>
             {isEditing ? (
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <Flex alignItems='center' gap={1}>
-                        <Input {...register('content')} variant='flushed' />
-                        <IconButton 
-                            size="xs"
-                            aria-label="Submit new comment"
-                            icon={<AiOutlineCheck size={iconSize}/>} 
-                            type='submit'/>
-                    </Flex>
-                </form>
+                <FormProvider {...methods}>
+                    <form onSubmit={methods.handleSubmit(onSubmit)}>
+                        <Flex alignItems='center' gap={1}>
+                            <InputField
+                                name='content'
+                                variant='flushed' />
+                            <IconButton 
+                                size="xs"
+                                aria-label="Submit new comment"
+                                isLoading={methods.formState.isSubmitting}
+                                icon={<AiOutlineCheck size={iconSize}/>} 
+                                type='submit'/>
+                            <IconButton 
+                                size="xs"
+                                aria-label="Stop editing comment"
+                                icon={<AiOutlineClose size={iconSize}/>} 
+                                type='button'
+                                onClick={() => onEdit('', false)}/>
+                        </Flex>
+                    </form>
+                </FormProvider>
             ) : (
                 <>
                     <Text>{defaultValue}</Text>
