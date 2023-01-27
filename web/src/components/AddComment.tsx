@@ -6,6 +6,7 @@ import { AiOutlineSend } from 'react-icons/ai';
 import { useCommentContext } from '../context/CommentContext';
 import { CommentPostMutation, useCommentPostMutation } from '../gql/graphql';
 import { updateCommentCountInCache, updateRepliesCountInCache } from '../utils/updateCache';
+import { useToxicTextDetector } from '../utils/useToxicTextDetector';
 import InputField from './InputField';
 
 interface AddCommentProps {
@@ -36,10 +37,17 @@ export const AddComment: React.FC<AddCommentProps> = ({
     const methods = useForm<{ content: string }>();
     const [commentPost] = useCommentPostMutation();
 
+    const { getWarningForToxicText } = useToxicTextDetector();
+
     const onSubmit: SubmitHandler<{ content: string }> = async (
         values 
     ) => {
         if (!postId) {
+            return;
+        }
+        const toxicContent = await getWarningForToxicText(values.content);
+        if (toxicContent) {
+            methods.setError('content', { type: 'custom', message: toxicContent });
             return;
         }
         await commentPost({
