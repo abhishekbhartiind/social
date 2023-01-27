@@ -1,24 +1,30 @@
-import "reflect-metadata";
-import AppDataSource from "./AppDataSource"
-import express from "express";
-import { json } from "body-parser";
-import cors from "cors";
 import { ApolloServer } from "@apollo/server";
-import { ApolloServerPluginLandingPageLocalDefault } from "@apollo/server/plugin/landingPage/default";
 import { expressMiddleware } from "@apollo/server/express4";
-import { typeDefs } from "./utils/typeDefs";
-import { PostResolvers } from "./resolvers/Post";
-import { UserResolvers } from "./resolvers/user";
+import { ApolloServerPluginLandingPageLocalDefault } from "@apollo/server/plugin/landingPage/default";
 import { makeExecutableSchema } from "@graphql-tools/schema";
+import { json } from "body-parser";
+import connectRedis, { RedisStoreOptions } from "connect-redis";
+import cors from "cors";
+import express from "express";
 import session from "express-session";
-import Redis from "ioredis";
-import connectRedis,{ RedisStoreOptions }  from "connect-redis";
-import { COOKIE_NAME, __prod__ } from "./constants";
-import { MyContext } from "./types/context";
 import { applyMiddleware } from "graphql-middleware";
+import Redis from "ioredis";
+import "reflect-metadata";
+import AppDataSource from "./AppDataSource";
+import { COOKIE_NAME, __prod__ } from "./constants";
 import { postMiddleware } from "./middlewares/post";
 import { CommentResolvers } from "./resolvers/comment";
+import { PostResolvers } from "./resolvers/Post";
+import { UserResolvers } from "./resolvers/user";
+import { MyContext } from "./types/context";
+import { createCommentLikesArrayLoader, createCommentUserLikeLoader } from "./utils/loaders/createCommentLikeLoader";
+import { createCommentsArrayLoader, createRepliesArrayLoader } from "./utils/loaders/createCommentLoader";
+import {
+    createPostLikesArrayLoader,
+    createPostUserLikeLoader
+} from "./utils/loaders/createPostLikeLoader";
 import createUserLoader from "./utils/loaders/createUserLoader";
+import { typeDefs } from "./utils/typeDefs";
 
 const main = async () => {
     await AppDataSource.initialize();
@@ -81,6 +87,12 @@ const main = async () => {
                 res,
                 redis,
                 userLoader: createUserLoader(),
+                postLikesArrayLoader: createPostLikesArrayLoader(),
+                postUserLikeLoader: createPostUserLikeLoader(),
+                commentLikesArrayLoader: createCommentLikesArrayLoader(),
+                commentUserLikeLoader: createCommentUserLikeLoader(),
+                commentsArrayLoader: createCommentsArrayLoader(),
+                repliesArrayLoader: createRepliesArrayLoader(),
             })
         })
     );
