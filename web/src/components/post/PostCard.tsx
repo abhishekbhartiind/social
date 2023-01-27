@@ -31,7 +31,6 @@ const PostCard = <T extends Post>({
                 pt={2}
                 isLoaded={!loading}
                 noOfLines={2}
-                width="40"
                 alignItems="center"
                 skeletonHeight="3"
                 >
