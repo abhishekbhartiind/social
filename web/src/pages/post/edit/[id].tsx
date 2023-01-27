@@ -1,10 +1,11 @@
 import { Box, Button } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import React from 'react'
+import React from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import { usePostQuery, useUpdatePostMutation } from '../../../gql/graphql';
 import InputField from '../../../components/InputField';
 import Layout from '../../../components/Layout';
+import { usePostQuery, useUpdatePostMutation } from '../../../gql/graphql';
+import { useToxicTextDetector } from '../../../utils/useToxicTextDetector';
 import withApollo from '../../../utils/withApollo';
 
 type FormFields = {
@@ -30,10 +31,20 @@ const EditPost: React.FC<{}> = ({}) => {
         }
     });
     const [updatePost] = useUpdatePostMutation();
+    const { getWarningForToxicText } = useToxicTextDetector();
 
     const onSubmit: SubmitHandler<FormFields> = async (
         values
     ) => {
+        if (!(values.text && values.title)) return;
+        const toxicText = await getWarningForToxicText(values.text);
+        const toxicTitle = await getWarningForToxicText(values.title);
+        if (toxicText) {
+            methods.setError('text', { type: 'custom', message: toxicText });
+        }
+        if (toxicTitle) {
+            methods.setError('title', { type: 'custom', message: toxicTitle });
+        }
         const { errors } = await updatePost({ 
             variables: {
                 postId: data?.post?.id || "-1",
@@ -64,14 +75,14 @@ const EditPost: React.FC<{}> = ({}) => {
                     <InputField
                         label='Title'
                         name='title'
-                        placeholder='Enter title'
-                        type='text' />
+                        placeholder='Title'
+                        inputVariant='editableInput' />
                     <Box mt={2}>
                         <InputField
                             label='Content'
                             name='text'
-                            placeholder='Enter content'
-                            textArea />
+                            placeholder='Write a caption...'
+                            inputVariant='textarea' />
                     </Box>
                     <Button 
                         mt={4}
