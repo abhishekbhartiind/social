@@ -1,8 +1,7 @@
 import { dataManager } from "../AppDataSource";
+import { Like } from "../entities/like";
 import { PostEntity as Post } from "../entities/post";
 import { Resolvers } from "../generated/graphql";
-import { Like } from "../entities/like";
-import { CommentEntity as Comment } from "../entities/comment";
 
 export const PostResolvers: Resolvers = {
     PaginatedList: {
@@ -105,21 +104,24 @@ export const PostResolvers: Resolvers = {
         creator({ creatorId }, _, { userLoader }) {
             return userLoader.load(creatorId);
         },
-        async isLiked({ id }, _, { req }) {
+        async isLiked({ id }, _, { req, postUserLikeLoader }) {
             if (!req.session.userId) {
                 return null;
             }
-            const like = await dataManager.findOneBy(Like, 
-                { postId: id, userId: req.session.userId });
+            const like = await postUserLikeLoader.load({ 
+                postId: id, 
+                userId: req.session.userId 
+            });
             return like ? true : false;
         },
-        async likeCount({ id }) {
-            const likes = await dataManager.findBy(Like, 
-                { postId: id });
-            return likes.length;
+        async likeCount({ id }, _, { postLikesArrayLoader }) {
+            // const likes = await dataManager.findBy(Like, 
+            //     { postId: id }); 
+            return postLikesArrayLoader.load(id).then((likes) => likes.length);
+            // return likes.length;
         },
-        async commentCount({ id }) {
-            return dataManager.findBy(Comment, { postId: id }).then(data => data.length);
+        async commentCount({ id }, _, { commentsArrayLoader }) {
+            return commentsArrayLoader.load(id).then(data => data.length);
         }
     },
 }
