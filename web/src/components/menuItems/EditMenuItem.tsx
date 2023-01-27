@@ -16,7 +16,7 @@ export const EditMenuItem: React.FC<EditMenuItemProps> = ({
         {...rest}
         icon={<RiEdit2Fill size={18}/>}
         as={NextLink}
-        href={`/post/${id}`}
+        href={`/post/edit/${id}`}
         >
             Edit post
         </MenuItem>
