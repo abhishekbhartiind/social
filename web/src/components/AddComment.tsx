@@ -1,5 +1,7 @@
 import { ApolloCache } from '@apollo/client';
-import { Avatar, Flex, IconButton } from '@chakra-ui/react';
+import { Flex } from '@chakra-ui/layout';
+import { Avatar } from '@chakra-ui/avatar';
+import { IconButton } from '@chakra-ui/button';
 import React from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { AiOutlineSend } from 'react-icons/ai';

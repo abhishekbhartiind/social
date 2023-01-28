@@ -1,4 +1,5 @@
-import { IconButton, Menu, MenuButton, MenuList } from "@chakra-ui/react";
+import { Menu, MenuButton, MenuList } from "@chakra-ui/menu";
+import { IconButton } from "@chakra-ui/button";
 import React from "react";
 import { GiHamburgerMenu } from 'react-icons/gi';
 import { DeleteMenuItem } from "./menuItems/DeleteMenuItem";

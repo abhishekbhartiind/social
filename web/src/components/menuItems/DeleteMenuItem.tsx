@@ -1,4 +1,4 @@
-import { MenuItem, MenuItemProps } from '@chakra-ui/react';
+import { MenuItem, MenuItemProps } from '@chakra-ui/menu';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { RiDeleteBin5Fill } from 'react-icons/ri';

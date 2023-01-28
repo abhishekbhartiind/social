@@ -1,4 +1,4 @@
-import { Box } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/layout';
 import React, { ReactNode } from 'react'
 
 export type WrapperVariant = 'small' | 'regular';

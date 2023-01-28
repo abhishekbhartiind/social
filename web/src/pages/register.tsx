@@ -1,4 +1,5 @@
-import { Box, Button } from '@chakra-ui/react'
+import { Box } from '@chakra-ui/layout';
+import { Button } from '@chakra-ui/button';
 import { useRouter } from 'next/router'
 import React from 'react'
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'

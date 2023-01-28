@@ -1,4 +1,7 @@
-import { Avatar, Box, Button, Flex, Heading, IconButton, Skeleton, SkeletonCircle, Text } from "@chakra-ui/react";
+import { Box, Flex, Heading, Text } from "@chakra-ui/layout";
+import { Avatar } from "@chakra-ui/avatar";
+import { Button, IconButton } from "@chakra-ui/button";
+import { Skeleton, SkeletonCircle } from "@chakra-ui/skeleton";
 import { formatDistanceToNow } from "date-fns";
 import React, { useState } from "react";
 import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";

@@ -1,4 +1,4 @@
-import { MenuItem, MenuItemProps } from '@chakra-ui/react'
+import { MenuItem, MenuItemProps } from '@chakra-ui/menu'
 import NextLink from 'next/link'
 import React from 'react'
 import { RiEdit2Fill } from 'react-icons/ri'

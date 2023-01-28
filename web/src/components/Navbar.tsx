@@ -1,5 +1,6 @@
 import { useApolloClient } from '@apollo/client';
-import { Box, Button, Flex, Heading, Link } from '@chakra-ui/react';
+import { Box, Flex, Heading, Link } from '@chakra-ui/layout';
+import { Button } from "@chakra-ui/button"
 import NextLink from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { useLogoutMutation, useMeQuery } from '../gql/graphql';

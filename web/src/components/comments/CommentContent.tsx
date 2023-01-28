@@ -1,4 +1,5 @@
-import { Flex, IconButton, Text } from "@chakra-ui/react";
+import { Flex, Text } from "@chakra-ui/layout";
+import { IconButton } from "@chakra-ui/button";
 import React from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { AiOutlineCheck, AiOutlineClose } from "react-icons/ai";

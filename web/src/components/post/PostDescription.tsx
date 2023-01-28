@@ -1,4 +1,4 @@
-import { Badge, Box, Text } from "@chakra-ui/react";
+import { Badge, Box, Text } from "@chakra-ui/layout";
 import React, { useState } from "react";
 
 interface PostDescriptionProps {

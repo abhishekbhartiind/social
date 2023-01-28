@@ -1,4 +1,5 @@
-import { Button, Flex } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/layout";
+import { Button } from "@chakra-ui/button";
 import React from "react";
 
 interface LoadMoreButtonProps {

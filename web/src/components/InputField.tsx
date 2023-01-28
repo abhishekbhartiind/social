@@ -1,4 +1,9 @@
-import { FormControl, FormLabel, Input, FormErrorMessage, InputProps, Textarea, EditableInput, Editable, EditablePreview, Flex, Tooltip } from '@chakra-ui/react';
+import { Flex } from '@chakra-ui/layout';
+import { FormControl, FormLabel, FormErrorMessage } from "@chakra-ui/form-control";
+import { Input, InputProps } from "@chakra-ui/input";
+import { EditableInput, Editable, EditablePreview } from "@chakra-ui/editable";
+import { Tooltip } from "@chakra-ui/tooltip";
+import { Textarea } from "@chakra-ui/textarea";
 import React from 'react'
 import { useFormContext } from 'react-hook-form';
 import { MdError } from 'react-icons/md';

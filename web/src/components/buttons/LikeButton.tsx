@@ -1,5 +1,5 @@
 import { ApolloCache, gql } from '@apollo/client';
-import { IconButton, IconButtonProps } from '@chakra-ui/react';
+import { IconButton, IconButtonProps } from '@chakra-ui/button';
 import { AiFillLike, AiOutlineLike } from 'react-icons/ai';
 
 type LikeButtonProps<T> = IconButtonProps & {

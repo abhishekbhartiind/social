@@ -1,4 +1,6 @@
-import { Box, Button, Divider, Flex, Skeleton, Stack } from "@chakra-ui/react";
+import { Box, Divider, Flex, Stack } from "@chakra-ui/layout";
+import { Skeleton } from "@chakra-ui/skeleton";
+import { Button } from "@chakra-ui/button";
 import React from "react";
 import { CommentContextProvider } from "../../context/CommentContext";
 import { useBaseCommentsQuery } from "../../gql/graphql";
