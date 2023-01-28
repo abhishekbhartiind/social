@@ -1,6 +1,9 @@
-import { Box, Button, Flex, IconButton, Image, Spinner, Stack, Text } from '@chakra-ui/react';
+import { Button } from '@chakra-ui/button';
+import { Box, Flex, Stack, Text } from '@chakra-ui/layout';
+import { Image } from '@chakra-ui/image';
+import { Spinner } from '@chakra-ui/spinner';
 import React, { useEffect, useState } from 'react';
-import { FiCamera, FiCameraOff } from 'react-icons/fi';
+import { FiCamera } from 'react-icons/fi';
 import { useCameraContext } from '../context/CameraContext';
 import { useCameraStream } from '../utils/useCameraStream';
 
@@ -17,6 +20,7 @@ export const Camera: React.FC<CameraProps> = ({ onPhotos }) => {
         photo,
         hasPhoto,
         isCameraActive,
+        streaming,
         toggleIsCameraActive,
         takePicture,
         toggleHasPhoto,
@@ -47,54 +51,63 @@ export const Camera: React.FC<CameraProps> = ({ onPhotos }) => {
             } else {
                 closeCameraStream(video.current);
                 setCameraStreamState('close');
-                if (hasPhoto) {
-                    toggleHasPhoto();
-                }
             }
         }
     }, [isCameraActive]);
 
     return (
         <Flex direction='column'>
-            <Box>
-                <IconButton 
-                    mb={2}
-                    variant='ghost'
-                    aria-label='Toggle Camera'
-                    bgColor={isCameraActive ? 'teal' : 'transparent'}
-                    color={isCameraActive ? 'white' : 'black'}
-                    icon={!isCameraActive ? 
-                        <FiCameraOff size={20} /> : 
-                        <FiCamera size={20} />}
-                    onClick={toggleIsCameraActive}
-                    />
-                {cameraStreamState === 'loading' && 
+            {(cameraStreamState === 'loading') && 
                     <Flex alignItems='center' gap={2}>
                         <Spinner size='xs' color='green.500'/>
                         <Text>Turning on camera...</Text>
                     </Flex>
                 }
-                <Stack display={cameraStreamState === 'open' &&
-                    !hasPhoto ? 'flex' : 'none'}>
-                    <video ref={video}>
-                        Video stream not available.
-                    </video>
-                    <Button onClick={(ev) => {
-                        takePicture();
-                        if (photo.current?.src) {
-                            onPhotos([photo.current.src]);
-                        }
-                        ev.preventDefault();
-                    }}>Take photo</Button>
-                </Stack>
+            {cameraStreamState === 'close' && <Flex
+                alignItems='center'
+                justifyContent='center' 
+                h='300px'
+                boxShadow='xl'
+                bgColor='green.600'
+                cursor='pointer'
+                onClick={toggleIsCameraActive}>
+                    <FiCamera color='white' size={30}/>
+                </Flex>}
+            <Box boxShadow='md' display={streaming && cameraStreamState === 'open' &&
+                !hasPhoto ? 'flex' : 'none'}>
+                <video ref={video}>
+                    Video stream not available.
+                </video>
             </Box>
             <canvas ref={canvas} style={{ display: 'none' }}></canvas>
-            <Stack display={hasPhoto ? 'flex' : 'none'}>
+            <Box boxShadow='md' display={cameraStreamState === 'open' && hasPhoto ? 'flex' : 'none'}>
                 <Image ref={photo} alt='A photo' />
-                <Button onClick={() => {
-                    toggleHasPhoto();
-                }}>Retake photo</Button>
-            </Stack>
+            </Box>
+            {streaming && cameraStreamState === 'open' && (
+                <Stack mt={2}>
+                    {!hasPhoto ? (
+                        <Button onClick={(ev) => {
+                            takePicture();
+                            if (photo.current?.src) {
+                                onPhotos([photo.current.src]);
+                            }
+                            ev.preventDefault();
+                        }}>Take photo</Button>
+                    ) : (
+                        <Button onClick={() => {
+                            toggleHasPhoto();
+                        }}>Retake photo</Button>
+                    )}
+                </Stack>
+            )}
+            {streaming && cameraStreamState === 'open' && (
+                <Button mt={2} onClick={toggleIsCameraActive}>
+                    Turn off camera
+                </Button>
+            )}
+            <Text mt={2} textAlign='center'>{
+                hasPhoto && '1 photo taken'
+            }</Text>
         </Flex>
     );
 }
