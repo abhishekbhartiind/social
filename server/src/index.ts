@@ -2,7 +2,7 @@ import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@apollo/server/express4";
 import { ApolloServerPluginLandingPageLocalDefault } from "@apollo/server/plugin/landingPage/default";
 import { makeExecutableSchema } from "@graphql-tools/schema";
-import { json } from "body-parser";
+import { json, text } from "body-parser";
 import connectRedis, { RedisStoreOptions } from "connect-redis";
 import cors from "cors";
 import express from "express";
@@ -25,6 +25,9 @@ import {
 } from "./utils/loaders/createPostLikeLoader";
 import createUserLoader from "./utils/loaders/createUserLoader";
 import { typeDefs } from "./utils/typeDefs";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const main = async () => {
     await AppDataSource.initialize();
@@ -73,7 +76,8 @@ const main = async () => {
     await apolloServer.start();
     
     app.use('/graphql', 
-        json(),
+        json({ limit: '50mb' }),
+        text({ limit: '200mb '}),
         cors<cors.CorsRequest>({
             credentials: true,
             origin: [
