@@ -75,6 +75,7 @@ export type MutationCommentPostArgs = {
 
 
 export type MutationCreatePostArgs = {
+  images: Array<Scalars['String']>;
   text: Scalars['String'];
   title: Scalars['String'];
 };
@@ -159,6 +160,7 @@ export type Post = {
   creator: User;
   creatorId: Scalars['ID'];
   id: Scalars['ID'];
+  imageLinks: Array<Scalars['String']>;
   isLiked?: Maybe<Scalars['Boolean']>;
   likeCount: Scalars['Int'];
   text: Scalars['String'];
@@ -379,7 +381,7 @@ export type FieldErrorResolvers<ContextType = MyContext, ParentType extends Reso
 
 export type MutationResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   commentPost?: Resolver<ResolversTypes['Comment'], ParentType, ContextType, RequireFields<MutationCommentPostArgs, 'content' | 'postId'>>;
-  createPost?: Resolver<ResolversTypes['Post'], ParentType, ContextType, RequireFields<MutationCreatePostArgs, 'text' | 'title'>>;
+  createPost?: Resolver<ResolversTypes['Post'], ParentType, ContextType, RequireFields<MutationCreatePostArgs, 'images' | 'text' | 'title'>>;
   deleteComment?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationDeleteCommentArgs, 'commentId' | 'postId'>>;
   deletePost?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationDeletePostArgs, 'id'>>;
   editComment?: Resolver<Maybe<ResolversTypes['Comment']>, ParentType, ContextType, RequireFields<MutationEditCommentArgs, 'commentId' | 'content' | 'postId'>>;
@@ -420,6 +422,7 @@ export type PostResolvers<ContextType = MyContext, ParentType extends ResolversP
   creator?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   creatorId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  imageLinks?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   isLiked?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   likeCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
