@@ -17,6 +17,7 @@ query Posts($options: PaginatedArgs!) {
             textSnippet
             title
             updatedAt
+            imageLinks
         }
     }
 }

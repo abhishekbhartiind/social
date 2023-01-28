@@ -14,5 +14,6 @@ query Post($postId: ID!) {
             id
         }
         commentCount
+        imageLinks
     }
 }
