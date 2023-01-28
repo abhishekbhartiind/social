@@ -1,4 +1,7 @@
-import { Avatar, Box, Divider, Flex, Heading, Image, Skeleton, SkeletonCircle, SkeletonText, Text } from "@chakra-ui/react";
+import { Avatar } from '@chakra-ui/avatar';
+import { Box, Divider, Heading, Flex, Text } from '@chakra-ui/layout'
+import { Skeleton, SkeletonCircle, SkeletonText } from '@chakra-ui/skeleton';
+import { Image } from '@chakra-ui/image';
 import { formatDistanceToNow } from "date-fns";
 import { useRouter } from "next/router";
 import React from "react";
@@ -76,8 +79,8 @@ const Post: React.FC<{}> = ({}) => {
             <Skeleton isLoaded={!loading}>
                 <Image
                     objectFit="cover"
-                    src="https://images.unsplash.com/photo-1531403009284-440f080d1e12?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
-                    alt="Chakra UI"
+                    src={data.post.imageLinks[0]}
+                    alt="post image"
                     mb={2}
                 />
             </Skeleton>
