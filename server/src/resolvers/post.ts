@@ -1,7 +1,8 @@
-import { dataManager } from "../AppDataSource";
+import AppDataSource, { dataManager } from "../AppDataSource";
 import { Like } from "../entities/like";
 import { PostEntity as Post } from "../entities/post";
 import { Resolvers } from "../generated/graphql";
+import { generateUrl, uploadImage } from "../utils/saveToCloudinary";
 
 export const PostResolvers: Resolvers = {
     PaginatedList: {
@@ -38,23 +39,36 @@ export const PostResolvers: Resolvers = {
         }
     },
     Mutation: {
-        async createPost(_, { title, text }, { req }) {
-            const post = dataManager.create(Post, {
-                title,
-                text,
-                creatorId: req.session.userId,
+        async createPost(_, { title, text, images }, { req }) {
+            return AppDataSource.transaction(async (tm) => {
+                const post = tm.create(Post, {
+                    title,
+                    text,
+                    creatorId: req.session.userId,
+                });
+
+                if (images.length > 0) {
+                    const imagePromises = images.map((image) => {
+                        return uploadImage(image);
+                    });
+                    const resolvedImages = await Promise.all(imagePromises);
+                    tm.merge(Post, post, { images: resolvedImages });
+                    await tm.save(post);
+                    return post;
+                } else {
+                    await tm.save(post);
+                    return post;
+                }
             });
-            await dataManager.save(post);
-            return post;
         },
         async deletePost(_, { id }, { req }) {
-            const post = await dataManager.findOneBy(Post, 
+            const post = await dataManager.findOneBy(Post,
                 { id: parseInt(id) });
             if (!post || post.creatorId !== req.session.userId) {
                 return false;
             }
-            await dataManager.delete(Post, 
-                { 
+            await dataManager.delete(Post,
+                {
                     id: parseInt(id),
                     creatorId: req.session.userId,
                 });
@@ -62,17 +76,17 @@ export const PostResolvers: Resolvers = {
         },
         async updatePost(_, { id, title, text }, { req }) {
             const results = await dataManager
-            .getRepository(Post)
-            .createQueryBuilder()
-            .update()
-            .set({ title, text })
-            .where('id = :id and "creatorId" = :creatorId', {
-                id,
-                creatorId: req.session.userId
-            })
-            .returning("*")
-            .execute();
-            
+                .getRepository(Post)
+                .createQueryBuilder()
+                .update()
+                .set({ title, text })
+                .where('id = :id and "creatorId" = :creatorId', {
+                    id,
+                    creatorId: req.session.userId
+                })
+                .returning("*")
+                .execute();
+
             return results.raw[0];
         },
         async likePost(_, { id }, { req }) {
@@ -90,8 +104,8 @@ export const PostResolvers: Resolvers = {
             } else {
                 await dataManager.delete(Like,
                     {
-                        postId: parseInt(id), 
-                        userId: req.session.userId 
+                        postId: parseInt(id),
+                        userId: req.session.userId
                     });
             }
             return true;
@@ -122,6 +136,17 @@ export const PostResolvers: Resolvers = {
         },
         async commentCount({ id }, _, { commentsArrayLoader }) {
             return commentsArrayLoader.load(id).then(data => data.length);
+        },
+        async imageLinks({ id }) {
+            const post = await dataManager.findOneBy(Post, { id });
+            const images = post?.images.map(image => {
+                if (image.includes('instapets')) {
+                    return generateUrl(image);
+                } else {
+                    return image;
+                }
+            })
+            return images || [];
         }
     },
 }
