@@ -71,6 +71,7 @@ export type MutationCommentPostArgs = {
 
 
 export type MutationCreatePostArgs = {
+  images: Array<Scalars['String']>;
   text: Scalars['String'];
   title: Scalars['String'];
 };
@@ -155,6 +156,7 @@ export type Post = {
   creator: User;
   creatorId: Scalars['ID'];
   id: Scalars['ID'];
+  imageLinks: Array<Scalars['String']>;
   isLiked?: Maybe<Scalars['Boolean']>;
   likeCount: Scalars['Int'];
   text: Scalars['String'];
@@ -269,8 +271,8 @@ export type CommentPostMutationHookResult = ReturnType<typeof useCommentPostMuta
 export type CommentPostMutationResult = Apollo.MutationResult<CommentPostMutation>;
 export type CommentPostMutationOptions = Apollo.BaseMutationOptions<CommentPostMutation, CommentPostMutationVariables>;
 export const CreatePostDocument = gql`
-    mutation CreatePost($title: String!, $text: String!) {
-  createPost(title: $title, text: $text) {
+    mutation CreatePost($title: String!, $text: String!, $images: [String!]!) {
+  createPost(title: $title, text: $text, images: $images) {
     id
     text
     title
@@ -300,6 +302,7 @@ export type CreatePostMutationFn = Apollo.MutationFunction<CreatePostMutation, C
  *   variables: {
  *      title: // value for 'title'
  *      text: // value for 'text'
+ *      images: // value for 'images'
  *   },
  * });
  */
@@ -728,6 +731,7 @@ export const PostDocument = gql`
       id
     }
     commentCount
+    imageLinks
   }
 }
     `;
@@ -779,6 +783,7 @@ export const PostsDocument = gql`
       textSnippet
       title
       updatedAt
+      imageLinks
     }
   }
 }
@@ -874,6 +879,7 @@ export type CommentPostMutation = { __typename?: 'Mutation', commentPost: { __ty
 export type CreatePostMutationVariables = Exact<{
   title: Scalars['String'];
   text: Scalars['String'];
+  images: Array<Scalars['String']> | Scalars['String'];
 }>;
 
 
@@ -964,14 +970,14 @@ export type PostQueryVariables = Exact<{
 }>;
 
 
-export type PostQuery = { __typename?: 'Query', post?: { __typename?: 'Post', id: string, text: string, title: string, createdAt: string, updatedAt: string, isLiked?: boolean | null, likeCount: number, creatorId: string, commentCount: number, creator: { __typename?: 'User', username: string, email: string, id: string } } | null };
+export type PostQuery = { __typename?: 'Query', post?: { __typename?: 'Post', id: string, text: string, title: string, createdAt: string, updatedAt: string, isLiked?: boolean | null, likeCount: number, creatorId: string, commentCount: number, imageLinks: Array<string>, creator: { __typename?: 'User', username: string, email: string, id: string } } | null };
 
 export type PostsQueryVariables = Exact<{
   options: PaginatedArgs;
 }>;
 
 
-export type PostsQuery = { __typename?: 'Query', posts: { __typename?: 'PaginatedPosts', hasMore: boolean, data: Array<{ __typename?: 'Post', commentCount: number, createdAt: string, creatorId: string, id: string, isLiked?: boolean | null, likeCount: number, text: string, textSnippet: string, title: string, updatedAt: string, creator: { __typename?: 'User', email: string, id: string, username: string } }> } };
+export type PostsQuery = { __typename?: 'Query', posts: { __typename?: 'PaginatedPosts', hasMore: boolean, data: Array<{ __typename?: 'Post', commentCount: number, createdAt: string, creatorId: string, id: string, isLiked?: boolean | null, likeCount: number, text: string, textSnippet: string, title: string, updatedAt: string, imageLinks: Array<string>, creator: { __typename?: 'User', email: string, id: string, username: string } }> } };
 
 export type RepliesQueryVariables = Exact<{
   parentCommentId: Scalars['ID'];
