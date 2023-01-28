@@ -40,4 +40,10 @@ export class PostEntity {
 
     @OneToMany(() => Comment, (comment) => comment.post)
     comments: Comment[]
+
+    @Column("text", { 
+        default: [],
+        array: true 
+    })
+    images: string[]
 }
