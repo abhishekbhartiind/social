@@ -9,7 +9,7 @@ import {
     createPostLikesArrayLoader,
     createPostUserLikeLoader
 } from "../utils/loaders/createPostLikeLoader";
-import createUserLoader from "../utils/loaders/createUserLoader";
+import createUserLoader, { createUserPostCountLoader } from "../utils/loaders/createUserLoader";
 
 export type MyContext = {
     req: Request,
@@ -22,4 +22,5 @@ export type MyContext = {
     commentUserLikeLoader: ReturnType<typeof createCommentUserLikeLoader>,
     commentsArrayLoader: ReturnType<typeof createCommentsArrayLoader>,
     repliesArrayLoader: ReturnType<typeof createRepliesArrayLoader>,
+    totalPostCountLoader: ReturnType<typeof createUserPostCountLoader>,
 }
