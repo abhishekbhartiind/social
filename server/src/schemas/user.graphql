@@ -8,6 +8,7 @@ type User {
     id: ID!
     username: String!
     email: String!
+    totalPostCount: Int!
 }
 
 type FieldError {
