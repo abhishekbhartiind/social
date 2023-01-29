@@ -133,6 +133,13 @@ export type PaginatedBaseComments = PaginatedList & {
   hasMore: Scalars['Boolean'];
 };
 
+export type PaginatedCreatorPosts = PaginatedList & {
+  __typename?: 'PaginatedCreatorPosts';
+  creatorId: Scalars['ID'];
+  data: Array<Post>;
+  hasMore: Scalars['Boolean'];
+};
+
 export type PaginatedList = {
   hasMore: Scalars['Boolean'];
 };
@@ -171,6 +178,7 @@ export type Query = {
   me?: Maybe<User>;
   post?: Maybe<Post>;
   posts: PaginatedPosts;
+  postsByCreatorId: PaginatedCreatorPosts;
   replies: PaginatedReplies;
 };
 
@@ -187,6 +195,12 @@ export type QueryPostArgs = {
 
 
 export type QueryPostsArgs = {
+  options: PaginatedArgs;
+};
+
+
+export type QueryPostsByCreatorIdArgs = {
+  creatorId: Scalars['ID'];
   options: PaginatedArgs;
 };
 
@@ -213,6 +227,7 @@ export type User = {
   __typename?: 'User';
   email: Scalars['String'];
   id: Scalars['ID'];
+  totalPostCount: Scalars['Int'];
   username: Scalars['String'];
 };
 
@@ -595,6 +610,11 @@ export const UpdatePostDocument = gql`
     createdAt
     updatedAt
     creatorId
+    creator {
+      username
+      id
+      email
+    }
   }
 }
     `;
@@ -684,6 +704,7 @@ export const MeDocument = gql`
     id
     username
     email
+    totalPostCount
   }
 }
     `;
@@ -729,6 +750,7 @@ export const PostDocument = gql`
       username
       email
       id
+      totalPostCount
     }
     commentCount
     imageLinks
@@ -774,6 +796,7 @@ export const PostsDocument = gql`
         email
         id
         username
+        totalPostCount
       }
       creatorId
       id
@@ -816,6 +839,62 @@ export function usePostsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Post
 export type PostsQueryHookResult = ReturnType<typeof usePostsQuery>;
 export type PostsLazyQueryHookResult = ReturnType<typeof usePostsLazyQuery>;
 export type PostsQueryResult = Apollo.QueryResult<PostsQuery, PostsQueryVariables>;
+export const PostsByCreatorIdDocument = gql`
+    query PostsByCreatorId($creatorId: ID!, $options: PaginatedArgs!) {
+  postsByCreatorId(creatorId: $creatorId, options: $options) {
+    data {
+      id
+      title
+      commentCount
+      createdAt
+      creator {
+        totalPostCount
+        username
+        id
+        email
+      }
+      creatorId
+      imageLinks
+      isLiked
+      likeCount
+      text
+      textSnippet
+      updatedAt
+    }
+    hasMore
+    creatorId
+  }
+}
+    `;
+
+/**
+ * __usePostsByCreatorIdQuery__
+ *
+ * To run a query within a React component, call `usePostsByCreatorIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePostsByCreatorIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePostsByCreatorIdQuery({
+ *   variables: {
+ *      creatorId: // value for 'creatorId'
+ *      options: // value for 'options'
+ *   },
+ * });
+ */
+export function usePostsByCreatorIdQuery(baseOptions: Apollo.QueryHookOptions<PostsByCreatorIdQuery, PostsByCreatorIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<PostsByCreatorIdQuery, PostsByCreatorIdQueryVariables>(PostsByCreatorIdDocument, options);
+      }
+export function usePostsByCreatorIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PostsByCreatorIdQuery, PostsByCreatorIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<PostsByCreatorIdQuery, PostsByCreatorIdQueryVariables>(PostsByCreatorIdDocument, options);
+        }
+export type PostsByCreatorIdQueryHookResult = ReturnType<typeof usePostsByCreatorIdQuery>;
+export type PostsByCreatorIdLazyQueryHookResult = ReturnType<typeof usePostsByCreatorIdLazyQuery>;
+export type PostsByCreatorIdQueryResult = Apollo.QueryResult<PostsByCreatorIdQuery, PostsByCreatorIdQueryVariables>;
 export const RepliesDocument = gql`
     query Replies($parentCommentId: ID!, $options: PaginatedArgs!) {
   replies(parentCommentId: $parentCommentId, options: $options) {
@@ -950,7 +1029,7 @@ export type UpdatePostMutationVariables = Exact<{
 }>;
 
 
-export type UpdatePostMutation = { __typename?: 'Mutation', updatePost?: { __typename?: 'Post', id: string, text: string, title: string, createdAt: string, updatedAt: string, creatorId: string } | null };
+export type UpdatePostMutation = { __typename?: 'Mutation', updatePost?: { __typename?: 'Post', id: string, text: string, title: string, createdAt: string, updatedAt: string, creatorId: string, creator: { __typename?: 'User', username: string, id: string, email: string } } | null };
 
 export type BaseCommentsQueryVariables = Exact<{
   postId: Scalars['ID'];
@@ -963,21 +1042,29 @@ export type BaseCommentsQuery = { __typename?: 'Query', baseComments: { __typena
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: string, username: string, email: string } | null };
+export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: string, username: string, email: string, totalPostCount: number } | null };
 
 export type PostQueryVariables = Exact<{
   postId: Scalars['ID'];
 }>;
 
 
-export type PostQuery = { __typename?: 'Query', post?: { __typename?: 'Post', id: string, text: string, title: string, createdAt: string, updatedAt: string, isLiked?: boolean | null, likeCount: number, creatorId: string, commentCount: number, imageLinks: Array<string>, creator: { __typename?: 'User', username: string, email: string, id: string } } | null };
+export type PostQuery = { __typename?: 'Query', post?: { __typename?: 'Post', id: string, text: string, title: string, createdAt: string, updatedAt: string, isLiked?: boolean | null, likeCount: number, creatorId: string, commentCount: number, imageLinks: Array<string>, creator: { __typename?: 'User', username: string, email: string, id: string, totalPostCount: number } } | null };
 
 export type PostsQueryVariables = Exact<{
   options: PaginatedArgs;
 }>;
 
 
-export type PostsQuery = { __typename?: 'Query', posts: { __typename?: 'PaginatedPosts', hasMore: boolean, data: Array<{ __typename?: 'Post', commentCount: number, createdAt: string, creatorId: string, id: string, isLiked?: boolean | null, likeCount: number, text: string, textSnippet: string, title: string, updatedAt: string, imageLinks: Array<string>, creator: { __typename?: 'User', email: string, id: string, username: string } }> } };
+export type PostsQuery = { __typename?: 'Query', posts: { __typename?: 'PaginatedPosts', hasMore: boolean, data: Array<{ __typename?: 'Post', commentCount: number, createdAt: string, creatorId: string, id: string, isLiked?: boolean | null, likeCount: number, text: string, textSnippet: string, title: string, updatedAt: string, imageLinks: Array<string>, creator: { __typename?: 'User', email: string, id: string, username: string, totalPostCount: number } }> } };
+
+export type PostsByCreatorIdQueryVariables = Exact<{
+  creatorId: Scalars['ID'];
+  options: PaginatedArgs;
+}>;
+
+
+export type PostsByCreatorIdQuery = { __typename?: 'Query', postsByCreatorId: { __typename?: 'PaginatedCreatorPosts', hasMore: boolean, creatorId: string, data: Array<{ __typename?: 'Post', id: string, title: string, commentCount: number, createdAt: string, creatorId: string, imageLinks: Array<string>, isLiked?: boolean | null, likeCount: number, text: string, textSnippet: string, updatedAt: string, creator: { __typename?: 'User', totalPostCount: number, username: string, id: string, email: string } }> } };
 
 export type RepliesQueryVariables = Exact<{
   parentCommentId: Scalars['ID'];
