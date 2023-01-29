@@ -32,17 +32,19 @@ const InputField = ({
     variant,
     ...rest
 }: InputFieldProps) => {
-    const { register, formState: { errors } } = useFormContext<Record<string, string>>();
+    const { register, formState: { errors }, getValues } = useFormContext<Record<string, string>>();
+
+    const values = getValues();
 
     return (
         <FormControl isInvalid={!!errors[name]}>
-            <Flex position='relative'>
+            <Flex direction='column' position='relative'>
                 {label && inputVariant !== 'editableInput' && 
                     <FormLabel htmlFor={name}>{label}</FormLabel>}
                 {inputVariant === 'editableInput' ?
                 <Editable
                 width='full'
-                defaultValue={label}
+                defaultValue={values[name]}
                 borderBottom='2px'
                 borderColor='gray.500'>
                     <EditablePreview width='full'/>
