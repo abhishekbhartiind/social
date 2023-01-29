@@ -12,6 +12,7 @@ query Post($postId: ID!) {
             username
             email
             id
+            totalPostCount
         }
         commentCount
         imageLinks
