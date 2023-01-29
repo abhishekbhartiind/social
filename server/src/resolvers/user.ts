@@ -76,4 +76,9 @@ export const UserResolvers: Resolvers = {
             })
         }
     },
+    User: {
+        totalPostCount({ id }, _, { totalPostCountLoader }) {
+            return totalPostCountLoader.load(id);
+        }
+    }
 };
