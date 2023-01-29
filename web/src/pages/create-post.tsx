@@ -1,20 +1,23 @@
-import { Box, Divider, Flex } from '@chakra-ui/layout';
 import { Button } from '@chakra-ui/button';
+import { Box, Divider, Flex } from '@chakra-ui/layout';
+import { useToast } from '@chakra-ui/toast';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
+import { Camera } from '../components/Camera';
 import InputField from '../components/InputField';
 import Layout from '../components/Layout';
+import { useCameraContext } from '../context/CameraContext';
 import { MutationCreatePostArgs, useCreatePostMutation } from '../gql/graphql';
+import { updateCurrentUserTotalPostCount } from '../utils/updateCache';
 import useIsAuth from '../utils/useIsAuth';
 import { useToxicTextDetector } from '../utils/useToxicTextDetector';
 import withApollo from '../utils/withApollo';
 import { withCameraContext } from '../utils/withCameraContext';
-import { Camera } from '../components/Camera';
-import { useCameraContext } from '../context/CameraContext';
 
 const CreatePost: React.FC<{}> = ({}) => {
     const router = useRouter();
+    const toast = useToast();
     useIsAuth();
 
     const methods = useForm<MutationCreatePostArgs>();
@@ -46,11 +49,38 @@ const CreatePost: React.FC<{}> = ({}) => {
                     images
                 },
                 update: (cache) => {
+                    updateCurrentUserTotalPostCount(cache, 'UP', 1);
                     cache.evict({ fieldName: "posts"})
                 }
             });
             if (!errors && data) {
-                router.push('/');
+                toast({
+                    title: `New post!`,
+                    description: `Post titled ${data.createPost.title} created by 
+                        ${data.createPost.creator.username}.`,
+                    duration: 3000,
+                    position: 'top',
+                    isClosable: true,
+                    status: 'success'
+                });
+                router.back();
+            } else if (errors) {
+                toast({
+                    title: 'Error when creating post!',
+                    description: errors[0].message,
+                    duration: 5000,
+                    position: 'top',
+                    isClosable: true,
+                    status: 'error'
+                })
+            } else {
+                toast({
+                    title: 'Cannot create post!',
+                    duration: 5000,
+                    position: 'top',
+                    isClosable: true,
+                    status: 'error'
+                });
             }
         }
     }
@@ -65,9 +95,7 @@ const CreatePost: React.FC<{}> = ({}) => {
                         <InputField
                             label='Title'
                             name='title'
-                            placeholder='Enter title'
-                            variant='flushed'
-                            inputVariant='editableInput' />
+                            placeholder='Enter title' />
                         <Box mt={2}>
                             <InputField
                                 name='text'
