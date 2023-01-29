@@ -6,5 +6,10 @@ mutation UpdatePost($postId: ID!, $title: String!, $text: String!) {
         createdAt
         updatedAt
         creatorId
+        creator {
+            username
+            id 
+            email
+        }
     }
 }
