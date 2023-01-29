@@ -1,4 +1,6 @@
-import { Box, Button } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/layout';
+import { Button } from '@chakra-ui/button';
+import { useToast } from '@chakra-ui/toast';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
@@ -14,6 +16,7 @@ type FormFields = {
 }
 
 const EditPost: React.FC<{}> = ({}) => {
+    const toast = useToast();
     const router = useRouter();
     const postId = typeof router.query.id === 'string' ?
         router.query.id : "";
@@ -30,6 +33,7 @@ const EditPost: React.FC<{}> = ({}) => {
             text: data?.post?.text || "",
         }
     });
+
     const [updatePost] = useUpdatePostMutation();
     const { getWarningForToxicText } = useToxicTextDetector();
 
@@ -45,13 +49,22 @@ const EditPost: React.FC<{}> = ({}) => {
         if (toxicTitle) {
             methods.setError('title', { type: 'custom', message: toxicTitle });
         }
-        const { errors } = await updatePost({ 
+        const { data: result, errors } = await updatePost({ 
             variables: {
                 postId: data?.post?.id || "-1",
                 ...values
             }
         });
-        if (!errors) {
+        if (!errors && result?.updatePost) {
+            toast({
+                title: `Post edited!`,
+                description: `Post titled ${result.updatePost.title} created by 
+                    ${result.updatePost.creator.username}.`,
+                duration: 3000,
+                position: 'top',
+                isClosable: true,
+                status: 'success'
+            });
             router.back();
         }
     }
@@ -64,7 +77,7 @@ const EditPost: React.FC<{}> = ({}) => {
         return <Layout><div>{error.message}</div></Layout>;
     }
 
-    if (!data?.post) {
+    if (!loading && !data?.post) {
         return <Layout><div>Cannot find post</div></Layout>;
     }
 
@@ -75,8 +88,7 @@ const EditPost: React.FC<{}> = ({}) => {
                     <InputField
                         label='Title'
                         name='title'
-                        placeholder='Title'
-                        inputVariant='editableInput' />
+                        placeholder='Title' />
                     <Box mt={2}>
                         <InputField
                             label='Content'
