@@ -22,6 +22,12 @@ type PaginatedPosts implements PaginatedList {
     hasMore: Boolean!
 }
 
+type PaginatedCreatorPosts implements PaginatedList {
+    creatorId: ID!
+    data: [Post!]!
+    hasMore: Boolean!
+}
+
 input PaginatedArgs {
     limit: Int!
     cursor: String
@@ -30,6 +36,7 @@ input PaginatedArgs {
 type Query {
     post(id: ID!): Post
     posts(options: PaginatedArgs!): PaginatedPosts!
+    postsByCreatorId(creatorId: ID!, options: PaginatedArgs!): PaginatedCreatorPosts!
 }
 
 type Mutation {
