@@ -7,9 +7,9 @@ type PaginatedResults = {
     data: Array<Record<string, any>>
 };
 
-const mergeResults = (
-    existing: PaginatedResults | undefined, 
-    incoming: PaginatedResults | undefined
+const mergeResults = <T extends PaginatedResults>(
+    existing: T | undefined, 
+    incoming: T | undefined
 ): PaginatedResults  => {
     return {
         ...incoming,
@@ -32,6 +32,10 @@ const client = (ctx: NextPageContext) => new ApolloClient({
                 fields: {
                     posts: {
                         keyArgs: ['limit'],
+                        merge: mergeResults
+                    },
+                    postsByCreatorId: {
+                        keyArgs: ['creatorId', 'limit'],
                         merge: mergeResults
                     },
                     baseComments: {
