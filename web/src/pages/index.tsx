@@ -1,5 +1,5 @@
-import { Flex, Heading, Stack, Text } from "@chakra-ui/layout";
 import { Button } from "@chakra-ui/button";
+import { Flex, Heading, Stack, Text } from "@chakra-ui/layout";
 import NextLink from "next/link";
 import { LoadMoreButton } from "../components/buttons/LoadMoreButton";
 import Layout from "../components/Layout";
