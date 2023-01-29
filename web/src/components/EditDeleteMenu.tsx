@@ -13,7 +13,7 @@ export const EditDeleteMenu: React.FC<EditDeleteMenuProps> = ({
     id
 }) => {
     return (
-        <Menu isLazy>
+        <Menu isLazy closeOnSelect={false}>
             <MenuButton
                 as={IconButton}
                 aria-label="Edit/Delete Options"
