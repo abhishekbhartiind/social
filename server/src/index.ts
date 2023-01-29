@@ -24,6 +24,7 @@ import {
     createPostUserLikeLoader
 } from "./utils/loaders/createPostLikeLoader";
 import createUserLoader from "./utils/loaders/createUserLoader";
+import { createUserPostCountLoader } from "./utils/loaders/createUserLoader";
 import { typeDefs } from "./utils/typeDefs";
 import dotenv from "dotenv";
 
@@ -97,6 +98,7 @@ const main = async () => {
                 commentUserLikeLoader: createCommentUserLikeLoader(),
                 commentsArrayLoader: createCommentsArrayLoader(),
                 repliesArrayLoader: createRepliesArrayLoader(),
+                totalPostCountLoader: createUserPostCountLoader(),
             })
         })
     );
