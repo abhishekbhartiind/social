@@ -1,5 +1,6 @@
 import { Box } from '@chakra-ui/layout';
 import { Button } from '@chakra-ui/button';
+import { useToast } from '@chakra-ui/toast';
 import { useRouter } from 'next/router'
 import React from 'react'
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
@@ -11,6 +12,7 @@ import withApollo from '../utils/withApollo';
 type fieldTypes = keyof UsernamePasswordInput;
 
 const Register: React.FC<{}> = ({}) => {
+    const toast = useToast();
     const router = useRouter();
     const [register] = useRegisterMutation();
 
@@ -42,6 +44,13 @@ const Register: React.FC<{}> = ({}) => {
                 );
             });
         } else if (registerResponse?.user) {
+            toast({
+                title: `Hi, ${registerResponse.user.username}!`,
+                position: 'top',
+                duration: 5000,
+                status: 'success',
+                isClosable: true,
+            })
             router.push("/"); //client-side navigation to home page
         }
     };

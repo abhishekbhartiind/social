@@ -1,5 +1,6 @@
 import { Box } from "@chakra-ui/layout";
 import { Button } from "@chakra-ui/button";
+import { useToast } from "@chakra-ui/toast";
 import { useRouter } from "next/router";
 import React from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
@@ -11,6 +12,7 @@ import withApollo from "../utils/withApollo";
 type fieldTypes = keyof MutationLoginArgs;
 
 export const Login: React.FC<{}> = ({}) => {
+    const toast = useToast();
     const router = useRouter();
     const [login] = useLoginMutation();
 
@@ -43,6 +45,13 @@ export const Login: React.FC<{}> = ({}) => {
             );
         });
         } else if (loginResponse?.user) {
+            toast({
+                position: 'top',
+                title: `Welcome back, ${loginResponse.user.username}!`,
+                duration: 5000,
+                status: 'success',
+                isClosable: true,
+            });
             if (typeof router.query.next === "string") {
                 router.push(router.query.next); //when previous page is not homepage like create-post page
             } else {
@@ -62,12 +71,12 @@ export const Login: React.FC<{}> = ({}) => {
                     placeholder="Enter username"
                     />
                     <Box mt={4}>
-                    <InputField
-                        label="Password"
-                        name="password"
-                        type="password"
-                        placeholder="Enter password"
-                    />
+                        <InputField
+                            label="Password"
+                            name="password"
+                            type="password"
+                            placeholder="Enter password"
+                        />
                     </Box>
                     <Button
                     mt={4}
