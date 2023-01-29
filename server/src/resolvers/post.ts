@@ -36,6 +36,30 @@ export const PostResolvers: Resolvers = {
         },
         post(_, { id }) {
             return dataManager.findOneBy(Post, { id: parseInt(id) });
+        },
+        async postsByCreatorId(_, { creatorId, options: { limit, cursor }}) {
+            const realLimit = Math.min(50, limit);
+            const paginatedLimit = realLimit + 1;
+
+            const replacements: any[] = [creatorId, paginatedLimit];
+
+            if (cursor) {
+                replacements.push(new Date(parseInt(cursor)));
+            }
+
+            const posts = await dataManager.query(`
+                SELECT p.* 
+                FROM post_entity p
+                WHERE p."creatorId" = $1${cursor ? `and p."createdAt" < $3`: ''}
+                order by p."createdAt" DESC
+                limit $2
+            `, replacements);
+
+            return { 
+                creatorId,
+                data: posts.slice(0, realLimit),
+                hasMore: posts.length === paginatedLimit,
+            }
         }
     },
     Mutation: {
