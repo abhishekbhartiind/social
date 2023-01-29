@@ -1,6 +1,7 @@
 import { useApolloClient } from '@apollo/client';
+import { Avatar } from '@chakra-ui/avatar';
+import { Button } from "@chakra-ui/button";
 import { Box, Flex, Heading, Link } from '@chakra-ui/layout';
-import { Button } from "@chakra-ui/button"
 import NextLink from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { useLogoutMutation, useMeQuery } from '../gql/graphql';
@@ -33,8 +34,13 @@ export const Navbar: React.FC<NavbarProps> = ({home=false}) => {
             </>);
         } else {
             setBody(
-                <Flex>
-                    <Box mr={4}>{data.me.username}</Box>
+                <Flex gap={2}>
+                    <Avatar 
+                        as={NextLink} 
+                        href='/user' 
+                        size='sm' 
+                        name={data.me.username} 
+                        src='' />
                     <Button 
                         variant='link'
                         isLoading={logoutFetching}
