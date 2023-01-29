@@ -1,4 +1,5 @@
 import { ApolloCache, gql } from "@apollo/client";
+import { MeDocument, MeQuery } from "../../gql/graphql";
 
 export const updateCommentCountInCache = (
     cache: ApolloCache<any>,
@@ -82,4 +83,27 @@ export const updateCacheAfterDeleteComment = (
 
     cache.evict({ id: commentType + ":" + commentId });
     cache.gc();
+}
+
+export const updateCurrentUserTotalPostCount = (
+    cache: ApolloCache<any>,
+    change: 'UP' | 'DOWN',
+    changeValue: number,
+) => {
+    cache.updateQuery<MeQuery>({
+        query: MeDocument,
+    }, 
+    (data) => {
+        if (data && data.me) {
+            return {
+                __typename: data.__typename,
+                me: {
+                    ...data.me,
+                    totalPostCount: data.me.totalPostCount + 
+                        (change === 'UP' ? 1 : -1) * changeValue,
+                }
+            }
+        }
+        return data;
+    });
 }
