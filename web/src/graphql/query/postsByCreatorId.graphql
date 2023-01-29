@@ -1,0 +1,25 @@
+query PostsByCreatorId($creatorId: ID!, $options: PaginatedArgs!) {
+    postsByCreatorId(creatorId: $creatorId, options: $options) {
+        data {
+            id
+            title
+            commentCount
+            createdAt
+            creator {
+                totalPostCount
+                username
+                id
+                email
+            }
+            creatorId
+            imageLinks
+            isLiked
+            likeCount
+            text
+            textSnippet
+            updatedAt
+        }
+        hasMore
+        creatorId
+    }
+}
