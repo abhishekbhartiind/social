@@ -14,7 +14,7 @@ import AppDataSource from "./AppDataSource";
 import { COOKIE_NAME, __prod__ } from "./constants";
 import { postMiddleware } from "./middlewares/post";
 import { CommentResolvers } from "./resolvers/comment";
-import { PostResolvers } from "./resolvers/Post";
+import { PostResolvers } from "./resolvers/post";
 import { UserResolvers } from "./resolvers/user";
 import { MyContext } from "./types/context";
 import { createCommentLikesArrayLoader, createCommentUserLikeLoader } from "./utils/loaders/createCommentLikeLoader";
@@ -32,26 +32,35 @@ dotenv.config();
 
 const main = async () => {
     await AppDataSource.initialize();
-    //await AppDataSource.runMigrations()
+    //await AppDataSource.runMigrations();
+
     const app = express();
 
     //set up sessions and cookies
     const RedisStore = connectRedis(session);
-    const redis = new Redis();
+    const redis = new Redis(process.env.REDIS_URL);
     const redisStoreOptions: RedisStoreOptions = {
         client: redis,
         disableTouch: true
     };
 
+    app.set("trust proxy", 1);
+    app.set("Access-Control-Allow-Origin", [
+        "https://studio.apollographql.com", 
+        process.env.CORS_ORIGIN
+    ]);
+    app.set("Access-Control-Allow-Credentials", true);
+
     app.use(session({
         name: COOKIE_NAME,
         store: new RedisStore(redisStoreOptions),
-        secret: "asfasfqweasfqaer",
+        secret: process.env.REDIS_URL,
         cookie: {
             maxAge: 1000 * 60 * 60 * 24 * 365,
             httpOnly: true,
             secure: __prod__,
             sameSite: "lax",
+            domain: __prod__ ? '.sereyratanakroth.com' : undefined,
         },
         saveUninitialized: false,
         resave: false,
@@ -83,7 +92,8 @@ const main = async () => {
             credentials: true,
             origin: [
                 "https://studio.apollographql.com",
-                "http://localhost:3000"
+                "http://localhost:3000",
+                process.env.CORS_ORIGIN,
             ]
         }),
         expressMiddleware(apolloServer, {
@@ -103,8 +113,9 @@ const main = async () => {
         })
     );
 
-    app.listen(4040, () => {
-        console.log('Server is up at Port: 4040');
+    const PORT = process.env.PORT || '4040';
+    app.listen(parseInt(process.env.PORT), () => {
+        console.log(`Server is up at Port: ${PORT}`);
     })
 }
 
