@@ -22,7 +22,7 @@ const mergeResults = <T extends PaginatedResults>(
 }
 
 const client = (ctx: NextPageContext) => new ApolloClient({
-    uri: "http://localhost:4040/graphql",
+    uri: process.env.NEXT_PUBLIC_API_URL,
     headers: {
         cookie: (typeof window === 'undefined' ? ctx?.req?.headers.cookie : undefined) || '',
     },
