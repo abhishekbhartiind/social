@@ -77,8 +77,9 @@ export const UserResolvers: Resolvers = {
         }
     },
     User: {
-        totalPostCount({ id }, _, { totalPostCountLoader }) {
-            return totalPostCountLoader.load(id);
+        async totalPostCount({ id }, _, { totalPostCountLoader }) {
+            const result = await totalPostCountLoader.load(id);
+            return (result || 0);
         }
     }
 };
