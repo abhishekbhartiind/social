@@ -499,6 +499,7 @@ export const LoginDocument = gql`
       id
       email
       username
+      totalPostCount
     }
   }
 }
@@ -571,6 +572,7 @@ export const RegisterDocument = gql`
       id
       email
       username
+      totalPostCount
     }
   }
 }
@@ -655,6 +657,7 @@ export const BaseCommentsDocument = gql`
         email
         id
         username
+        totalPostCount
       }
       authorId
       createdAt
@@ -905,6 +908,7 @@ export const RepliesDocument = gql`
         email
         username
         id
+        totalPostCount
       }
       content
       createdAt
@@ -1008,7 +1012,7 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null, user?: { __typename?: 'User', id: string, email: string, username: string } | null } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null, user?: { __typename?: 'User', id: string, email: string, username: string, totalPostCount: number } | null } };
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -1020,7 +1024,7 @@ export type RegisterMutationVariables = Exact<{
 }>;
 
 
-export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null, user?: { __typename?: 'User', id: string, email: string, username: string } | null } };
+export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null, user?: { __typename?: 'User', id: string, email: string, username: string, totalPostCount: number } | null } };
 
 export type UpdatePostMutationVariables = Exact<{
   postId: Scalars['ID'];
@@ -1037,7 +1041,7 @@ export type BaseCommentsQueryVariables = Exact<{
 }>;
 
 
-export type BaseCommentsQuery = { __typename?: 'Query', baseComments: { __typename?: 'PaginatedBaseComments', hasMore: boolean, data: Array<{ __typename?: 'BaseComment', authorId: string, createdAt: string, updatedAt: string, content: string, repliesCount: number, id: string, postId: string, isLiked?: boolean | null, likeCount: number, author: { __typename?: 'User', email: string, id: string, username: string } }> } };
+export type BaseCommentsQuery = { __typename?: 'Query', baseComments: { __typename?: 'PaginatedBaseComments', hasMore: boolean, data: Array<{ __typename?: 'BaseComment', authorId: string, createdAt: string, updatedAt: string, content: string, repliesCount: number, id: string, postId: string, isLiked?: boolean | null, likeCount: number, author: { __typename?: 'User', email: string, id: string, username: string, totalPostCount: number } }> } };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1072,4 +1076,4 @@ export type RepliesQueryVariables = Exact<{
 }>;
 
 
-export type RepliesQuery = { __typename?: 'Query', replies: { __typename?: 'PaginatedReplies', hasMore: boolean, data: Array<{ __typename?: 'Reply', authorId: string, content: string, createdAt: string, id: string, postId: string, updatedAt: string, isLiked?: boolean | null, likeCount: number, author: { __typename?: 'User', email: string, username: string, id: string } }> } };
+export type RepliesQuery = { __typename?: 'Query', replies: { __typename?: 'PaginatedReplies', hasMore: boolean, data: Array<{ __typename?: 'Reply', authorId: string, content: string, createdAt: string, id: string, postId: string, updatedAt: string, isLiked?: boolean | null, likeCount: number, author: { __typename?: 'User', email: string, username: string, id: string, totalPostCount: number } }> } };
