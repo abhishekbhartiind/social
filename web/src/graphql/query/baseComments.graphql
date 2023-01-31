@@ -6,6 +6,7 @@ query BaseComments($postId: ID!, $options: PaginatedArgs!) {
                 email
                 id
                 username
+                totalPostCount
             }
             authorId
             createdAt

@@ -8,6 +8,7 @@ mutation Register($options: UsernamePasswordInput!) {
             id
             email
             username
+            totalPostCount
         }
     }
 }

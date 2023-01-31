@@ -8,6 +8,7 @@ mutation Login($username: String!, $password: String!) {
             id
             email
             username
+            totalPostCount
         }
     }
 }
