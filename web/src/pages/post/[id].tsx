@@ -28,7 +28,7 @@ const Post: React.FC<{}> = ({}) => {
         return <Layout><div>{error.message}</div></Layout>;
     }
 
-    if (!data?.post) {
+    if (!loading && !data?.post) {
         return <Layout><div>Cannot find post</div></Layout>;
     }
 
@@ -43,7 +43,7 @@ const Post: React.FC<{}> = ({}) => {
                     <SkeletonCircle 
                     isLoaded={!loading}
                     size='14'>
-                        <Avatar name={data.post.creator.username} src="" />
+                        <Avatar name={data?.post?.creator.username} src="" />
                     </SkeletonCircle>
                     <SkeletonText 
                         isLoaded={!loading}
@@ -52,18 +52,18 @@ const Post: React.FC<{}> = ({}) => {
                         skeletonHeight='4'
                         flex={1}>
                         <Heading size="sm" textTransform="uppercase">
-                            {data.post.creator.username}
+                            {data?.post?.creator.username}
                         </Heading>
                         <Text fontSize='sm'>
-                            {formatDistanceToNow(new Date(parseInt(data.post.createdAt)), {
+                            {data?.post && formatDistanceToNow(new Date(parseInt(data.post.createdAt)), {
                                 addSuffix: true,
                             })}
                         </Text>
                     </SkeletonText>
-                    {meData?.me?.id === data.post.creatorId && 
+                    {meData?.me?.id === data?.post?.creatorId && 
                     (<Box ml='auto' >
                         <Skeleton isLoaded={!loading}>
-                            <EditDeleteMenu id={data.post.id} />
+                            <EditDeleteMenu id={data?.post?.id || ''} />
                         </Skeleton>
                     </Box>)}
             </Flex>
@@ -73,13 +73,13 @@ const Post: React.FC<{}> = ({}) => {
             skeletonHeight='4'
             mb={4}>
                 <Text my={4}>
-                    {data.post.text}
+                    {data?.post?.text}
                 </Text>
             </SkeletonText>
             <Skeleton isLoaded={!loading}>
                 <Image
                     objectFit="cover"
-                    src={data.post.imageLinks[0]}
+                    src={data?.post?.imageLinks[0]}
                     alt="post image"
                     mb={2}
                 />
@@ -87,18 +87,18 @@ const Post: React.FC<{}> = ({}) => {
             <Skeleton isLoaded={!loading}>
                 <Flex alignItems='center' mb={2}>
                     <LikePostButton 
-                        isLiked={data.post.isLiked}
+                        isLiked={data?.post?.isLiked}
                         iconSize={28}
-                        id={data.post.id} />
+                        id={data?.post?.id || ''} />
                     <Text fontSize='sm' fontWeight='bold' ml='auto'>
-                        {data.post.likeCount} likes 
-                        &nbsp; {data.post.commentCount} comments
+                        {data?.post?.likeCount} likes 
+                        &nbsp; {data?.post?.commentCount} comments
                     </Text>
                 </Flex>
             </Skeleton>
             <Divider mb={4} color='gray'/>
             <CommentSection
-                postId={data.post.id} />
+                postId={data?.post?.id || ''} />
         </Layout>
     );
 };
