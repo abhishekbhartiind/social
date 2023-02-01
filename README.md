@@ -1,6 +1,6 @@
 # Social
 
-[Demo](https://www.social.sereyratanakroth.com)
+[Demo](https://social-web.sereyratanakroth.com)
 
 A basic clone of Instagram with a React-based frontend and a TypeScript, GraphQL API. The application is deployed as a Docker container to a AWS ec2
 instance.
