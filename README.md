@@ -4,11 +4,11 @@ A basic clone of Instagram with a React-based frontend and a TypeScript, GraphQL
 instance.
 
 Features include
-* Create, edit, or delete posts and comments
+* Create, edit, or delete posts and comments (any text will be detected for toxicity)
 * Like posts and comments
 * View comments and replies associated to a post
 * View a user's account
-* Take a photo while creating a post
+* Take a photo while creating a post (the photo will be stored in the cloud)
 * Load more posts, comments or replies
 
 ## Tech Stack
