@@ -87,8 +87,6 @@ const UserAccount: React.FC<UserAccountProps> = ({}) => {
                 </Flex>
                 <Stack>
                     <Heading fontSize='xl'>{'Ben'}</Heading>
-                    <Text fontSize='sm'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Veritatis labore incidunt facere maxime ipsum deserunt non blanditiis harum deleniti dolorum possimus obcaecati, itaque sunt magnam sit laudantium beatae, necessitatibus nulla!</Text>
-                    <Button>Edit profile</Button>
                     <Button as={Link} href='/create-post'>Create post</Button>
                 </Stack>
                 <Divider />
