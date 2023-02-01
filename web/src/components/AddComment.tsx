@@ -1,4 +1,4 @@
-import { ApolloCache } from '@apollo/client';
+import { ApolloCache, ApolloError } from '@apollo/client';
 import { Flex } from '@chakra-ui/layout';
 import { Avatar } from '@chakra-ui/avatar';
 import { IconButton } from '@chakra-ui/button';
@@ -10,6 +10,7 @@ import { CommentPostMutation, useCommentPostMutation } from '../gql/graphql';
 import { updateCommentCountInCache, updateRepliesCountInCache } from '../utils/updateCache';
 import { useToxicTextDetector } from '../utils/useToxicTextDetector';
 import InputField from './InputField';
+import { useToast } from '@chakra-ui/toast';
 
 interface AddCommentProps {
     postId: string;
@@ -35,6 +36,7 @@ const updateCacheAfterComment = (
 export const AddComment: React.FC<AddCommentProps> = ({ 
     postId
 }) => {
+    const toast = useToast();
     const { parentComment, onSetParentComment } = useCommentContext();
     const methods = useForm<{ content: string }>();
     const [commentPost] = useCommentPostMutation();
@@ -52,17 +54,27 @@ export const AddComment: React.FC<AddCommentProps> = ({
             methods.setError('content', { type: 'custom', message: toxicContent });
             return;
         }
-        await commentPost({
-            variables: {
-                postId,
-                ...values,
-                parentId: parentComment?.id,
-            },
-            update: (cache) => 
-                updateCacheAfterComment(postId, cache, parentComment?.id),
-        });
-        methods.resetField('content');
-        onSetParentComment(null);
+        try {
+            await commentPost({
+                variables: {
+                    postId,
+                    ...values,
+                    parentId: parentComment?.id,
+                },
+                update: (cache) => 
+                    updateCacheAfterComment(postId, cache, parentComment?.id),
+            });
+            methods.resetField('content');
+            onSetParentComment(null);
+        } catch (error) {
+            toast({
+                position: 'top',
+                description: (error as any).message,
+                status: 'error',
+                duration: 5000,
+                isClosable: true,
+            });
+        }
     }
 
     return (
