@@ -12,7 +12,7 @@ Features include
 * Load more posts, comments or replies
 
 ## Tech Stack
-Front end: NextJS, ChakraUI, Apollo Client, TypeScript, GraphQL, GraphQL Codegen, React Hook Form, Tensorflow.js (for toxic text detection)
+__Front end__: NextJS, ChakraUI, Apollo Client, TypeScript, GraphQL, GraphQL Codegen, React Hook Form, Tensorflow.js (for toxic text detection)
 
-Back end: NodeJS, ExpressJS, Apollo Server, TypeScript, GraphQL, TypeORM (for postgres database connection), GraphQL Codegen,
+__Back end__: NodeJS, ExpressJS, Apollo Server, TypeScript, GraphQL, TypeORM (for postgres database connection), GraphQL Codegen,
 GraphQL Tools, PostgreSQL, Redis, Cloudinary Node SDK (for uploading images to the cloud), Data Loader (for handling batch queries)
