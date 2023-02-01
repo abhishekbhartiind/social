@@ -36,7 +36,7 @@ const Index = () => {
     return (
         <Layout home variant="small">
             <Flex alignItems="center">
-                <Heading fontSize={[30]}>Instapets</Heading>
+                <Heading fontSize={[30]}>Social</Heading>
                 <Button as={NextLink} href="/create-post" ml="auto">
                     <Text>Create</Text>
                 </Button>
