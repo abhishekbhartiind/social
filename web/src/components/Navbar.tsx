@@ -63,7 +63,7 @@ export const Navbar: React.FC<NavbarProps> = ({home=false}) => {
         p={4}>
             {!home && <Box>
                 <Link as={NextLink} href='/'>
-                    <Heading>Instapets</Heading>
+                    <Heading>Social</Heading>
                 </Link>
             </Box>}
             <Box ml='auto'>
