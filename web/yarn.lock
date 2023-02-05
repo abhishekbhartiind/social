@@ -4387,6 +4387,11 @@ scuid@^1.1.0:
   resolved "https://registry.yarnpkg.com/scuid/-/scuid-1.1.0.tgz#d3f9f920956e737a60f72d0e4ad280bf324d5dab"
   integrity sha512-MuCAyrGZcTLfQoH2XoBlQ8C6bzwN88XT/0slOGz0pn8+gIP85BOAfYa44ZXQUTOwRwPU0QvgU+V+OSajl/59Xg==
 
+sdp@^3.0.2:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/sdp/-/sdp-3.1.0.tgz#f628b6dd9ad1fe4099398d73248208dca79ceada"
+  integrity sha512-YQ2+lulxfcPv5/3FsY9FR0F8r+qQngluz2L+YdR7S8mMiFFy3/6Cx9mzAL57Sbzgaj13Eaiq88rfQx7Wiik0qg==
+
 seedrandom@^3.0.5:
   version "3.0.5"
   resolved "https://registry.yarnpkg.com/seedrandom/-/seedrandom-3.0.5.tgz#54edc85c95222525b0c7a6f6b3543d8e0b3aa0a7"
@@ -4784,6 +4789,13 @@ webidl-conversions@^3.0.0:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/webidl-conversions/-/webidl-conversions-3.0.1.tgz#24534275e2a7bc6be7bc86611cc16ae0a5654871"
   integrity sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==
+
+webrtc-adapter@^8.2.0:
+  version "8.2.0"
+  resolved "https://registry.yarnpkg.com/webrtc-adapter/-/webrtc-adapter-8.2.0.tgz#566220c95d707017bbefbb555d6e2467dd1b691e"
+  integrity sha512-umxCMgedPAVq4Pe/jl3xmelLXLn4XZWFEMR5Iipb5wJ+k1xMX0yC4ZY9CueZUU1MjapFxai1tFGE7R/kotH6Ww==
+  dependencies:
+    sdp "^3.0.2"
 
 whatwg-fetch@^3.4.1:
   version "3.6.2"
