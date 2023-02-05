@@ -1,10 +1,11 @@
 import { Button } from '@chakra-ui/button';
-import { Box, Divider, Flex } from '@chakra-ui/layout';
+import { Box, Divider, Flex, Heading } from '@chakra-ui/layout';
 import { useToast } from '@chakra-ui/toast';
+import { Image } from '@chakra-ui/image';
+import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import { Camera } from '../components/Camera';
 import InputField from '../components/InputField';
 import Layout from '../components/Layout';
 import { useCameraContext } from '../context/CameraContext';
@@ -13,7 +14,6 @@ import { updateCurrentUserTotalPostCount } from '../utils/updateCache';
 import useIsAuth from '../utils/useIsAuth';
 import { useToxicTextDetector } from '../utils/useToxicTextDetector';
 import withApollo from '../utils/withApollo';
-import { withCameraContext } from '../utils/withCameraContext';
 
 const CreatePost: React.FC<{}> = ({}) => {
     const router = useRouter();
@@ -24,7 +24,7 @@ const CreatePost: React.FC<{}> = ({}) => {
     const [createPost] = useCreatePostMutation();
 
     const { getWarningForToxicText } = useToxicTextDetector();
-    const { hasPhoto, canvas } = useCameraContext();
+    const { image } = useCameraContext();
 
     const onSubmit: SubmitHandler<MutationCreatePostArgs> = async (
         values
@@ -39,14 +39,10 @@ const CreatePost: React.FC<{}> = ({}) => {
             methods.setError('title', { type: 'custom', message: toxicTitle});
         }
         if (!(toxicText || toxicTitle)) {
-            let images: string[] = [];
-            if (hasPhoto && canvas.current) {
-                images = [canvas.current.toDataURL("image/jpeg")];
-            }
             const { data, errors } = await createPost({ 
                 variables: {
                     ...values,
-                    images
+                    images: image ? [image] : [],
                 },
                 update: (cache) => {
                     updateCurrentUserTotalPostCount(cache, 'UP', 1);
@@ -63,7 +59,7 @@ const CreatePost: React.FC<{}> = ({}) => {
                     isClosable: true,
                     status: 'success'
                 });
-                router.back();
+                router.push('/');
             } else if (errors) {
                 toast({
                     title: 'Error when creating post!',
@@ -86,10 +82,13 @@ const CreatePost: React.FC<{}> = ({}) => {
     }
 
     return (
-        <Layout variant='small' home={false}>
+        <Layout home>
+            <Heading 
+                as={NextLink} 
+                href='/'
+                fontSize={[30]}>Social</Heading>
+            <Divider />
             <FormProvider {...methods}>
-                <Camera onPhotos={() => {}}/>
-                <Divider my={2} borderColor='gray.500' />
                 <form onSubmit={methods.handleSubmit(onSubmit)}>
                     <Flex mt={4} direction='column'>
                         <InputField
@@ -103,8 +102,15 @@ const CreatePost: React.FC<{}> = ({}) => {
                                 placeholder='Write a caption...'
                                 inputVariant='textarea' />
                         </Box>
+                        <Divider my={2} borderColor='gray.500' />
+                        {image && <Image my={2} src={image} alt='captured photo' />}
+                        <Button
+                        as={NextLink}
+                        href='/take-photo'>
+                            {image ? 'Retake' : 'Take'} photo
+                        </Button>
                         <Button 
-                            mt={4}
+                            mt={2}
                             isLoading={methods.formState.isSubmitting}
                             colorScheme='teal'
                             type='submit'
@@ -118,4 +124,4 @@ const CreatePost: React.FC<{}> = ({}) => {
     );
 }
 
-export default withApollo({ ssr: false })(withCameraContext(CreatePost));
+export default withApollo({ ssr: false })(CreatePost);
