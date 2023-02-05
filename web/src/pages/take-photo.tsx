@@ -1,13 +1,12 @@
-import { Button, ButtonGroup, IconButton } from '@chakra-ui/button';
+import { Button, IconButton } from '@chakra-ui/button';
 import { Image } from '@chakra-ui/image';
-import { Box, Divider, Flex, Heading, Text } from '@chakra-ui/layout';
-import { Select } from '@chakra-ui/select';
+import { Box, Divider, Flex, Heading, Text, Stack } from '@chakra-ui/layout';
+import { RadioGroup, Radio } from '@chakra-ui/radio';
 import { Spinner } from '@chakra-ui/spinner';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { FiCamera } from 'react-icons/fi';
-import { MdFlipCameraIos } from 'react-icons/md';
 import Layout from '../components/Layout';
 import { useCameraContext } from '../context/CameraContext';
 import { useCameraStream } from '../utils/useCameraStream';
@@ -17,8 +16,6 @@ interface CameraProps {
 
 }
 
-type CameraStreamStateType = 'close' | 'loading' | 'open' | 'failure';
-
 const Camera: React.FC<CameraProps> = ({}) => {
     const router = useRouter();
     const {
@@ -26,48 +23,37 @@ const Camera: React.FC<CameraProps> = ({}) => {
         canvas,
         photo,
         image,
-        takePicture
+        takePicture,
     } = useCameraContext();
 
     const { 
         devices,
+        activeDeviceId,
+        cameraStreamState,
         handleSetActiveDeviceId,
-        openCameraStream, 
         closeCameraStream,
-        handleToggleCameraMode
     } = useCameraStream();
 
-    const [cameraStreamState, setCameraStreamState] = useState<CameraStreamStateType>(
-        'close'
-    );
-
     const [showImage, setShowImage] = useState(false);
-
-    useEffect(() => {
-        if (video.current) {
-            setCameraStreamState('loading');
-            openCameraStream(
-            (stream) => {
-                if (video.current) {
-                    video.current.srcObject = stream;
-                    video.current.play();
-                    setCameraStreamState('open');
-                }
-            }, 
-            (error) => {
-                console.error(`An error occurred; ${error}`)
-                setCameraStreamState('failure');
-            });
-        }
-    }, []);
+    const [selectedCamera, setSelectedCamera] = useState(
+        activeDeviceId || devices[0]?.deviceId || ''
+    );
     
+    useEffect(() => {
+        if (activeDeviceId) {
+            setSelectedCamera(activeDeviceId);
+        } else if (devices[0]?.deviceId) {
+            setSelectedCamera(devices[0]?.deviceId);
+        }
+    }, [activeDeviceId, devices]);
+
     return (
         <Layout home>
             <Flex direction='column' gap={2} minHeight='100vh'>
                 <Heading 
                     as={NextLink} 
                     href='/'
-                    onClick={() => closeCameraStream(video.current)}
+                    onClick={() => closeCameraStream()}
                     fontSize={[30]}>Social</Heading>
                 <Divider />
                 <Flex
@@ -111,19 +97,23 @@ const Camera: React.FC<CameraProps> = ({}) => {
                         direction={['column', 'row']}
                         py={2}
                         bgColor='whiteAlpha.500'>
-                            <Select
-                            variant='solid'
-                            w='fit-content'
-                            onChange={event => {
-                                handleSetActiveDeviceId(event.target.value);
+                            {devices.length > 0 && <RadioGroup
+                            onChange={(camera) => {
+                                handleSetActiveDeviceId(camera);
+                                setSelectedCamera(camera);
                             }}
+                            value={selectedCamera}
                             >
-                            {devices.map(d => (
-                                <option key={d.deviceId} value={d.deviceId}>
-                                {d.label}
-                                </option>
-                            ))}
-                            </Select>
+                                <Stack direction='row'>
+                                {devices.map(d => (
+                                    <Radio 
+                                    key={d.deviceId} 
+                                    value={d.deviceId}>
+                                    {d.label}
+                                    </Radio>
+                                ))}
+                                </Stack>
+                            </RadioGroup>}
                             <Flex 
                             py={2}
                             alignItems='center' 
@@ -141,26 +131,19 @@ const Camera: React.FC<CameraProps> = ({}) => {
                                 onClick={() => setShowImage(!showImage)}
                                 />
                             )}
-                            <ButtonGroup>
-                                <IconButton
+                            <IconButton
                                 aria-label='Take photo'
                                 variant='ghost'
                                 icon={<FiCamera size={25} />}
                                 onClick={() => {
                                     takePicture();
                                 }} />
-                                <IconButton 
-                                variant='ghost'
-                                aria-label='Toggle camera mode'
-                                icon={<MdFlipCameraIos size={28} />}
-                                onClick={handleToggleCameraMode} />
-                            </ButtonGroup>
                             </Flex>
                         </Flex>
                     )}
                     {cameraStreamState === 'open' && <Button
                         onClick={() => {
-                            closeCameraStream(video.current);
+                            closeCameraStream();
                             router.push('/create-post');
                         }}>
                             Done
