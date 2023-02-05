@@ -70,25 +70,13 @@ const UserAccount: React.FC<UserAccountProps> = ({}) => {
             <Stack mb={2}>
                 <Flex w='full' alignItems='center' gap={2}>
                     <Avatar size='lg' name={meData?.me?.username} src='' />
-                    <Stack ml='auto' direction='row' gap={4}>
-                        <Stack alignItems='center' spacing='0'>
-                            <Text>{meData?.me?.totalPostCount}</Text>
-                            <Text>Posts</Text>
-                        </Stack>
-                        <Stack alignItems='center' spacing='0'>
-                            <Text>12</Text>
-                            <Text>Followers</Text>
-                        </Stack>
-                        <Stack alignItems='center' spacing='0'>
-                            <Text>12</Text>
-                            <Text>Following</Text>
-                        </Stack>
+                    <Heading fontSize='xl'>{'Ben'}</Heading>
+                    <Stack ml='auto' alignItems='center' spacing='0'>
+                        <Text>{meData?.me?.totalPostCount}</Text>
+                        <Text>Posts</Text>
                     </Stack>
                 </Flex>
-                <Stack>
-                    <Heading fontSize='xl'>{'Ben'}</Heading>
-                    <Button as={Link} href='/create-post'>Create post</Button>
-                </Stack>
+                <Button as={Link} href='/create-post'>Create post</Button>
                 <Divider />
                 <Grid
                 templateColumns={{ sm: 'repeat(3, 1fr)' }}
