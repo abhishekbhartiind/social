@@ -5,16 +5,15 @@ type CameraContextType = {
     canvas: RefObject<HTMLCanvasElement>;
     photo: RefObject<HTMLImageElement>;
     streaming: boolean;
-    hasPhoto: boolean;
     isCameraActive: boolean;
+    image: string;
     toggleIsCameraActive: () => void;
-    toggleHasPhoto: () => void;
     toggleStreaming: () => void;
     clearPhoto: () => void;
     takePicture: () => void;
 }
 
-const width = 400;
+const width = 1920;
 let height = 0;
 
 const CameraContext = createContext<CameraContextType>({} as CameraContextType);
@@ -26,13 +25,9 @@ export const CameraContextProvider = (
     const video = useRef<HTMLVideoElement>(null);
     const canvas = useRef<HTMLCanvasElement>(null);
     const photo = useRef<HTMLImageElement>(null);
+    const [image, setImage] = useState<string>("");
     const [streaming, setStreaming] = useState(false);
-    const [hasPhoto, setHasPhoto] = useState(false);
     const [isCameraActive, setIsCameraActive] = useState(false);
-
-    const toggleHasPhoto = () => {
-        setHasPhoto(prevState => !prevState);
-    }
 
     const toggleIsCameraActive = () => {
         setIsCameraActive(prevState => !prevState);
@@ -52,6 +47,7 @@ export const CameraContextProvider = (
 
             const data = canvas.current.toDataURL("image/png");
             photo.current.setAttribute("src", data);
+            setImage(data);
         }
     }
 
@@ -65,10 +61,10 @@ export const CameraContextProvider = (
 
             const data = canvas.current.toDataURL("image/png");
             photo.current.setAttribute("src", data);
+            setImage(data);
         } else {
             clearPhoto();
         }
-        setHasPhoto(true);
     }
 
     useEffect(() => {
@@ -86,7 +82,7 @@ export const CameraContextProvider = (
                     if (isNaN(height)) {
                         height = width / (4 / 3);
                     }
-          
+
                     video.current.setAttribute("width", width.toString());
                     video.current.setAttribute("height", height.toString());
                     canvas.current.setAttribute("width", width.toString());
@@ -104,10 +100,9 @@ export const CameraContextProvider = (
             canvas,
             photo,
             streaming,
-            hasPhoto,
             isCameraActive,
+            image,
             toggleIsCameraActive,
-            toggleHasPhoto,
             toggleStreaming,
             clearPhoto,
             takePicture
