@@ -1,4 +1,4 @@
-import { ApolloCache, ApolloError } from '@apollo/client';
+import { ApolloCache } from '@apollo/client';
 import { Flex } from '@chakra-ui/layout';
 import { Avatar } from '@chakra-ui/avatar';
 import { IconButton } from '@chakra-ui/button';
