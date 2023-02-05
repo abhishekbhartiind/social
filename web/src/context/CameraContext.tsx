@@ -5,9 +5,7 @@ type CameraContextType = {
     canvas: RefObject<HTMLCanvasElement>;
     photo: RefObject<HTMLImageElement>;
     streaming: boolean;
-    isCameraActive: boolean;
     image: string;
-    toggleIsCameraActive: () => void;
     toggleStreaming: () => void;
     clearPhoto: () => void;
     takePicture: () => void;
@@ -27,11 +25,6 @@ export const CameraContextProvider = (
     const photo = useRef<HTMLImageElement>(null);
     const [image, setImage] = useState<string>("");
     const [streaming, setStreaming] = useState(false);
-    const [isCameraActive, setIsCameraActive] = useState(false);
-
-    const toggleIsCameraActive = () => {
-        setIsCameraActive(prevState => !prevState);
-    }
 
     const toggleStreaming = () => {
         setStreaming(prevState => !prevState);
@@ -92,7 +85,9 @@ export const CameraContextProvider = (
             }, 
             false);
         }
-    })
+    });
+
+    
     return (
         <CameraContext.Provider
         value={{
@@ -100,9 +95,7 @@ export const CameraContextProvider = (
             canvas,
             photo,
             streaming,
-            isCameraActive,
             image,
-            toggleIsCameraActive,
             toggleStreaming,
             clearPhoto,
             takePicture
