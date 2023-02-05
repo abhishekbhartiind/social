@@ -1,4 +1,5 @@
 import { createContext, ReactNode, RefObject, useContext, useEffect, useRef, useState } from "react";
+import { resizeImage } from "../utils/resizeImage";
 
 type CameraContextType = {
     video: RefObject<HTMLVideoElement>;
@@ -40,21 +41,39 @@ export const CameraContextProvider = (
 
             const data = canvas.current.toDataURL("image/png");
             photo.current.setAttribute("src", data);
-            setImage(data);
+    
+            canvas.current.toBlob(async (imageBlob) => {
+                if (imageBlob) {
+                    resizeImage(imageBlob, 200, 200).then((im) => {
+                        setImage(im as string);
+                    })
+                } else {
+                    setImage('');
+                }
+            });
         }
     }
 
     const takePicture = () => {
-        const context = canvas.current?.getContext("2d");
-        if (!(context && canvas.current && photo.current && video.current)) return;
-        if (width && height) {
+        if (!(canvas.current && photo.current && video.current)) return;
+        const context = canvas.current.getContext("2d");
+        if (width && height && context) {
             canvas.current.width = width;
             canvas.current.height = height;
             context.drawImage(video.current, 0, 0, width, height);
 
             const data = canvas.current.toDataURL("image/png");
             photo.current.setAttribute("src", data);
-            setImage(data);
+            
+            canvas.current.toBlob(async (imageBlob) => {
+                if (imageBlob) {
+                    resizeImage(imageBlob, 200, 200).then((im) => {
+                        setImage(im as string);
+                    })
+                } else {
+                    setImage('');
+                }
+            });
         } else {
             clearPhoto();
         }
